@@ -38,13 +38,13 @@
     "object_name": "api_key",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 448,
+    "last_update_line": 451,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 448,
+        "line": 451,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -463,13 +463,13 @@
     "object_name": "create_tenant",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 433,
+    "last_update_line": 435,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 433,
+        "line": 435,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -565,13 +565,13 @@
     "object_name": "create_user_tenant_preferences",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 299,
+    "last_update_line": 301,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 299,
+        "line": 301,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -735,13 +735,13 @@
     "object_name": "delete_tenant",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 157,
+    "last_update_line": 159,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 157,
+        "line": 159,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -752,13 +752,13 @@
     "object_name": "delete_tenant_by_uuid",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 189,
+    "last_update_line": 191,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 189,
+        "line": 191,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -1415,13 +1415,13 @@
     "object_name": "get_all_tenants",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 419,
+    "last_update_line": 421,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 419,
+        "line": 421,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -1840,13 +1840,13 @@
     "object_name": "get_tenant_groups",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 96,
+    "last_update_line": 98,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 96,
+        "line": 98,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -1857,13 +1857,13 @@
     "object_name": "get_tenant_members",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 124,
+    "last_update_line": 126,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 124,
+        "line": 126,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -1874,13 +1874,13 @@
     "object_name": "get_tenant_users",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 65,
+    "last_update_line": 67,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 65,
+        "line": 67,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -1976,13 +1976,13 @@
     "object_name": "get_user_available_tenants",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 266,
+    "last_update_line": 268,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 266,
+        "line": 268,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -2163,13 +2163,13 @@
     "object_name": "get_user_last_selected_tenant",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 346,
+    "last_update_line": 348,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 346,
+        "line": 348,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -2588,13 +2588,13 @@
     "object_name": "owner",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 350,
+    "last_update_line": 353,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 350,
+        "line": 353,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -2605,13 +2605,13 @@
     "object_name": "perm_set",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 256,
+    "last_update_line": 259,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 256,
+        "line": 259,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -2622,13 +2622,13 @@
     "object_name": "perm_set_perm",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 279,
+    "last_update_line": 282,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 279,
+        "line": 282,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -2639,13 +2639,13 @@
     "object_name": "permission",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 234,
+    "last_update_line": 237,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 234,
+        "line": 237,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -2656,13 +2656,13 @@
     "object_name": "permission_assignment",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 369,
+    "last_update_line": 372,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 369,
+        "line": 372,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -2724,13 +2724,13 @@
     "object_name": "purge_tenant",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 234,
+    "last_update_line": 236,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 234,
+        "line": 236,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -2877,13 +2877,13 @@
     "object_name": "restore_tenant",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 204,
+    "last_update_line": 206,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 204,
+        "line": 206,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -3064,13 +3064,13 @@
     "object_name": "search_tenants",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 571,
+    "last_update_line": 573,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 571,
+        "line": 573,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -3336,13 +3336,13 @@
     "object_name": "tenant_user",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 136,
+    "last_update_line": 139,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 136,
+        "line": 139,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -3370,13 +3370,13 @@
     "object_name": "token",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 417,
+    "last_update_line": 420,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 417,
+        "line": 420,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -3625,13 +3625,13 @@
     "object_name": "update_tenant",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 525,
+    "last_update_line": 527,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 525,
+        "line": 527,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -3682,13 +3682,13 @@
     "object_name": "update_user_last_selected_tenant",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 371,
+    "last_update_line": 373,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 371,
+        "line": 373,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -3733,13 +3733,13 @@
     "object_name": "update_user_tenant_preferences",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
-    "last_update_line": 319,
+    "last_update_line": 321,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "023_functions_auth_tenant.sql",
-        "line": 319,
+        "line": 321,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -3750,13 +3750,13 @@
     "object_name": "user_blacklist",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 534,
+    "last_update_line": 537,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 534,
+        "line": 537,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -3767,13 +3767,13 @@
     "object_name": "user_data",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 178,
+    "last_update_line": 181,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 178,
+        "line": 181,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -3784,13 +3784,13 @@
     "object_name": "user_event",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 394,
+    "last_update_line": 397,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 394,
+        "line": 397,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -3801,13 +3801,13 @@
     "object_name": "user_event_default",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 615,
+    "last_update_line": 618,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 615,
+        "line": 618,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -3818,13 +3818,13 @@
     "object_name": "user_group",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 296,
+    "last_update_line": 299,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 296,
+        "line": 299,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -3852,13 +3852,13 @@
     "object_name": "user_group_mapping",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 332,
+    "last_update_line": 335,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 332,
+        "line": 335,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -3869,13 +3869,13 @@
     "object_name": "user_group_member",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 491,
+    "last_update_line": 494,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 491,
+        "line": 494,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -3903,13 +3903,13 @@
     "object_name": "user_identity",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 203,
+    "last_update_line": 206,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 203,
+        "line": 206,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -3954,13 +3954,13 @@
     "object_name": "user_permission_cache",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 153,
+    "last_update_line": 156,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 153,
+        "line": 156,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -3971,13 +3971,13 @@
     "object_name": "user_tenant_preference",
     "object_type": "table",
     "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 513,
+    "last_update_line": 516,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
-        "line": 513,
+        "line": 516,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -4123,13 +4123,13 @@
     "schema": "const",
     "object_name": "event_category",
     "object_type": "table",
-    "last_update_file": "012_tables_const.sql",
+    "last_update_file": "011_tables_const.sql",
     "last_update_line": 91,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
-        "file": "012_tables_const.sql",
+        "file": "011_tables_const.sql",
         "line": 91,
         "operation": "CREATE",
         "source": "migration"
@@ -4140,13 +4140,13 @@
     "schema": "const",
     "object_name": "event_code",
     "object_type": "table",
-    "last_update_file": "012_tables_const.sql",
+    "last_update_file": "011_tables_const.sql",
     "last_update_line": 100,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
-        "file": "012_tables_const.sql",
+        "file": "011_tables_const.sql",
         "line": 100,
         "operation": "CREATE",
         "source": "migration"
@@ -4163,7 +4163,7 @@
     "total_updates": 2,
     "all_updates": [
       {
-        "file": "012_tables_const.sql",
+        "file": "011_tables_const.sql",
         "line": 122,
         "operation": "CREATE",
         "source": "migration"
@@ -4401,13 +4401,13 @@
     "schema": "const",
     "object_name": "sys_param",
     "object_type": "table",
-    "last_update_file": "012_tables_const.sql",
+    "last_update_file": "011_tables_const.sql",
     "last_update_line": 13,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
-        "file": "012_tables_const.sql",
+        "file": "011_tables_const.sql",
         "line": 13,
         "operation": "CREATE",
         "source": "migration"
@@ -4418,13 +4418,13 @@
     "schema": "const",
     "object_name": "tenant_access_type",
     "object_type": "table",
-    "last_update_file": "012_tables_const.sql",
+    "last_update_file": "011_tables_const.sql",
     "last_update_line": 29,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
-        "file": "012_tables_const.sql",
+        "file": "011_tables_const.sql",
         "line": 29,
         "operation": "CREATE",
         "source": "migration"
@@ -4435,13 +4435,13 @@
     "schema": "const",
     "object_name": "token_channel",
     "object_type": "table",
-    "last_update_file": "012_tables_const.sql",
+    "last_update_file": "011_tables_const.sql",
     "last_update_line": 43,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
-        "file": "012_tables_const.sql",
+        "file": "011_tables_const.sql",
         "line": 43,
         "operation": "CREATE",
         "source": "migration"
@@ -4452,13 +4452,13 @@
     "schema": "const",
     "object_name": "token_state",
     "object_type": "table",
-    "last_update_file": "012_tables_const.sql",
+    "last_update_file": "011_tables_const.sql",
     "last_update_line": 49,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
-        "file": "012_tables_const.sql",
+        "file": "011_tables_const.sql",
         "line": 49,
         "operation": "CREATE",
         "source": "migration"
@@ -4469,13 +4469,13 @@
     "schema": "const",
     "object_name": "token_type",
     "object_type": "table",
-    "last_update_file": "012_tables_const.sql",
+    "last_update_file": "011_tables_const.sql",
     "last_update_line": 35,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
-        "file": "012_tables_const.sql",
+        "file": "011_tables_const.sql",
         "line": 35,
         "operation": "CREATE",
         "source": "migration"
@@ -4486,13 +4486,13 @@
     "schema": "const",
     "object_name": "user_group_member_type",
     "object_type": "table",
-    "last_update_file": "012_tables_const.sql",
+    "last_update_file": "011_tables_const.sql",
     "last_update_line": 140,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
-        "file": "012_tables_const.sql",
+        "file": "011_tables_const.sql",
         "line": 140,
         "operation": "CREATE",
         "source": "migration"
@@ -4503,13 +4503,13 @@
     "schema": "const",
     "object_name": "user_type",
     "object_type": "table",
-    "last_update_file": "012_tables_const.sql",
+    "last_update_file": "011_tables_const.sql",
     "last_update_line": 55,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
-        "file": "012_tables_const.sql",
+        "file": "011_tables_const.sql",
         "line": 55,
         "operation": "CREATE",
         "source": "migration"
@@ -6521,14 +6521,20 @@
     "schema": "helpers",
     "object_name": "delete_jsonb_fields",
     "object_type": "function",
-    "last_update_file": "006_update_common-helpers_v1-2.sql",
-    "last_update_line": 25,
+    "last_update_file": "045_update_common-helpers_v1-7.sql",
+    "last_update_line": 34,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "006_update_common-helpers_v1-2.sql",
         "line": 25,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "045_update_common-helpers_v1-7.sql",
+        "line": 34,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -6538,10 +6544,10 @@
     "schema": "helpers",
     "object_name": "get_code",
     "object_type": "function",
-    "last_update_file": "009_update_common-helpers_v1-5.sql",
-    "last_update_line": 15,
+    "last_update_file": "045_update_common-helpers_v1-7.sql",
+    "last_update_line": 120,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 3,
     "all_updates": [
       {
         "file": "004_create_helpers.sql",
@@ -6552,6 +6558,12 @@
       {
         "file": "009_update_common-helpers_v1-5.sql",
         "line": 15,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "045_update_common-helpers_v1-7.sql",
+        "line": 120,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -6601,14 +6613,14 @@
     "schema": "helpers",
     "object_name": "is_event_read_only",
     "object_type": "function",
-    "last_update_file": "013_update_common-helpers_v1-6.sql",
-    "last_update_line": 56,
+    "last_update_file": "012_functions_journal_helpers.sql",
+    "last_update_line": 59,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
-        "file": "013_update_common-helpers_v1-6.sql",
-        "line": 56,
+        "file": "012_functions_journal_helpers.sql",
+        "line": 59,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -6681,10 +6693,10 @@
     "schema": "helpers",
     "object_name": "normalize_text",
     "object_type": "function",
-    "last_update_file": "009_update_common-helpers_v1-5.sql",
-    "last_update_line": 58,
+    "last_update_file": "045_update_common-helpers_v1-7.sql",
+    "last_update_line": 84,
     "last_update_source": "migration",
-    "total_updates": 3,
+    "total_updates": 6,
     "all_updates": [
       {
         "file": "005_update_common-helpers_v1-1.sql",
@@ -6702,6 +6714,24 @@
         "file": "009_update_common-helpers_v1-5.sql",
         "line": 58,
         "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "045_update_common-helpers_v1-7.sql",
+        "line": 79,
+        "operation": "DROP",
+        "source": "migration"
+      },
+      {
+        "file": "045_update_common-helpers_v1-7.sql",
+        "line": 80,
+        "operation": "DROP",
+        "source": "migration"
+      },
+      {
+        "file": "045_update_common-helpers_v1-7.sql",
+        "line": 84,
+        "operation": "CREATE",
         "source": "migration"
       }
     ]
@@ -6727,14 +6757,20 @@
     "schema": "helpers",
     "object_name": "random_string",
     "object_type": "function",
-    "last_update_file": "004_create_helpers.sql",
-    "last_update_line": 74,
+    "last_update_file": "045_update_common-helpers_v1-7.sql",
+    "last_update_line": 156,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "004_create_helpers.sql",
         "line": 74,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "045_update_common-helpers_v1-7.sql",
+        "line": 156,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -6744,14 +6780,14 @@
     "schema": "helpers",
     "object_name": "should_log_journal",
     "object_type": "function",
-    "last_update_file": "013_update_common-helpers_v1-6.sql",
-    "last_update_line": 36,
+    "last_update_file": "012_functions_journal_helpers.sql",
+    "last_update_line": 39,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
-        "file": "013_update_common-helpers_v1-6.sql",
-        "line": 36,
+        "file": "012_functions_journal_helpers.sql",
+        "line": 39,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -6761,14 +6797,14 @@
     "schema": "helpers",
     "object_name": "should_notify_storage",
     "object_type": "function",
-    "last_update_file": "013_update_common-helpers_v1-6.sql",
-    "last_update_line": 94,
+    "last_update_file": "012_functions_journal_helpers.sql",
+    "last_update_line": 97,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
-        "file": "013_update_common-helpers_v1-6.sql",
-        "line": 94,
+        "file": "012_functions_journal_helpers.sql",
+        "line": 97,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -6778,14 +6814,14 @@
     "schema": "helpers",
     "object_name": "should_store_locally",
     "object_type": "function",
-    "last_update_file": "013_update_common-helpers_v1-6.sql",
-    "last_update_line": 81,
+    "last_update_file": "012_functions_journal_helpers.sql",
+    "last_update_line": 84,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
-        "file": "013_update_common-helpers_v1-6.sql",
-        "line": 81,
+        "file": "012_functions_journal_helpers.sql",
+        "line": 84,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -7111,19 +7147,19 @@
     "object_name": "__temp_users_groups_permissions",
     "object_type": "table",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2203,
+    "last_update_line": 2204,
     "last_update_source": "migration",
     "total_updates": 2,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2202,
+        "line": 2203,
         "operation": "DROP",
         "source": "migration"
       },
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2203,
+        "line": 2204,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8314,13 +8350,13 @@
     "object_name": "trg_cache_provider_before_delete",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 526,
+    "last_update_line": 527,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 526,
+        "line": 527,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8331,13 +8367,13 @@
     "object_name": "trg_cache_provider_status",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 533,
+    "last_update_line": 534,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 533,
+        "line": 534,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8348,13 +8384,13 @@
     "object_name": "trg_cache_user_group_before_delete",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 490,
+    "last_update_line": 491,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 490,
+        "line": 491,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8365,13 +8401,13 @@
     "object_name": "trg_cache_user_group_id_on_user_change",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 583,
+    "last_update_line": 584,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 583,
+        "line": 584,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8382,13 +8418,13 @@
     "object_name": "trg_cache_user_group_member_delete",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 468,
+    "last_update_line": 469,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 468,
+        "line": 469,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8399,13 +8435,13 @@
     "object_name": "trg_cache_user_group_member_insert",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 575,
+    "last_update_line": 576,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 575,
+        "line": 576,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8416,13 +8452,13 @@
     "object_name": "trg_cache_user_group_status",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 483,
+    "last_update_line": 484,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 483,
+        "line": 484,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8450,13 +8486,13 @@
     "object_name": "trg_notify_api_key",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 567,
+    "last_update_line": 568,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 567,
+        "line": 568,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8467,13 +8503,13 @@
     "object_name": "trg_notify_owner",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 518,
+    "last_update_line": 519,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 518,
+        "line": 519,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8484,13 +8520,13 @@
     "object_name": "trg_notify_perm_set",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 546,
+    "last_update_line": 547,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 546,
+        "line": 547,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8501,13 +8537,13 @@
     "object_name": "trg_notify_perm_set_perm",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 460,
+    "last_update_line": 461,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 460,
+        "line": 461,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8518,13 +8554,13 @@
     "object_name": "trg_notify_permission",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 553,
+    "last_update_line": 554,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 553,
+        "line": 554,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8535,13 +8571,13 @@
     "object_name": "trg_notify_permission_assignment",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 453,
+    "last_update_line": 454,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 453,
+        "line": 454,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8552,13 +8588,13 @@
     "object_name": "trg_notify_provider",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 539,
+    "last_update_line": 540,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 539,
+        "line": 540,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8569,13 +8605,13 @@
     "object_name": "trg_notify_tenant",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 560,
+    "last_update_line": 561,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 560,
+        "line": 561,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8586,13 +8622,13 @@
     "object_name": "trg_notify_user_group",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 497,
+    "last_update_line": 498,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 497,
+        "line": 498,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8603,13 +8639,13 @@
     "object_name": "trg_notify_user_group_mapping",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 504,
+    "last_update_line": 505,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 504,
+        "line": 505,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8620,13 +8656,13 @@
     "object_name": "trg_notify_user_group_member",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 475,
+    "last_update_line": 476,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 475,
+        "line": 476,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8637,13 +8673,13 @@
     "object_name": "trg_notify_user_status",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 511,
+    "last_update_line": 512,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 511,
+        "line": 512,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -9164,13 +9200,13 @@
     "object_name": "notify_api_key",
     "object_type": "function",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 428,
+    "last_update_line": 429,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 428,
+        "line": 429,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -9283,13 +9319,13 @@
     "object_name": "notify_tenant",
     "object_type": "function",
     "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 416,
+    "last_update_line": 417,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
-        "line": 416,
+        "line": 417,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -9436,13 +9472,13 @@
     "object_name": "blacklist_user",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2873,
+    "last_update_line": 2874,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2873,
+        "line": 2874,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -9453,13 +9489,13 @@
     "object_name": "blacklist_user_identities",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2909,
+    "last_update_line": 2910,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2909,
+        "line": 2910,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -9504,13 +9540,13 @@
     "object_name": "check_user_blacklist",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2851,
+    "last_update_line": 2852,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2851,
+        "line": 2852,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -9538,13 +9574,13 @@
     "object_name": "clear_user_group_id_cache",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2810,
+    "last_update_line": 2811,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2810,
+        "line": 2811,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -9589,13 +9625,13 @@
     "object_name": "copy_perm_set",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2422,
+    "last_update_line": 2423,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2422,
+        "line": 2423,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -9844,13 +9880,13 @@
     "object_name": "create_user_group_member",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 1733,
+    "last_update_line": 1734,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 1733,
+        "line": 1734,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -9878,13 +9914,13 @@
     "object_name": "create_user_identity",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 1827,
+    "last_update_line": 1828,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 1827,
+        "line": 1828,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -9963,13 +9999,13 @@
     "object_name": "delete_tenant",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 1867,
+    "last_update_line": 1868,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 1867,
+        "line": 1868,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10014,13 +10050,13 @@
     "object_name": "ensure_audit_partitions",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2539,
+    "last_update_line": 2540,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2539,
+        "line": 2540,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10167,13 +10203,13 @@
     "object_name": "get_cached_group_ids",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2721,
+    "last_update_line": 2722,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2721,
+        "line": 2722,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10252,13 +10288,13 @@
     "object_name": "get_user_assigned_permissions",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2497,
+    "last_update_line": 2498,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2497,
+        "line": 2498,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10286,13 +10322,13 @@
     "object_name": "get_user_group_members",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 1790,
+    "last_update_line": 1791,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 1790,
+        "line": 1791,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10303,13 +10339,13 @@
     "object_name": "invalidate_group_members_group_id_cache",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2830,
+    "last_update_line": 2831,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2830,
+        "line": 2831,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10371,13 +10407,13 @@
     "object_name": "invalidate_user_group_id_cache",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2788,
+    "last_update_line": 2789,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2788,
+        "line": 2789,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10490,13 +10526,13 @@
     "object_name": "purge_journal",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2590,
+    "last_update_line": 2591,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2590,
+        "line": 2591,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10507,13 +10543,13 @@
     "object_name": "purge_user_events",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2650,
+    "last_update_line": 2651,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2650,
+        "line": 2651,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10524,13 +10560,13 @@
     "object_name": "recalculate_user_groups",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2015,
+    "last_update_line": 2016,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2015,
+        "line": 2016,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10541,13 +10577,13 @@
     "object_name": "recalculate_user_permissions",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2142,
+    "last_update_line": 2143,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2142,
+        "line": 2143,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10592,13 +10628,13 @@
     "object_name": "restore_tenant",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 1988,
+    "last_update_line": 1989,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 1988,
+        "line": 1989,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10643,13 +10679,13 @@
     "object_name": "soft_delete_tenant",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 1954,
+    "last_update_line": 1955,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 1954,
+        "line": 1955,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10796,13 +10832,13 @@
     "object_name": "update_user_identity_uid_oid",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2338,
+    "last_update_line": 2339,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2338,
+        "line": 2339,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10983,13 +11019,13 @@
     "object_name": "verify_user_identity",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2390,
+    "last_update_line": 2391,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
-        "line": 2390,
+        "line": 2391,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }

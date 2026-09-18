@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-09-18
+
+### Changed
+
+- **Journal/storage config helpers are now native permissions-model code, not vendored `common_helpers`.** The old `013_update_common-helpers_v1-6.sql` becomes `012_functions_journal_helpers.sql`, with its `start/stop_version_update('1.6', … 'common_helpers')` wrapper removed. The four functions (`helpers.should_log_journal`, `helpers.is_event_read_only`, `helpers.should_store_locally`, `helpers.should_notify_storage`) read `const.sys_param` / `const.event_code`, so they were mis-tracked under the stateless `common_helpers` library. They were already inside the `postgresql_permissionmodel` v2 span (010→047), so the standalone version record was redundant double-tracking. As part of this, the migrations were renumbered to close the `011` gap and resolve a `013` collision: `const.*` tables move to `011_tables_const.sql` (still their sole definition), and the journal helpers take `012`. Upstream `../postgresql-common-helpers` drops its back-ported `009_update_common-helpers_v1-6.sql` (and the `test_journal_helpers` suite); the `common_helpers` version line now skips `1.6` (`1.5` → `1.7`) in both repos, keeping them in agreement.
+
 ## 2026-08-30
 
 ### Fixed
