@@ -4,6 +4,49 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-10-26 — v2.1: tenant-scoping and ownership security fixes
+
+From this release on, changes to an already-shipped v2 schema go into a numbered update script with its own `start/stop_version_update` record, not into the original `010`–`047` files. The first is **`048_update_permissions_v2-1.sql`** (`postgresql_permissionmodel` **2.1**). These bugs were found and fixed in the v1 line downstream (`gcp-documenthub-database` 110/v56). v2 had the same bugs, except where noted.
+
+### Fixed (security)
+
+- **Owning one group made a user a tenant-wide owner.** `auth.is_owner(_user_id, _correlation_id, null, _tenant_id)` asks "is this user a tenant-wide owner?". Its filter `(_user_group_id is null or user_group_id = _user_group_id)` matched every owner row, including group owners. Two places act on that answer:
+  - `auth.has_permissions` lets tenant-wide owners through every check, so a group owner passed every permission check in the tenant.
+  - `auth.has_resource_access` (and its siblings in `035`) do the same for resource access.
+
+  A null group now matches only tenant-wide rows (`user_group_id is not distinct from _user_group_id`).
+- **`auth.unassign_permission` deleted assignments in any tenant.** The delete was by id only, so holding `permissions.unassign_permission` in one tenant was enough to delete another tenant's assignments. `unsecure.unassign_permission` now works only on an assignment of `_tenant_id`. An assignment of another tenant, or an unknown id, raises the new **32009**.
+- **`auth.assign_permission` accepted a group from another tenant.** `unsecure.assign_permission` now requires the group to be in `_tenant_id`, otherwise **33011**. All existing callers already pass the group's own tenant.
+- **Group mapping writers ignored the tenant.**
+  - `auth.create_user_group_mapping`:
+    - the group must now be in `_tenant_id` (33011) and active (33012). The old inactive check never fired, because it selected `is_active, tenant_id` into a single variable.
+    - a duplicate raises the new **33023** instead of a raw unique violation.
+  - `auth.delete_user_group_mapping` deletes only a mapping of a group in `_tenant_id`. A foreign or unknown id raises the new **33022**. It used to delete in any tenant, and do nothing silently for an unknown id.
+- **An expired API key still validated.** `auth.validate_api_key` now also requires `expire_at is null or expire_at > now()`. An expired key gets the same 30001 as a wrong key or secret.
+
+### Fixed
+
+- **`auth.get_tenant_groups` swapped two columns:** it returned the group title in `__group_code` and the code in `__group_title`.
+- **`unsecure.create_user_group_as_system` / `create_user_group_member_as_system` returned no rows.** Each joined the new id back to the table in the same statement, which can't see the row the call just inserted. Both now read the row in a second statement. The member helper also looked the group up by title in every tenant, and every tenant has the same default group titles, so it could pick another tenant's group. It now looks only in `_tenant_id`.
+
+### Not affected
+
+- **`auth.can_manage_user_group`:** v1's bypass for non-members doesn't apply. v2 resolves membership through `unsecure.get_cached_group_ids`, which returns `'{}'` rather than null.
+- **Cache clearing on assign/unassign:** v2's `unsecure.assign_permission` / `unassign_permission` already cleared the affected users' permission cache.
+
+### Tests
+
+- New suite **`tests/test_tenant_scoping_security`** (11 tests). It runs as a non-system `full_admin` user, because user 1 short-circuits every check, and uses a second tenant for the cross-tenant cases.
+- **`test_ownership/002` TEST 12 asserted the `is_owner` bug as intended behaviour** ("null group_id matches any ownership"). It is inverted.
+- **`test_api_keys/002` TEST 8 counted any exception as PASS.** It now expects SQLSTATE 30001.
+- **Verified on a fresh `fullService` build:** 829/829 tests pass in 38 suites. On a build through `047` only, every new test fails except TEST 6, the same-tenant control that is meant to pass.
+
+Why the suite missed these bugs:
+- Most suites call as user 1, which skips every permission, tenant and owner check.
+- No test passes a second tenant's ids to a mutating function.
+- Results were barely asserted, e.g. `count(*) >= 1` on `get_tenant_groups`.
+- The two `*_as_system` group helpers had no test callers at all.
+
 ## 2026-09-18
 
 ### Changed
@@ -2234,10 +2277,11 @@ See git history for v1.x changes.
 
 ## Version History
 
-All rows below are work inside `postgresql_permissionmodel` **v2** — recorded as a single row in `public.__version` dated 2026-02-10 (see `010_functions_auth_prereq.sql`). The Version column is informational: the component version is not bumped per change. The table is a quick chronological glance over what shipped when; full detail lives in the date-tagged sections above.
+Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded as a single row in `public.__version` dated 2026-02-10 (see `010_functions_auth_prereq.sql`). From 2.1 on, each update ships as its own numbered update script (`048_update_permissions_v2-1.sql`, …) with its own `public.__version` row. The table is a quick chronological glance over what shipped when; full detail lives in the date-tagged sections above.
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.1 | 2026-10-26 | Security: `is_owner` null-group, tenant-scoped assign/unassign_permission and group mapping writers, API key expiry; `get_tenant_groups` columns; `*_as_system` group helpers (`048_update_permissions_v2-1.sql`) |
 | 2.0.0 | 2026-06-18 | Partial-key grants/denies on resource_access (subset key validation, containment-based matching in `has_resource_access`) |
 | 2.0.0 | 2026-04-17 | Path-based resource access (ltree) with cascading grants and deny-overrides; icons example demo |
 | 2.0.0 | 2026-04-12 | Resource roles (named flag bundles); translation `context` column + `mv_translation` materialized view; `user_data` jsonb columns (`settings`, `preferences`, `custom_data`) |

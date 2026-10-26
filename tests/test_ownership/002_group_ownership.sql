@@ -46,7 +46,7 @@ BEGIN
 END $$;
 
 -- ============================================================================
--- TEST 12: is_owner with NULL user_group_id matches any ownership in tenant
+-- TEST 12: a group owner is NOT a tenant-wide owner (null group_id = tenant-wide only)
 -- ============================================================================
 DO $$
 DECLARE
@@ -54,16 +54,16 @@ DECLARE
     __tenant_id integer := current_setting('test_own.tenant_id')::integer;
     __result boolean;
 BEGIN
-    RAISE NOTICE 'TEST 12: is_owner with NULL group_id matches any ownership in tenant';
+    RAISE NOTICE 'TEST 12: is_owner with NULL group_id does not match a group-only owner';
 
-    -- User is a group owner — is_owner with null group_id checks "any ownership"
-    -- because the WHERE clause uses (_user_group_id is null OR user_group_id = _user_group_id)
+    -- User owns only a group here. A null group asks "tenant-wide owner?", which
+    -- auth.has_permissions treats as "passes every check" — it must be false.
     SELECT auth.is_owner(__test_user_id, 'own-corr-6', null, __tenant_id) INTO __result;
 
-    IF __result = true THEN
-        RAISE NOTICE '  PASS: is_owner with null group_id returns true (user owns a group in this tenant)';
+    IF __result = false THEN
+        RAISE NOTICE '  PASS: is_owner with null group_id returns false for a group-only owner';
     ELSE
-        RAISE EXCEPTION '  FAIL: is_owner returned false, expected true (null group_id matches any ownership)';
+        RAISE EXCEPTION '  FAIL: is_owner returned true — a group owner was treated as tenant-wide owner';
     END IF;
 END $$;
 

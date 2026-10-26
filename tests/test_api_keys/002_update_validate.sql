@@ -122,12 +122,8 @@ BEGIN
         INTO __ret_user_id;
 
         RAISE EXCEPTION '  FAIL: validate_api_key did not raise exception for wrong secret';
-    EXCEPTION WHEN OTHERS THEN
-        IF SQLERRM LIKE '%52301%' OR SQLSTATE = '52301' THEN
-            RAISE NOTICE '  PASS: validate_api_key raised expected error for wrong secret (sqlstate=%, msg=%)', SQLSTATE, SQLERRM;
-        ELSE
-            RAISE NOTICE '  PASS: validate_api_key raised error for wrong secret (sqlstate=%, msg=%)', SQLSTATE, SQLERRM;
-        END IF;
+    EXCEPTION WHEN SQLSTATE '30001' THEN
+        RAISE NOTICE '  PASS: validate_api_key raised expected error for wrong secret (sqlstate=%)', SQLSTATE;
     END;
 END $$;
 

@@ -52,6 +52,7 @@ All errors are seeded in `const.event_code` with matching templates in `const.ev
 | 32006 | `err_perm_set_wrong_tenant` | `error.raise_32006` | Permission set belongs to another tenant |
 | 32007 | `err_parent_permission_not_found` | `error.raise_32007` | Parent permission missing |
 | 32008 | `err_some_perms_not_assignable` | `error.raise_32008` | Some permissions in the batch are not assignable |
+| 32009 | `err_permission_assignment_not_found` | `error.raise_32009` | Permission assignment does not exist in the tenant (since v2.1) |
 
 ## User / Identity / Group (33001 — 33999)
 
@@ -78,6 +79,8 @@ All errors are seeded in `const.event_code` with matching templates in `const.ev
 | 33019 | `err_identity_blacklisted` | `error.raise_33019` | Identity is blacklisted |
 | 33020 | `err_user_not_resolvable` | `error.raise_33020` | User identifier could not be resolved |
 | 33021 | `err_group_not_resolvable` | `error.raise_33021` | Group identifier could not be resolved |
+| 33022 | `err_group_mapping_not_found` | `error.raise_33022` | Group mapping does not exist in the tenant (since v2.1) |
+| 33023 | `err_group_mapping_already_exists` | `error.raise_33023` | Group already has this mapping (since v2.1) |
 
 ## Tenant (34001 — 34999)
 

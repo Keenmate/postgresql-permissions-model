@@ -1,0 +1,6 @@
+{
+  "name": "Tenant scoping & ownership security",
+  "description": "Regression tests for v2.1 fixes: group owner is not a tenant-wide owner, assign/unassign_permission and group mapping writers stay inside _tenant_id, API key expiry, get_tenant_groups columns, *_as_system group helpers. Runs as a non-system admin (user 1 bypasses every check).",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

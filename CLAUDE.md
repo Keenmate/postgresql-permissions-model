@@ -185,8 +185,15 @@ Files follow pattern: `XXX_description.sql` where XXX is a 3-digit number
 - `002_create_version_management.sql` - Database versioning system (`__version` table)
 - `003_create_helpers.sql` - Helper functions
 - `004_create_permissions.sql` - Main permissions system (largest file ~217KB)
-- `007-024_update_permissions_v1-X.sql` - Incremental updates
+- `010-047` - The v2 baseline (`postgresql_permissionmodel` version `2`, started in `010`, stopped in `047`)
+- `048_update_permissions_v2-1.sql`, `049_update_permissions_v2-2.sql`, ... - Incremental v2 updates
 - `99_fix_permissions.sql` - Post-update permission fixes
+
+**Changes to shipped code go into a new update script — do NOT edit the baseline files (`010`-`047`) or an already-released update script.** Each update script:
+- is the next free number below `099`, named `NNN_update_permissions_v2-N.sql`
+- starts with `public.start_version_update('2.N', '<title>', _component := 'postgresql_permissionmodel', _description := ...)` and ends with `public.stop_version_update('2.N', _component := 'postgresql_permissionmodel')`
+- contains full `create or replace` definitions of every changed function, plus any new error codes (`const.event_code` + `const.event_message` with `on conflict do nothing`, and the `error.raise_*` function)
+- gets a CHANGELOG entry and a Version History row, an `error-codes.md` update for new codes, and a regenerated `db-objects.md`/`db-objects.json`
 
 ### Version Management
 Simple version tracking using the `public.__version` table with component support:
@@ -456,6 +463,9 @@ All tests are organized as suite directories with `test.json` manifests:
 | `test_group_members_and_delete_tenant/` | Group member queries, tenant deletion regression tests |
 | `test_auth_group_member_tenant/` | Auth-layer group member and tenant functions with permission checks |
 | `test_search_functions/` | All search functions: pagination, filtering, empty results |
+| `test_tenant_scoping_security/` | v2.1 regressions: group owner ≠ tenant owner, cross-tenant assign/unassign/mapping rejected, API key expiry, `*_as_system` helpers |
+
+**Test-writing rule:** don't call security-relevant functions as user 1. `auth.has_permissions` and resource access return `true` for user 1 straight away, so tenant, permission and owner logic never runs. Use a dedicated admin user with an explicit perm set, include a second tenant for any function that takes an id, and assert the returned column values, not just row counts.
 
 ### Writing New Tests
 
