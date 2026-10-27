@@ -419,7 +419,7 @@
 | public | \_\_temp\_users\_groups\_permissions | table | 019\_functions\_unsecure.sql | 2204 | 2 | 019\_functions\_unsecure.sql:2204<br>019\_functions\_unsecure.sql:2203 | - |
 | public | \_\_version | table | 002\_create\_version\_management.sql | 12 | 1 | 002\_create\_version\_management.sql:12 | - |
 | public | auth | schema | 001\_create\_basic\_structure.sql | 18 | 1 | 001\_create\_basic\_structure.sql:18 | - |
-| public | check\_version | function | 018\_functions\_public.sql | 502 | 2 | 018\_functions\_public.sql:502<br>002\_create\_version\_management.sql:68 | - |
+| public | check\_version | function | 049\_update\_permissions\_v2-2.sql | 23 | 3 | 049\_update\_permissions\_v2-2.sql:23<br>018\_functions\_public.sql:502<br>002\_create\_version\_management.sql:68 | - |
 | public | const | schema | 001\_create\_basic\_structure.sql | 13 | 1 | 001\_create\_basic\_structure.sql:13 | - |
 | public | copy\_translations | function | 032\_functions\_translation.sql | 171 | 1 | 032\_functions\_translation.sql:171 | - |
 | public | create\_event\_category | function | 018\_functions\_public.sql | 657 | 1 | 018\_functions\_public.sql:657 | - |

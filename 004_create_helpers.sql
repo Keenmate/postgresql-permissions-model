@@ -8,7 +8,7 @@
 set search_path = public, const, ext, stage, helpers, internal, unsecure, auth, triggers;
 
 select *
-from start_version_update('1', 'Initial version', _component := 'common_helpers');
+from public.start_version_update('1', 'Initial version', _component := 'common_helpers');
 
 /***
  *    ███████╗██╗  ██╗████████╗███████╗███╗   ██╗███████╗██╗ ██████╗ ███╗   ██╗███████╗

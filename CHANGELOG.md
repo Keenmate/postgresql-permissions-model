@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-10-27 — v2.2: ambiguous `check_version` overload
+
+**`049_update_permissions_v2-2.sql`** (`postgresql_permissionmodel` **2.2**).
+
+### Fixed
+
+- **`public.check_version` couldn't be called with one or two arguments.** `002` creates `check_version(text, text)`, and `018` adds `check_version(text, text, boolean)` alongside it instead of replacing it. With both present, `check_version('2', 'postgresql_permissionmodel')` failed with `function public.check_version(unknown, unknown) is not unique`. The two-argument overload is dropped. The remaining function behaves the same, plus an optional `_throw_err`.
+- **`versions_management` 1.1 and 1.2 weren't recorded.** Both (`check_version` `_throw_err`, `get_version`) are part of the v2 baseline in `018`, but nothing wrote their `__version` rows. 049 records them (`on conflict do nothing`). The loose `update_versions-management_v1-1.sql` / `v1-2.sql` copies are removed. They weren't run by `updateDatabase`, and the v1-2 copy ordered by a nonexistent `created` column.
+
+### Changed
+
+- **`004_create_helpers.sql`** calls `public.start_version_update` schema-qualified, like every other call in the repo. Behavior is unchanged.
+
 ## 2026-10-26 — v2.1: tenant-scoping and ownership security fixes
 
 From this release on, changes to an already-shipped v2 schema go into a numbered update script with its own `start/stop_version_update` record, not into the original `010`–`047` files. The first is **`048_update_permissions_v2-1.sql`** (`postgresql_permissionmodel` **2.1**). These bugs were found and fixed in the v1 line downstream (`gcp-documenthub-database` 110/v56). v2 had the same bugs, except where noted.
@@ -2281,6 +2294,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.2 | 2026-10-27 | Drop ambiguous `check_version(text, text)` overload; record `versions_management` 1.1/1.2 (`049_update_permissions_v2-2.sql`) |
 | 2.1 | 2026-10-26 | Security: `is_owner` null-group, tenant-scoped assign/unassign_permission and group mapping writers, API key expiry; `get_tenant_groups` columns; `*_as_system` group helpers (`048_update_permissions_v2-1.sql`) |
 | 2.0.0 | 2026-06-18 | Partial-key grants/denies on resource_access (subset key validation, containment-based matching in `has_resource_access`) |
 | 2.0.0 | 2026-04-17 | Path-based resource access (ltree) with cascading grants and deny-overrides; icons example demo |

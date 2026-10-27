@@ -7284,10 +7284,10 @@
     "schema": "public",
     "object_name": "check_version",
     "object_type": "function",
-    "last_update_file": "018_functions_public.sql",
-    "last_update_line": 502,
+    "last_update_file": "049_update_permissions_v2-2.sql",
+    "last_update_line": 23,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 3,
     "all_updates": [
       {
         "file": "002_create_version_management.sql",
@@ -7299,6 +7299,12 @@
         "file": "018_functions_public.sql",
         "line": 502,
         "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "049_update_permissions_v2-2.sql",
+        "line": 23,
+        "operation": "DROP",
         "source": "migration"
       }
     ]
