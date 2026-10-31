@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-10-31 — v2.3: provider user data stored on the identity
+
+**`050_update_permissions_v2-3.sql`** (`postgresql_permissionmodel` **2.3**).
+
+### Fixed
+
+- **`auth.ensure_user_from_provider` dropped `_user_data`.** It accepted the parameter and never used it, so the provider data sent on login was lost and `user_identity.user_data` stayed empty. Now:
+  - on first login the new identity is created with it
+  - on later logins a non-null `_user_data` replaces the stored snapshot, and a change is journaled as `10031 identity_updated` with the top-level keys; `null` keeps what is stored
+
+  Read it back with `auth.get_user_identity` / `auth.get_user_identity_by_email` (`__user_data`). New suite `tests/test_identity_user_data/`.
+
 ## 2026-10-27 — v2.2: ambiguous `check_version` overload
 
 **`049_update_permissions_v2-2.sql`** (`postgresql_permissionmodel` **2.2**).
@@ -2294,6 +2306,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.3 | 2026-10-31 | `ensure_user_from_provider` stores `_user_data` on the identity (`050_update_permissions_v2-3.sql`) |
 | 2.2 | 2026-10-27 | Drop ambiguous `check_version(text, text)` overload; record `versions_management` 1.1/1.2 (`049_update_permissions_v2-2.sql`) |
 | 2.1 | 2026-10-26 | Security: `is_owner` null-group, tenant-scoped assign/unassign_permission and group mapping writers, API key expiry; `get_tenant_groups` columns; `*_as_system` group helpers (`048_update_permissions_v2-1.sql`) |
 | 2.0.0 | 2026-06-18 | Partial-key grants/denies on resource_access (subset key validation, containment-based matching in `has_resource_access`) |

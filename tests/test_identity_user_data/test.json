@@ -1,0 +1,6 @@
+{
+  "name": "Identity user data",
+  "description": "Regression tests for v2.3: auth.ensure_user_from_provider stores _user_data on the identity on first login, refreshes it on later logins, keeps it on a null, and auth.get_user_identity returns it. Reads run as a non-system admin (user 1 bypasses every check).",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

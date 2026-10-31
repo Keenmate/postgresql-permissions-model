@@ -463,6 +463,7 @@ All tests are organized as suite directories with `test.json` manifests:
 | `test_group_members_and_delete_tenant/` | Group member queries, tenant deletion regression tests |
 | `test_auth_group_member_tenant/` | Auth-layer group member and tenant functions with permission checks |
 | `test_search_functions/` | All search functions: pagination, filtering, empty results |
+| `test_identity_user_data/` | v2.3: provider `_user_data` stored on the identity on first login, refreshed on later logins, kept on `null`, returned by `get_user_identity` |
 | `test_tenant_scoping_security/` | v2.1 regressions: group owner ≠ tenant owner, cross-tenant assign/unassign/mapping rejected, API key expiry, `*_as_system` helpers |
 
 **Test-writing rule:** don't call security-relevant functions as user 1. `auth.has_permissions` and resource access return `true` for user 1 straight away, so tenant, permission and owner logic never runs. Use a dedicated admin user with an explicit perm set, include a second tenant for any function that takes an id, and assert the returned column values, not just row counts.

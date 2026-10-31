@@ -1222,14 +1222,20 @@
     "schema": "auth",
     "object_name": "ensure_user_from_provider",
     "object_type": "function",
-    "last_update_file": "020_functions_auth_user.sql",
-    "last_update_line": 767,
+    "last_update_file": "050_update_permissions_v2-3.sql",
+    "last_update_line": 23,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "020_functions_auth_user.sql",
         "line": 767,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "050_update_permissions_v2-3.sql",
+        "line": 23,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }

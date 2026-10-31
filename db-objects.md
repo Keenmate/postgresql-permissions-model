@@ -73,7 +73,7 @@
 | auth | ensure\_resource\_roles | function | 044\_functions\_resource\_roles.sql | 581 | 1 | 044\_functions\_resource\_roles.sql:581 | - |
 | auth | ensure\_resource\_type\_flags | function | 035\_functions\_resource\_access.sql | 1470 | 1 | 035\_functions\_resource\_access.sql:1470 | - |
 | auth | ensure\_resource\_types | function | 035\_functions\_resource\_access.sql | 1741 | 1 | 035\_functions\_resource\_access.sql:1741 | - |
-| auth | ensure\_user\_from\_provider | function | 020\_functions\_auth\_user.sql | 767 | 1 | 020\_functions\_auth\_user.sql:767 | - |
+| auth | ensure\_user\_from\_provider | function | 050\_update\_permissions\_v2-3.sql | 23 | 2 | 050\_update\_permissions\_v2-3.sql:23<br>020\_functions\_auth\_user.sql:767 | - |
 | auth | ensure\_user\_group\_mapping | function | 021\_functions\_auth\_group.sql | 429 | 1 | 021\_functions\_auth\_group.sql:429 | - |
 | auth | ensure\_user\_group\_mappings | function | 021\_functions\_auth\_group.sql | 1264 | 1 | 021\_functions\_auth\_group.sql:1264 | - |
 | auth | ensure\_user\_groups | function | 021\_functions\_auth\_group.sql | 1131 | 1 | 021\_functions\_auth\_group.sql:1131 | - |
