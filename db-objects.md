@@ -90,11 +90,11 @@
 | auth | get\_access\_flags | function | 035\_functions\_resource\_access.sql | 1954 | 1 | 035\_functions\_resource\_access.sql:1954 | - |
 | auth | get\_all\_permissions | function | 022\_functions\_auth\_permission.sql | 291 | 1 | 022\_functions\_auth\_permission.sql:291 | - |
 | auth | get\_all\_tenants | function | 023\_functions\_auth\_tenant.sql | 421 | 1 | 023\_functions\_auth\_tenant.sql:421 | - |
-| auth | get\_api\_key\_permissions | function | 026\_functions\_auth\_apikey.sql | 164 | 1 | 026\_functions\_auth\_apikey.sql:164 | - |
+| auth | get\_api\_key\_permissions | function | 057\_update\_permissions\_v2-10.sql | 85 | 2 | 057\_update\_permissions\_v2-10.sql:85<br>026\_functions\_auth\_apikey.sql:164 | - |
 | auth | get\_assigned\_group\_permissions | function | 055\_update\_permissions\_v2-8.sql | 615 | 2 | 055\_update\_permissions\_v2-8.sql:615<br>022\_functions\_auth\_permission.sql:166 | - |
 | auth | get\_effective\_group\_permissions | function | 022\_functions\_auth\_permission.sql | 154 | 1 | 022\_functions\_auth\_permission.sql:154 | - |
 | auth | get\_invitation\_actions | function | 055\_update\_permissions\_v2-8.sql | 1145 | 2 | 055\_update\_permissions\_v2-8.sql:1145<br>042\_functions\_invitation.sql:1141 | - |
-| auth | get\_invitations | function | 042\_functions\_invitation.sql | 1080 | 1 | 042\_functions\_invitation.sql:1080 | - |
+| auth | get\_invitations | function | 057\_update\_permissions\_v2-10.sql | 27 | 2 | 057\_update\_permissions\_v2-10.sql:27<br>042\_functions\_invitation.sql:1080 | - |
 | auth | get\_mfa\_policies | function | 055\_update\_permissions\_v2-8.sql | 1358 | 2 | 055\_update\_permissions\_v2-8.sql:1358<br>040\_functions\_mfa\_policy.sql:198 | - |
 | auth | get\_mfa\_status | function | 038\_functions\_mfa.sql | 219 | 1 | 038\_functions\_mfa.sql:219 | - |
 | auth | get\_outbound\_api\_key | function | 026\_functions\_auth\_apikey.sql | 549 | 1 | 026\_functions\_auth\_apikey.sql:549 | - |

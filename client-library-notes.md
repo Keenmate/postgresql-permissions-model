@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.9', 'postgresql_permissionmodel')`
-at startup (currently 2.9) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.10', 'postgresql_permissionmodel')`
+at startup (currently 2.10) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,20 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.10 — `get_invitations` and `get_api_key_permissions` scoping (`057`)
+
+**Status in keen-auth-permissions: not adopted.** No signature changes. Behaviour changes:
+
+- **`get_invitations` with `_tenant_id := 1` and a `_target_tenant_id`** now needs
+  `invitations.get_all_invitations` in tenant 1. Previously it needed the permission in the target
+  tenant.
+- **`get_api_key_permissions` requires `api_keys.search` in `_tenant_id`.** Previously it
+  effectively required `users.get_all_permissions` in tenant 1. It raises 30007 for a key of another
+  tenant and returns only the key's assignments in `_tenant_id`. The `__user_group_member_id` /
+  `__user_group_title` columns are always null, since API keys have no group memberships.
 
 ---
 

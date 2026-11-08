@@ -78,7 +78,7 @@ user everywhere. Today an admin in any tenant can lock any user, including tenan
   Self-service actions (own password, own MFA) need no permission. Admin actions on other users
   follow a.
 - Refs: 02/2, 02/9
-- **Answer:** **a** ("users are global, so it makes no sense any other way"). Done in v2.9 (`056`).
+- **Answer:** **a** ("users are global, so it makes no sense to not do it this way"). Done in v2.9 (`056`).
   Self-service unchanged: own password, identity link, profile data and preferences.
 
 ### D-05 Owners: keep the bypass in `has_permissions`, or replace it?

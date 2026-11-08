@@ -1697,14 +1697,20 @@
     "schema": "auth",
     "object_name": "get_api_key_permissions",
     "object_type": "function",
-    "last_update_file": "026_functions_auth_apikey.sql",
-    "last_update_line": 164,
+    "last_update_file": "057_update_permissions_v2-10.sql",
+    "last_update_line": 85,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "026_functions_auth_apikey.sql",
         "line": 164,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "057_update_permissions_v2-10.sql",
+        "line": 85,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -1777,14 +1783,20 @@
     "schema": "auth",
     "object_name": "get_invitations",
     "object_type": "function",
-    "last_update_file": "042_functions_invitation.sql",
-    "last_update_line": 1080,
+    "last_update_file": "057_update_permissions_v2-10.sql",
+    "last_update_line": 27,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "042_functions_invitation.sql",
         "line": 1080,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "057_update_permissions_v2-10.sql",
+        "line": 27,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
