@@ -194,6 +194,7 @@ Files follow pattern: `XXX_description.sql` where XXX is a 3-digit number
 - starts with `public.start_version_update('2.N', '<title>', _component := 'postgresql_permissionmodel', _description := ...)` and ends with `public.stop_version_update('2.N', _component := 'postgresql_permissionmodel')`
 - contains full `create or replace` definitions of every changed function, plus any new error codes (`const.event_code` + `const.event_message` with `on conflict do nothing`, and the `error.raise_*` function)
 - gets a CHANGELOG entry and a Version History row, an `error-codes.md` update for new codes, and a regenerated `db-objects.md`/`db-objects.json`
+- gets a section in `client-library-notes.md` whenever it changes what a client library sees: signatures, return columns, removed functions, raise-vs-outcome behaviour, required permissions or service-user grants. Those notes are what `keen-auth-permissions` (Elixir) and the planned C# library are updated from.
 
 ### Version Management
 Simple version tracking using the `public.__version` table with component support:
