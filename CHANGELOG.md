@@ -4,6 +4,55 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-08 — v2.6: authentication outcomes instead of exceptions
+
+**`053_update_permissions_v2-6.sql`** (`postgresql_permissionmodel` **2.6**). Design: `audit/design-d01-auth-outcomes.md`. **Breaking:** functions are changed in place and some are removed; `keen-auth-permissions` needs a matching update.
+
+### Fixed (security)
+
+- **Auto-lockout, MFA brute-force protection and failure auditing never worked.** `record_login_failure`, `verify_user_by_email`, `verify_mfa_challenge`, `validate_api_key` and the failure branches of `get_user_by_email_for_authentication` / `ensure_user_from_provider` wrote the failure event, the auto-lock and the token's `failed` state, then raised in the same statement, so all of it was rolled back:
+  - the failure counter never grew;
+  - a failed MFA token stayed `valid` and could be retried;
+  - failed logins and failed API-key validations never reached `auth.user_event`.
+
+  Expected outcomes are now **returned** as `__event_id` (from `const.event_code`), `__outcome_code` (its code) and `__user_event_id` (the row written), and commit with the caller's transaction. Exceptions remain for faults only.
+- **`get_user_by_email_for_authentication` logged `user_logged_in` before the password was checked.** It is now read only, and returns the password hash only when the user may log in right now.
+- **Provider login ignored `is_locked`.** `ensure_user_from_provider` now refuses admin-locked and temporarily locked users.
+- **Anyone could lock any account permanently** by typing five wrong passwords. Lockout is now temporary and escalating (see Changed).
+- **`validate_api_key` accepted disabled or locked technical users,** and logged an unseeded event type. The replacement rejects them, and logs the seeded `apikey_validated` (14010) and `apikey_validation_failed` (14011) events.
+
+### Changed
+
+- **Two-step email login:**
+  1. `auth.get_user_by_email_for_authentication` (read only; state columns plus the hash).
+  2. The app checks the password.
+  3. The new **`auth.create_user_login_attempt`** (`_is_credential_valid`) records the result and decides the outcome. It is called for every attempt, including an unknown email.
+
+  A wrong password reports **33001**, the same as an unknown user.
+- **Renamed, now returning outcomes:**
+  - `auth.verify_mfa_challenge` becomes **`auth.create_mfa_challenge_attempt`** (`_code_is_valid` becomes `_is_code_valid`). Wrong codes count toward the same lockout, and the token stays `failed`.
+  - `auth.validate_api_key` becomes **`auth.create_api_key_validation_attempt`**. It returns the technical user and the outcome, not the permissions; ask `auth.has_permission`. Expired keys return the new **30006**.
+- **`auth.ensure_user_from_provider`** returns `__event_id`, `__outcome_code` and `__user_event_id`. Failures (33003/33004/33005/33008, and 33024 for a taken username) are returned with null user columns.
+- **Lockout:**
+  - It is a temporary `locked_until` in the new table **`auth.user_login_state`**, kept separate from the permanent admin lock `is_locked`.
+  - The duration escalates per consecutive lockout. New sys_param `login_lockout.lockout_durations_minutes` = `15,60,240,960,1440`; the last value repeats.
+  - The escalation decays after `login_lockout.lockout_reset_hours` (24) without a failure, and resets on a successful login.
+  - Attempts made during a lock are logged but not counted.
+- **`const.sys_param.is_system`:**
+  - Core parameters (`journal`, `user_event`, `partition`, `login_lockout`) can be updated but not deleted (**31015**).
+  - `login_lockout` values are validated (**31016**) by `trg_const_sys_param_validate`.
+- **New permission** `authentication.create_user_login_attempt`. The Svc authenticator perm set gets it, plus `mfa.create_mfa_challenge`, `mfa.verify_mfa_challenge` and `tokens.create_token` (the MFA step runs before the user is logged in).
+
+### Removed
+
+- `auth.record_login_failure`, `auth.verify_user_by_email` (hash comparison in the database can't work with salted hashes), `auth.verify_mfa_challenge`, `auth.validate_api_key`, `unsecure.check_and_auto_lock_user`.
+
+### Tests
+
+- New suite `tests/test_audit_authentication/`.
+- Rewritten for the new contract: `test_auto_lockout`, `test_registration_login_events` 003/004/006, `test_mfa` 005/006/008, `test_api_keys` 002, `test_tenant_scoping_security` 004.
+- The old `test_api_keys` "old secret must fail" check caught its own failure exception and could never fail; it now asserts the outcome.
+
 ## 2026-11-08 — v2.5: tenant lifecycle scoping
 
 **`052_update_permissions_v2-5.sql`** (`postgresql_permissionmodel` **2.5**). Found by the permission-model audit (`audit/`, domain 05).
@@ -2349,6 +2398,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.6 | 2026-11-08 | Authentication outcomes instead of exceptions: lockout/MFA/API-key failures persist; temporary escalating lockout (`auth.user_login_state`); `create_user_login_attempt`, `create_mfa_challenge_attempt`, `create_api_key_validation_attempt`; system sys_params (`053_update_permissions_v2-6.sql`) |
 | 2.5 | 2026-11-08 | Security: tenant delete/restore/purge/create authorize against tenant 1 (own-tenant soft delete allowed); `tenant_admin` without lifecycle and cross-tenant permissions (`052_update_permissions_v2-5.sql`) |
 | 2.4 | 2026-11-08 | Security: no identity linking by username in `register_user` / `ensure_user_from_provider`; new `auth.create_user_identity_link` (`051_update_permissions_v2-4.sql`) |
 | 2.3 | 2026-10-31 | `ensure_user_from_provider` stores `_user_data` on the identity (`050_update_permissions_v2-3.sql`) |

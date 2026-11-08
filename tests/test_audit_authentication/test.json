@@ -1,0 +1,6 @@
+{
+  "name": "Audit 02: authentication outcomes and lockout",
+  "description": "v2.6 (design D-01): login, MFA and API-key functions return outcomes instead of raising, so failure events, counters, locks and token states persist. Temporary escalating lockout with decay, admin lock, provider login of locked users, system sys_params. Callers are the svc_authenticator service user and a full_admin user, never user 1.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

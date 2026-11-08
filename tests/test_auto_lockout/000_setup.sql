@@ -26,6 +26,8 @@ BEGIN
     -- Store IDs for subsequent test files
     PERFORM set_config('test.autolock_user_id', __test_user_id::text, false);
     PERFORM set_config('test.system_user_id', __system_user_id::text, false);
+    -- login functions are called by the authenticator service, not user 1
+    PERFORM set_config('test.auth_svc_id', (SELECT user_id FROM auth.user_info WHERE username = 'svc_authenticator')::text, false);
 
     RAISE NOTICE 'Created test user: % (id: %)', 'autolock@test.com', __test_user_id;
 
@@ -34,6 +36,8 @@ BEGIN
     IF NOT FOUND THEN RAISE EXCEPTION 'FAIL: Missing permission: authentication'; END IF;
     PERFORM 1 FROM auth.permission WHERE full_code::text = 'authentication.get_data';
     IF NOT FOUND THEN RAISE EXCEPTION 'FAIL: Missing permission: authentication.get_data'; END IF;
+    PERFORM 1 FROM auth.permission WHERE full_code::text = 'authentication.create_user_login_attempt';
+    IF NOT FOUND THEN RAISE EXCEPTION 'FAIL: Missing permission: authentication.create_user_login_attempt'; END IF;
     RAISE NOTICE 'PASS: All required permissions exist';
 
     -- Verify required event codes exist

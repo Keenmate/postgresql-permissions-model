@@ -21,7 +21,7 @@ BEGIN
     RAISE NOTICE 'Challenge created: %', __challenge.__token_uid;
 
     -- Verify with recovery code (code_is_valid = false, recovery_code provided)
-    PERFORM auth.verify_mfa_challenge('test', 1, 'test-corr-mfa-06v', __test_user_id,
+    PERFORM auth.create_mfa_challenge_attempt('test', 1, 'test-corr-mfa-06v', __test_user_id,
         __challenge.__token_uid, false, __recovery_code);
 
     -- Check token is used

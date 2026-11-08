@@ -65,7 +65,7 @@ BEGIN
 END $$;
 
 -- ============================================================================
--- TEST 7: validate_api_key succeeds with correct key+secret
+-- TEST 7: create_api_key_validation_attempt succeeds with correct key+secret
 -- ============================================================================
 DO $$
 DECLARE
@@ -75,56 +75,57 @@ DECLARE
     __ret_user_id bigint;
     __ret_username text;
     __ret_display text;
-    __ret_perms text[];
+    __ret_event_id int;
 BEGIN
-    RAISE NOTICE 'TEST 7: validate_api_key succeeds with correct key+secret';
+    RAISE NOTICE 'TEST 7: create_api_key_validation_attempt succeeds with correct key+secret';
 
     SELECT val::bigint INTO __admin_id FROM _ak_test_data WHERE key = 'admin_id';
     SELECT val INTO __api_key FROM _ak_test_data WHERE key = 'key1_key';
     SELECT val INTO __api_secret FROM _ak_test_data WHERE key = 'key1_secret';
 
-    SELECT r.__user_id, r.__username, r.__user_display_name, r.__permission_full_codes
-    FROM auth.validate_api_key(
+    SELECT r.__user_id, r.__username, r.__user_display_name, r.__event_id
+    FROM auth.create_api_key_validation_attempt(
         'ak_test', __admin_id, 'ak-test-val',
         __api_key, __api_secret,
         _tenant_id := 1
     ) r
-    INTO __ret_user_id, __ret_username, __ret_display, __ret_perms;
+    INTO __ret_user_id, __ret_username, __ret_display, __ret_event_id;
 
-    IF __ret_user_id IS NOT NULL AND __ret_username IS NOT NULL THEN
-        RAISE NOTICE '  PASS: validate_api_key returned user (id=%, username=%)', __ret_user_id, __ret_username;
+    IF __ret_event_id = 14010 AND __ret_user_id IS NOT NULL AND __ret_username IS NOT NULL THEN
+        RAISE NOTICE '  PASS: validation returned 14010 and the user (id=%, username=%)', __ret_user_id, __ret_username;
     ELSE
-        RAISE EXCEPTION '  FAIL: validate_api_key returned NULL user_id or username';
+        RAISE EXCEPTION '  FAIL: validation returned outcome %, user %', __ret_event_id, __ret_user_id;
     END IF;
 END $$;
 
 -- ============================================================================
--- TEST 8: validate_api_key fails with wrong secret (raises 52301)
+-- TEST 8: wrong secret returns outcome 30001 and persists apikey_validation_failed
 -- ============================================================================
 DO $$
 DECLARE
     __admin_id bigint;
     __api_key text;
-    __ret_user_id bigint;
+    __r record;
 BEGIN
-    RAISE NOTICE 'TEST 8: validate_api_key fails with wrong secret';
+    RAISE NOTICE 'TEST 8: wrong secret is rejected';
 
     SELECT val::bigint INTO __admin_id FROM _ak_test_data WHERE key = 'admin_id';
     SELECT val INTO __api_key FROM _ak_test_data WHERE key = 'key1_key';
 
-    BEGIN
-        SELECT r.__user_id
-        FROM auth.validate_api_key(
-            'ak_test', __admin_id, 'ak-test-val-bad',
-            __api_key, 'wrong-secret-value',
-            _tenant_id := 1
-        ) r
-        INTO __ret_user_id;
+    SELECT * INTO __r
+    FROM auth.create_api_key_validation_attempt(
+        'ak_test', __admin_id, 'ak-test-val-bad',
+        __api_key, 'wrong-secret-value',
+        _tenant_id := 1
+    );
 
-        RAISE EXCEPTION '  FAIL: validate_api_key did not raise exception for wrong secret';
-    EXCEPTION WHEN SQLSTATE '30001' THEN
-        RAISE NOTICE '  PASS: validate_api_key raised expected error for wrong secret (sqlstate=%)', SQLSTATE;
-    END;
+    IF __r.__event_id = 30001 AND __r.__user_id IS NULL
+        AND EXISTS(SELECT FROM auth.user_event WHERE user_event_id = __r.__user_event_id
+                   AND event_type_code = 'apikey_validation_failed') THEN
+        RAISE NOTICE '  PASS: wrong secret returned 30001, failure persisted';
+    ELSE
+        RAISE EXCEPTION '  FAIL: wrong secret: %', row_to_json(__r);
+    END IF;
 END $$;
 
 -- ============================================================================
@@ -138,6 +139,7 @@ DECLARE
     __old_secret text;
     __new_secret text;
     __ret_user_id bigint;
+    __ret_event_id int;
 BEGIN
     RAISE NOTICE 'TEST 9: update_api_key_secret rotates secret successfully';
 
@@ -161,23 +163,24 @@ BEGIN
 
     -- Validate with new secret should work
     SELECT r.__user_id
-    FROM auth.validate_api_key('ak_test', __admin_id, 'ak-test-val-new', __api_key, __new_secret, _tenant_id := 1) r
+    FROM auth.create_api_key_validation_attempt('ak_test', __admin_id, 'ak-test-val-new', __api_key, __new_secret, _tenant_id := 1) r
     INTO __ret_user_id;
 
     IF __ret_user_id IS NULL THEN
-        RAISE EXCEPTION '  FAIL: validate_api_key failed with new secret';
+        RAISE EXCEPTION '  FAIL: validation failed with new secret';
     END IF;
 
-    -- Validate with old secret should fail
-    BEGIN
-        SELECT r.__user_id
-        FROM auth.validate_api_key('ak_test', __admin_id, 'ak-test-val-old', __api_key, __old_secret, _tenant_id := 1) r
-        INTO __ret_user_id;
+    -- Validate with old secret must fail (the pre-v2.6 version of this check
+    -- caught its own FAIL exception and could never fail)
+    SELECT r.__user_id, r.__event_id
+    FROM auth.create_api_key_validation_attempt('ak_test', __admin_id, 'ak-test-val-old', __api_key, __old_secret, _tenant_id := 1) r
+    INTO __ret_user_id, __ret_event_id;
 
-        RAISE EXCEPTION '  FAIL: validate_api_key should have failed with old secret';
-    EXCEPTION WHEN OTHERS THEN
-        RAISE NOTICE '  PASS: secret rotated, new works, old fails (new=%, sqlstate=%)', substring(__new_secret, 1, 8), SQLSTATE;
-    END;
+    IF __ret_event_id = 30001 AND __ret_user_id IS NULL THEN
+        RAISE NOTICE '  PASS: secret rotated, new works, old fails (new=%)', substring(__new_secret, 1, 8);
+    ELSE
+        RAISE EXCEPTION '  FAIL: old secret: outcome %, user %', __ret_event_id, __ret_user_id;
+    END IF;
 
     -- Update stored secret for subsequent tests
     UPDATE _ak_test_data SET val = __new_secret WHERE key = 'key1_secret';

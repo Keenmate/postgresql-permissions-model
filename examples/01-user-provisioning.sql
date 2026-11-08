@@ -59,39 +59,42 @@ select * from auth.get_provider_users('examples', 1, 'ex01', 'aad');    -- Coope
 select * from auth.get_provider_users('examples', 1, 'ex01', 'email');  -- Donna (local)
 
 
--- ── Aspect: authentication lookup by email ───────────────────────────────────
--- Returns the identity + stored password hash/salt so the app can verify a
--- password itself. (verify_user_by_email below does the check server-side.)
+-- ── Aspect: authentication lookup by email (login step 1, read only) ─────────
+-- Returns the user, their login state and - only when they may log in right
+-- now - the stored password hash/salt, so the app can verify the password itself.
+-- Writes nothing.
 select * from auth.get_user_by_email_for_authentication(1, 'ex01', 'donna.hayward@twinpeaks.com');
 
 
 -- ── Aspect: AUTHENTICATION — provider (SSO) path ─────────────────────────────
 -- A returning SSO user "logs in" by the app re-calling ensure_user_from_provider
--- with the provider's uid; it returns the existing user (no duplicate). Usually
--- followed by ensure_groups_and_permissions to refresh permissions (see ex05).
+-- with the provider's uid; it returns the existing user (no duplicate) plus the
+-- outcome (__event_id 10010 user_logged_in, or a failure such as 33004 with null
+-- user columns). Usually followed by ensure_groups_and_permissions (see ex05).
 select * from auth.ensure_user_from_provider('examples', 1, 'ex01',
         _provider_code := 'aad', _provider_uid := 'coop-001', _provider_oid := 'oid-coop-001',
         _username := 'dale.cooper@twinpeaks.com', _display_name := 'Dale Cooper',
         _email := 'dale.cooper@twinpeaks.com');
 
 
--- ── Aspect: AUTHENTICATION — email + password path ───────────────────────────
--- verify_user_by_email runs the full login check (found, can-login, not disabled,
--- not locked, identity active, hash matches), logs a 'user_logged_in' event and
--- returns the user. Correct hash → success:
-select * from auth.verify_user_by_email(1, 'ex01', 'donna.hayward@twinpeaks.com', 'pw-hash-v1',
-        '{"ip": "203.0.113.5", "user_agent": "ExampleAgent/1.0"}');
+-- ── Aspect: AUTHENTICATION — email + password path (login step 2) ────────────
+-- After checking the hash, the app reports the result with
+-- create_user_login_attempt. It decides the outcome (__event_id / __outcome_code),
+-- logs the user_event, counts failures and locks temporarily after
+-- login_lockout.max_failed_attempts. Failures are returned, not raised, so the
+-- event and the counter persist. Below, "__password_hash = '<hash>'" stands in
+-- for the app's own password check.
+-- Correct password → 10010 user_logged_in:
+select a.*
+from auth.get_user_by_email_for_authentication(1, 'ex01', 'donna.hayward@twinpeaks.com') u
+   , auth.create_user_login_attempt('examples', 1, 'ex01', 'email', 'donna.hayward@twinpeaks.com',
+        u.__user_id, u.__password_hash = 'pw-hash-v1', '{"ip": "203.0.113.5", "user_agent": "ExampleAgent/1.0"}') a;
 
--- Wrong hash → rejected, and a 'user_login_failed' event is recorded (repeated
--- failures trigger auto-lockout). The do-block catches the raised error:
-do $$
-begin
-    perform auth.verify_user_by_email(1, 'ex01', 'donna.hayward@twinpeaks.com', 'wrong-hash',
-            '{"ip": "203.0.113.9"}');
-    raise notice 'UNEXPECTED: wrong password was accepted';
-exception when others then
-    raise notice 'login rejected as expected: % (SQLSTATE %)', sqlerrm, sqlstate;
-end $$;
+-- Wrong password → 33001 (same as an unknown user), failure counted:
+select a.*
+from auth.get_user_by_email_for_authentication(1, 'ex01', 'donna.hayward@twinpeaks.com') u
+   , auth.create_user_login_attempt('examples', 1, 'ex01', 'email', 'donna.hayward@twinpeaks.com',
+        u.__user_id, u.__password_hash = 'wrong-hash', '{"ip": "203.0.113.9"}') a;
 
 
 -- ── Aspect: password management ──────────────────────────────────────────────
@@ -101,48 +104,48 @@ select * from auth.update_user_password('examples', 1, 'ex01',
         _password_hash  := 'pw-hash-v2',
         _request_context := '{"ip": "203.0.113.5"}');
 
--- … the OLD hash no longer authenticates …
-do $$
-begin
-    perform auth.verify_user_by_email(1, 'ex01', 'donna.hayward@twinpeaks.com', 'pw-hash-v1', '{}');
-    raise notice 'UNEXPECTED: old password still works';
-exception when others then
-    raise notice 'old password rejected as expected: % (SQLSTATE %)', sqlerrm, sqlstate;
-end $$;
+-- … the OLD hash no longer authenticates (33001) …
+select a.__event_id, a.__outcome_code
+from auth.get_user_by_email_for_authentication(1, 'ex01', 'donna.hayward@twinpeaks.com') u
+   , auth.create_user_login_attempt('examples', 1, 'ex01', 'email', 'donna.hayward@twinpeaks.com',
+        u.__user_id, u.__password_hash = 'pw-hash-v1') a;
 
--- … and the NEW hash does. Success → returns the user row:
-select * from auth.verify_user_by_email(1, 'ex01', 'donna.hayward@twinpeaks.com', 'pw-hash-v2', '{}');
+-- … and the NEW hash does (10010):
+select a.__event_id, a.__outcome_code
+from auth.get_user_by_email_for_authentication(1, 'ex01', 'donna.hayward@twinpeaks.com') u
+   , auth.create_user_login_attempt('examples', 1, 'ex01', 'email', 'donna.hayward@twinpeaks.com',
+        u.__user_id, u.__password_hash = 'pw-hash-v2') a;
 
 
 -- ── Aspect: account status gates authentication ──────────────────────────────
--- Lock the account → login is refused (even with the right password) …
+-- Lock the account → login is refused even with the right password (33004) …
 select * from auth.lock_user('examples', 1, 'ex01',
         (select user_id from auth.user_info where email = 'donna.hayward@twinpeaks.com'));
-do $$
-begin
-    perform auth.verify_user_by_email(1, 'ex01', 'donna.hayward@twinpeaks.com', 'pw-hash-v2', '{}');
-    raise notice 'UNEXPECTED: locked user logged in';
-exception when others then
-    raise notice 'locked user refused as expected: % (SQLSTATE %)', sqlerrm, sqlstate;
-end $$;
+select a.__event_id, a.__outcome_code
+from auth.get_user_by_email_for_authentication(1, 'ex01', 'donna.hayward@twinpeaks.com') u
+   , auth.create_user_login_attempt('examples', 1, 'ex01', 'email', 'donna.hayward@twinpeaks.com',
+        u.__user_id, u.__password_hash = 'pw-hash-v2') a;
 
 -- … unlock → login works again …
 select * from auth.unlock_user('examples', 1, 'ex01',
         (select user_id from auth.user_info where email = 'donna.hayward@twinpeaks.com'));
-select * from auth.verify_user_by_email(1, 'ex01', 'donna.hayward@twinpeaks.com', 'pw-hash-v2', '{}');
+select a.__event_id, a.__outcome_code
+from auth.get_user_by_email_for_authentication(1, 'ex01', 'donna.hayward@twinpeaks.com') u
+   , auth.create_user_login_attempt('examples', 1, 'ex01', 'email', 'donna.hayward@twinpeaks.com',
+        u.__user_id, u.__password_hash = 'pw-hash-v2') a;
 
--- … disable the whole account → login is refused …
+-- … disable the whole account → login is refused (33003) …
 select * from auth.disable_user('examples', 1, 'ex01',
         (select user_id from auth.user_info where email = 'donna.hayward@twinpeaks.com'));
-do $$
-begin
-    perform auth.verify_user_by_email(1, 'ex01', 'donna.hayward@twinpeaks.com', 'pw-hash-v2', '{}');
-    raise notice 'UNEXPECTED: disabled user logged in';
-exception when others then
-    raise notice 'disabled user refused as expected: % (SQLSTATE %)', sqlerrm, sqlstate;
-end $$;
+select a.__event_id, a.__outcome_code
+from auth.get_user_by_email_for_authentication(1, 'ex01', 'donna.hayward@twinpeaks.com') u
+   , auth.create_user_login_attempt('examples', 1, 'ex01', 'email', 'donna.hayward@twinpeaks.com',
+        u.__user_id, u.__password_hash = 'pw-hash-v2') a;
 
 -- … re-enable → back to a good state.
 select * from auth.enable_user('examples', 1, 'ex01',
         (select user_id from auth.user_info where email = 'donna.hayward@twinpeaks.com'));
-select * from auth.verify_user_by_email(1, 'ex01', 'donna.hayward@twinpeaks.com', 'pw-hash-v2', '{}');
+select a.__event_id, a.__outcome_code
+from auth.get_user_by_email_for_authentication(1, 'ex01', 'donna.hayward@twinpeaks.com') u
+   , auth.create_user_login_attempt('examples', 1, 'ex01', 'email', 'donna.hayward@twinpeaks.com',
+        u.__user_id, u.__password_hash = 'pw-hash-v2') a;

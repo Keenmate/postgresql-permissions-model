@@ -59,8 +59,8 @@ BEGIN
     RAISE NOTICE '  4.  delete_api_key removes key and technical user';
     RAISE NOTICE '  5.  update_api_key modifies fields';
     RAISE NOTICE '  6.  update_api_key journals event 14002';
-    RAISE NOTICE '  7.  validate_api_key succeeds with correct key+secret';
-    RAISE NOTICE '  8.  validate_api_key fails with wrong secret';
+    RAISE NOTICE '  7.  create_api_key_validation_attempt succeeds with correct key+secret';
+    RAISE NOTICE '  8.  create_api_key_validation_attempt rejects a wrong secret (30001, persisted)';
     RAISE NOTICE '  9.  update_api_key_secret rotates secret successfully';
     RAISE NOTICE '  10. assign_api_key_permissions with perm_set_code';
     RAISE NOTICE '  11. get_api_key_permissions returns 11 columns';

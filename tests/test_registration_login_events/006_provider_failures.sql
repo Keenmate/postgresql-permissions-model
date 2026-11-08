@@ -1,88 +1,42 @@
 set search_path = public, const, ext, stage, helpers, internal, unsecure, auth, triggers;
 
--- ============================================================================
--- TEST 17: ensure_user_from_provider raises error on user disabled
--- ============================================================================
-DO $$
-DECLARE
-    __aad_user_id bigint;
-    __caught_state text;
-BEGIN
-    RAISE NOTICE 'TEST 17: ensure_user_from_provider raises error 33003 on user disabled';
-
-    __aad_user_id := current_setting('test.aad_user_id')::bigint;
-    UPDATE auth.user_info SET is_active = false WHERE user_id = __aad_user_id;
-
-    BEGIN
-        PERFORM auth.ensure_user_from_provider('reg_test', 1, 'fail-provider-disabled', 'aad', 'regtest_aad_uid_1', 'regtest_aad_oid_1',
-            'regtest_aad_user', 'RegTest AAD User', 'regtest_aad@test.com');
-        RAISE EXCEPTION '  FAIL: Expected exception was not raised';
-    EXCEPTION WHEN OTHERS THEN
-        GET STACKED DIAGNOSTICS __caught_state = RETURNED_SQLSTATE;
-        IF __caught_state = '33003' THEN
-            RAISE NOTICE '  PASS: Raised SQLSTATE 33003 (user disabled)';
-        ELSE
-            RAISE EXCEPTION '  FAIL: Expected SQLSTATE 33003, got %', __caught_state;
-        END IF;
-    END;
-
-    UPDATE auth.user_info SET is_active = true WHERE user_id = __aad_user_id;
-END $$;
+-- Since v2.6 ensure_user_from_provider returns failures as outcomes (user columns
+-- null) instead of raising, so the user_login_failed event persists.
 
 -- ============================================================================
--- TEST 18: ensure_user_from_provider raises error on login disabled
+-- TESTS 17-19 (+ locked): user disabled, login disabled, identity disabled,
+--   user locked (provider logins of locked users were allowed before v2.6)
 -- ============================================================================
 DO $$
 DECLARE
-    __aad_user_id bigint;
-    __caught_state text;
+    __aad_user_id bigint := current_setting('test.aad_user_id')::bigint;
+    __case record;
+    __r record;
 BEGIN
-    RAISE NOTICE 'TEST 18: ensure_user_from_provider raises error 33005 on login disabled';
+    RAISE NOTICE 'TESTS 17-19: ensure_user_from_provider failure outcomes';
 
-    __aad_user_id := current_setting('test.aad_user_id')::bigint;
-    UPDATE auth.user_info SET can_login = false WHERE user_id = __aad_user_id;
+    FOR __case IN
+        SELECT * FROM (VALUES
+            ('17', 'update auth.user_info set is_active = false where user_id = %s', 'update auth.user_info set is_active = true where user_id = %s', 33003, 'user_disabled'),
+            ('18', 'update auth.user_info set can_login = false where user_id = %s', 'update auth.user_info set can_login = true where user_id = %s', 33005, 'login_disabled'),
+            ('19', 'update auth.user_identity set is_active = false where provider_code = ''aad'' and user_id = %s', 'update auth.user_identity set is_active = true where provider_code = ''aad'' and user_id = %s', 33008, 'identity_disabled'),
+            ('19b', 'update auth.user_info set is_locked = true where user_id = %s', 'update auth.user_info set is_locked = false where user_id = %s', 33004, 'user_locked')
+        ) v(test_no, break_sql, fix_sql, expected_event_id, expected_reason)
+    LOOP
+        EXECUTE format(__case.break_sql, __aad_user_id);
 
-    BEGIN
-        PERFORM auth.ensure_user_from_provider('reg_test', 1, 'fail-provider-canlogin', 'aad', 'regtest_aad_uid_1', 'regtest_aad_oid_1',
+        SELECT * INTO __r
+        FROM auth.ensure_user_from_provider('reg_test', 1, 'fail-provider-' || __case.test_no, 'aad', 'regtest_aad_uid_1', 'regtest_aad_oid_1',
             'regtest_aad_user', 'RegTest AAD User', 'regtest_aad@test.com');
-        RAISE EXCEPTION '  FAIL: Expected exception was not raised';
-    EXCEPTION WHEN OTHERS THEN
-        GET STACKED DIAGNOSTICS __caught_state = RETURNED_SQLSTATE;
-        IF __caught_state = '33005' THEN
-            RAISE NOTICE '  PASS: Raised SQLSTATE 33005 (login disabled)';
-        ELSE
-            RAISE EXCEPTION '  FAIL: Expected SQLSTATE 33005, got %', __caught_state;
+
+        IF __r.__event_id IS DISTINCT FROM __case.expected_event_id OR __r.__user_id IS NOT NULL
+            OR NOT EXISTS(SELECT FROM auth.user_event WHERE user_event_id = __r.__user_event_id
+                          AND event_type_code = 'user_login_failed' AND event_data->>'reason' = __case.expected_reason) THEN
+            RAISE EXCEPTION '  FAIL: TEST %: expected % (%), got %', __case.test_no, __case.expected_event_id, __case.expected_reason, row_to_json(__r);
         END IF;
-    END;
 
-    UPDATE auth.user_info SET can_login = true WHERE user_id = __aad_user_id;
-END $$;
+        RAISE NOTICE '  PASS: TEST %: outcome %, no user returned, % event persisted', __case.test_no, __r.__event_id, __case.expected_reason;
 
--- ============================================================================
--- TEST 19: ensure_user_from_provider raises error on identity disabled
--- ============================================================================
-DO $$
-DECLARE
-    __aad_user_id bigint;
-    __caught_state text;
-BEGIN
-    RAISE NOTICE 'TEST 19: ensure_user_from_provider raises error 33008 on identity disabled';
-
-    __aad_user_id := current_setting('test.aad_user_id')::bigint;
-    UPDATE auth.user_identity SET is_active = false WHERE user_id = __aad_user_id AND provider_code = 'aad';
-
-    BEGIN
-        PERFORM auth.ensure_user_from_provider('reg_test', 1, 'fail-provider-identity', 'aad', 'regtest_aad_uid_1', 'regtest_aad_oid_1',
-            'regtest_aad_user', 'RegTest AAD User', 'regtest_aad@test.com');
-        RAISE EXCEPTION '  FAIL: Expected exception was not raised';
-    EXCEPTION WHEN OTHERS THEN
-        GET STACKED DIAGNOSTICS __caught_state = RETURNED_SQLSTATE;
-        IF __caught_state = '33008' THEN
-            RAISE NOTICE '  PASS: Raised SQLSTATE 33008 (identity disabled)';
-        ELSE
-            RAISE EXCEPTION '  FAIL: Expected SQLSTATE 33008, got %', __caught_state;
-        END IF;
-    END;
-
-    UPDATE auth.user_identity SET is_active = true WHERE user_id = __aad_user_id AND provider_code = 'aad';
+        EXECUTE format(__case.fix_sql, __aad_user_id);
+    END LOOP;
 END $$;

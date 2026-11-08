@@ -188,6 +188,23 @@
   },
   {
     "schema": "auth",
+    "object_name": "create_api_key_validation_attempt",
+    "object_type": "function",
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 914,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 914,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
     "object_name": "create_blacklist_user",
     "object_type": "function",
     "last_update_file": "020_functions_auth_user.sql",
@@ -283,6 +300,23 @@
       {
         "file": "038_functions_mfa.sql",
         "line": 259,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
+    "object_name": "create_mfa_challenge_attempt",
+    "object_type": "function",
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 736,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 736,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -584,6 +618,23 @@
       {
         "file": "051_update_permissions_v2-4.sql",
         "line": 214,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
+    "object_name": "create_user_login_attempt",
+    "object_type": "function",
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 475,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 475,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -1251,10 +1302,10 @@
     "schema": "auth",
     "object_name": "ensure_user_from_provider",
     "object_type": "function",
-    "last_update_file": "050_update_permissions_v2-3.sql",
-    "last_update_line": 23,
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 570,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 4,
     "all_updates": [
       {
         "file": "020_functions_auth_user.sql",
@@ -1266,6 +1317,18 @@
         "file": "050_update_permissions_v2-3.sql",
         "line": 23,
         "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 251,
+        "operation": "DROP",
+        "source": "migration"
+      },
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 570,
+        "operation": "CREATE",
         "source": "migration"
       }
     ]
@@ -2045,15 +2108,27 @@
     "schema": "auth",
     "object_name": "get_user_by_email_for_authentication",
     "object_type": "function",
-    "last_update_file": "020_functions_auth_user.sql",
-    "last_update_line": 460,
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 422,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 3,
     "all_updates": [
       {
         "file": "020_functions_auth_user.sql",
         "line": 460,
         "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 250,
+        "operation": "DROP",
+        "source": "migration"
+      },
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 422,
+        "operation": "CREATE",
         "source": "migration"
       }
     ]
@@ -2805,15 +2880,21 @@
     "schema": "auth",
     "object_name": "record_login_failure",
     "object_type": "function",
-    "last_update_file": "037_functions_auto_lockout.sql",
-    "last_update_line": 123,
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 243,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "037_functions_auto_lockout.sql",
         "line": 123,
         "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 243,
+        "operation": "DROP",
         "source": "migration"
       }
     ]
@@ -4017,6 +4098,23 @@
   },
   {
     "schema": "auth",
+    "object_name": "user_login_state",
+    "object_type": "table",
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 185,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 185,
+        "operation": "CREATE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
     "object_name": "user_mfa",
     "object_type": "table",
     "last_update_file": "036_tables_mfa.sql",
@@ -4070,10 +4168,10 @@
     "schema": "auth",
     "object_name": "validate_api_key",
     "object_type": "function",
-    "last_update_file": "048_update_permissions_v2-1.sql",
-    "last_update_line": 526,
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 246,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 3,
     "all_updates": [
       {
         "file": "026_functions_auth_apikey.sql",
@@ -4085,6 +4183,12 @@
         "file": "048_update_permissions_v2-1.sql",
         "line": 526,
         "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 246,
+        "operation": "DROP",
         "source": "migration"
       }
     ]
@@ -4161,15 +4265,21 @@
     "schema": "auth",
     "object_name": "verify_mfa_challenge",
     "object_type": "function",
-    "last_update_file": "038_functions_mfa.sql",
-    "last_update_line": 344,
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 245,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "038_functions_mfa.sql",
         "line": 344,
         "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 245,
+        "operation": "DROP",
         "source": "migration"
       }
     ]
@@ -4178,15 +4288,21 @@
     "schema": "auth",
     "object_name": "verify_user_by_email",
     "object_type": "function",
-    "last_update_file": "037_functions_auto_lockout.sql",
-    "last_update_line": 178,
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 244,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "037_functions_auto_lockout.sql",
         "line": 178,
         "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 244,
+        "operation": "DROP",
         "source": "migration"
       }
     ]
@@ -4490,15 +4606,21 @@
     "schema": "const",
     "object_name": "sys_param",
     "object_type": "table",
-    "last_update_file": "011_tables_const.sql",
-    "last_update_line": 13,
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 118,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "011_tables_const.sql",
         "line": 13,
         "operation": "CREATE",
+        "source": "migration"
+      },
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 118,
+        "operation": "ALTER",
         "source": "migration"
       }
     ]
@@ -4692,6 +4814,23 @@
   },
   {
     "schema": "error",
+    "object_name": "raise_30006",
+    "object_type": "function",
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 75,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 75,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "error",
     "object_name": "raise_31001",
     "object_type": "function",
     "last_update_file": "016_functions_error.sql",
@@ -4838,6 +4977,40 @@
       {
         "file": "016_functions_error.sql",
         "line": 173,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "error",
+    "object_name": "raise_31015",
+    "object_type": "function",
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 86,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 86,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "error",
+    "object_name": "raise_31016",
+    "object_type": "function",
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 97,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 97,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -8646,6 +8819,29 @@
   },
   {
     "schema": "public",
+    "object_name": "trg_const_sys_param_validate",
+    "object_type": "trigger",
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 166,
+    "last_update_source": "migration",
+    "total_updates": 2,
+    "all_updates": [
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 165,
+        "operation": "DROP",
+        "source": "migration"
+      },
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 166,
+        "operation": "CREATE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "public",
     "object_name": "trg_notify_api_key",
     "object_type": "trigger",
     "last_update_file": "033_triggers_cache_and_notify.sql",
@@ -9563,6 +9759,23 @@
     ]
   },
   {
+    "schema": "triggers",
+    "object_name": "validate_sys_param",
+    "object_type": "function",
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 133,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 133,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
     "schema": "unsecure",
     "object_name": "accept_invitation",
     "object_type": "function",
@@ -9674,15 +9887,21 @@
     "schema": "unsecure",
     "object_name": "check_and_auto_lock_user",
     "object_type": "function",
-    "last_update_file": "037_functions_auto_lockout.sql",
-    "last_update_line": 31,
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 247,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "037_functions_auto_lockout.sql",
         "line": 31,
         "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 247,
+        "operation": "DROP",
         "source": "migration"
       }
     ]
@@ -9716,6 +9935,23 @@
       {
         "file": "019_functions_unsecure.sql",
         "line": 2852,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "unsecure",
+    "object_name": "check_user_can_login",
+    "object_type": "function",
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 295,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 295,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10455,6 +10691,23 @@
   },
   {
     "schema": "unsecure",
+    "object_name": "get_login_lockout_settings",
+    "object_type": "function",
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 268,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 268,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "unsecure",
     "object_name": "get_perm_sets",
     "object_type": "function",
     "last_update_file": "019_functions_unsecure.sql",
@@ -11049,6 +11302,23 @@
       {
         "file": "019_functions_unsecure.sql",
         "line": 1708,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "unsecure",
+    "object_name": "update_user_login_state",
+    "object_type": "function",
+    "last_update_file": "053_update_permissions_v2-6.sql",
+    "last_update_line": 342,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "053_update_permissions_v2-6.sql",
+        "line": 342,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }

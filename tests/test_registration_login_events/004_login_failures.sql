@@ -1,136 +1,74 @@
 set search_path = public, const, ext, stage, helpers, internal, unsecure, auth, triggers;
 
+-- Since v2.6 login failures are outcomes of auth.create_user_login_attempt, not
+-- exceptions, so the user_login_failed event now persists and is asserted here.
+
 -- ============================================================================
--- TEST 9: Login failure raises correct exception for user not found
--- (event INSERT is rolled back by PG exception handling -- see file header)
+-- TEST 9: unknown email -> no row from step 1, outcome 33001 from step 2
 -- ============================================================================
 DO $$
 DECLARE
-    __caught_state text;
+    __rows int;
+    __r record;
 BEGIN
-    RAISE NOTICE 'TEST 9: Login raises error 33001 on user not found';
+    RAISE NOTICE 'TEST 9: Login outcome 33001 on user not found';
 
-    BEGIN
-        PERFORM auth.get_user_by_email_for_authentication(1, 'fail-notfound', 'regtest_nonexistent@test.com');
-        RAISE EXCEPTION '  FAIL: Expected exception was not raised';
-    EXCEPTION WHEN OTHERS THEN
-        GET STACKED DIAGNOSTICS __caught_state = RETURNED_SQLSTATE;
-        IF __caught_state = '33001' THEN
-            RAISE NOTICE '  PASS: Raised SQLSTATE 33001 (user not found)';
-        ELSE
-            RAISE EXCEPTION '  FAIL: Expected SQLSTATE 33001, got %', __caught_state;
-        END IF;
-    END;
+    SELECT count(*) INTO __rows
+    FROM auth.get_user_by_email_for_authentication(1, 'fail-notfound', 'regtest_nonexistent@test.com');
+
+    SELECT * INTO __r
+    FROM auth.create_user_login_attempt('reg_test', 1, 'fail-notfound', 'email', 'regtest_nonexistent@test.com', null, null);
+
+    IF __rows = 0 AND __r.__event_id = 33001
+        AND EXISTS(SELECT FROM auth.user_event WHERE user_event_id = __r.__user_event_id
+                   AND event_data->>'reason' = 'user_not_found') THEN
+        RAISE NOTICE '  PASS: no step-1 row, outcome 33001, event persisted';
+    ELSE
+        RAISE EXCEPTION '  FAIL: rows %, outcome %', __rows, __r.__event_id;
+    END IF;
 END $$;
 
 -- ============================================================================
--- TEST 10: Login failure raises correct exception for user disabled
+-- TESTS 10-13: disabled / locked / identity disabled / login disabled
+--   step 1 returns the state without a password hash, step 2 the outcome
 -- ============================================================================
 DO $$
 DECLARE
-    __user_id bigint;
-    __caught_state text;
+    __user_id bigint := current_setting('test.reg_user1_id')::bigint;
+    __case record;
+    __step1 record;
+    __r record;
 BEGIN
-    RAISE NOTICE 'TEST 10: Login raises error 33003 on user disabled';
+    RAISE NOTICE 'TESTS 10-13: Login outcomes for disabled, locked, identity disabled, login disabled';
 
-    __user_id := current_setting('test.reg_user1_id')::bigint;
-    UPDATE auth.user_info SET is_active = false WHERE user_id = __user_id;
+    FOR __case IN
+        SELECT * FROM (VALUES
+            (10, 'update auth.user_info set is_active = false where user_id = %s', 'update auth.user_info set is_active = true where user_id = %s', 33003, 'user_disabled'),
+            (11, 'update auth.user_info set is_locked = true where user_id = %s', 'update auth.user_info set is_locked = false where user_id = %s', 33004, 'user_locked'),
+            (12, 'update auth.user_identity set is_active = false where provider_code = ''email'' and user_id = %s', 'update auth.user_identity set is_active = true where provider_code = ''email'' and user_id = %s', 33008, 'identity_disabled'),
+            (13, 'update auth.user_info set can_login = false where user_id = %s', 'update auth.user_info set can_login = true where user_id = %s', 33005, 'login_disabled')
+        ) v(test_no, break_sql, fix_sql, expected_event_id, expected_reason)
+    LOOP
+        EXECUTE format(__case.break_sql, __user_id);
 
-    BEGIN
-        PERFORM auth.get_user_by_email_for_authentication(1, 'fail-disabled', 'regtest_user1@test.com');
-        RAISE EXCEPTION '  FAIL: Expected exception was not raised';
-    EXCEPTION WHEN OTHERS THEN
-        GET STACKED DIAGNOSTICS __caught_state = RETURNED_SQLSTATE;
-        IF __caught_state = '33003' THEN
-            RAISE NOTICE '  PASS: Raised SQLSTATE 33003 (user disabled)';
-        ELSE
-            RAISE EXCEPTION '  FAIL: Expected SQLSTATE 33003, got %', __caught_state;
+        SELECT * INTO __step1
+        FROM auth.get_user_by_email_for_authentication(1, 'fail-' || __case.test_no, 'regtest_user1@test.com');
+
+        SELECT * INTO __r
+        FROM auth.create_user_login_attempt('reg_test', 1, 'fail-' || __case.test_no, 'email'
+            , 'regtest_user1@test.com', __user_id, null);
+
+        IF __step1.__password_hash IS NOT NULL THEN
+            RAISE EXCEPTION '  FAIL: TEST %: step 1 returned a hash', __case.test_no;
         END IF;
-    END;
-
-    UPDATE auth.user_info SET is_active = true WHERE user_id = __user_id;
-END $$;
-
--- ============================================================================
--- TEST 11: Login failure raises correct exception for user locked
--- ============================================================================
-DO $$
-DECLARE
-    __user_id bigint;
-    __caught_state text;
-BEGIN
-    RAISE NOTICE 'TEST 11: Login raises error 33004 on user locked';
-
-    __user_id := current_setting('test.reg_user1_id')::bigint;
-    UPDATE auth.user_info SET is_locked = true WHERE user_id = __user_id;
-
-    BEGIN
-        PERFORM auth.get_user_by_email_for_authentication(1, 'fail-locked', 'regtest_user1@test.com');
-        RAISE EXCEPTION '  FAIL: Expected exception was not raised';
-    EXCEPTION WHEN OTHERS THEN
-        GET STACKED DIAGNOSTICS __caught_state = RETURNED_SQLSTATE;
-        IF __caught_state = '33004' THEN
-            RAISE NOTICE '  PASS: Raised SQLSTATE 33004 (user locked)';
-        ELSE
-            RAISE EXCEPTION '  FAIL: Expected SQLSTATE 33004, got %', __caught_state;
+        IF __r.__event_id IS DISTINCT FROM __case.expected_event_id
+            OR NOT EXISTS(SELECT FROM auth.user_event WHERE user_event_id = __r.__user_event_id
+                          AND event_data->>'reason' = __case.expected_reason) THEN
+            RAISE EXCEPTION '  FAIL: TEST %: expected % (%), got %', __case.test_no, __case.expected_event_id, __case.expected_reason, row_to_json(__r);
         END IF;
-    END;
 
-    UPDATE auth.user_info SET is_locked = false WHERE user_id = __user_id;
-END $$;
+        RAISE NOTICE '  PASS: TEST %: no hash, outcome %, % event persisted', __case.test_no, __r.__event_id, __case.expected_reason;
 
--- ============================================================================
--- TEST 12: Login failure raises correct exception for identity disabled
--- ============================================================================
-DO $$
-DECLARE
-    __user_id bigint;
-    __caught_state text;
-BEGIN
-    RAISE NOTICE 'TEST 12: Login raises error 33008 on identity disabled';
-
-    __user_id := current_setting('test.reg_user1_id')::bigint;
-    UPDATE auth.user_identity SET is_active = false WHERE user_id = __user_id AND provider_code = 'email';
-
-    BEGIN
-        PERFORM auth.get_user_by_email_for_authentication(1, 'fail-identity', 'regtest_user1@test.com');
-        RAISE EXCEPTION '  FAIL: Expected exception was not raised';
-    EXCEPTION WHEN OTHERS THEN
-        GET STACKED DIAGNOSTICS __caught_state = RETURNED_SQLSTATE;
-        IF __caught_state = '33008' THEN
-            RAISE NOTICE '  PASS: Raised SQLSTATE 33008 (identity disabled)';
-        ELSE
-            RAISE EXCEPTION '  FAIL: Expected SQLSTATE 33008, got %', __caught_state;
-        END IF;
-    END;
-
-    UPDATE auth.user_identity SET is_active = true WHERE user_id = __user_id AND provider_code = 'email';
-END $$;
-
--- ============================================================================
--- TEST 13: Login failure raises correct exception for login disabled
--- ============================================================================
-DO $$
-DECLARE
-    __user_id bigint;
-    __caught_state text;
-BEGIN
-    RAISE NOTICE 'TEST 13: Login raises error 33005 on can_login=false';
-
-    __user_id := current_setting('test.reg_user1_id')::bigint;
-    UPDATE auth.user_info SET can_login = false WHERE user_id = __user_id;
-
-    BEGIN
-        PERFORM auth.get_user_by_email_for_authentication(1, 'fail-canlogin', 'regtest_user1@test.com');
-        RAISE EXCEPTION '  FAIL: Expected exception was not raised';
-    EXCEPTION WHEN OTHERS THEN
-        GET STACKED DIAGNOSTICS __caught_state = RETURNED_SQLSTATE;
-        IF __caught_state = '33005' THEN
-            RAISE NOTICE '  PASS: Raised SQLSTATE 33005 (login disabled)';
-        ELSE
-            RAISE EXCEPTION '  FAIL: Expected SQLSTATE 33005, got %', __caught_state;
-        END IF;
-    END;
-
-    UPDATE auth.user_info SET can_login = true WHERE user_id = __user_id;
+        EXECUTE format(__case.fix_sql, __user_id);
+    END LOOP;
 END $$;

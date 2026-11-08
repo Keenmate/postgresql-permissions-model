@@ -2,25 +2,23 @@ set search_path = public, const, ext, stage, helpers, internal, unsecure, auth, 
 
 -- ============================================================================
 -- TEST 3: a first login from another provider whose username claim equals an
---         existing user's username must fail with 33024 and must not link.
+--         existing user's username must return 33024 and must not link.
 -- ============================================================================
 do $$
 declare
     __registrator_id bigint := (select val::bigint from _a01 where key = 'registrator_id');
     __jane_id        bigint := (select val::bigint from _a01 where key = 'jane_id');
-    __raised         text;
+    __r              record;
     __identities     int;
 begin
     raise notice 'TEST 3: ensure_user_from_provider does not link by username';
 
-    begin
-        perform auth.ensure_user_from_provider('audit01', __registrator_id, 'audit01-t3', 'audit01_idp_b'
-            , 'uid-b-mallory', 'oid-b-mallory', 'jane.audit01@corp.com', 'Mallory', 'jane.audit01@corp.com');
-    exception when others then
-        __raised := sqlstate;
-    end;
-    if __raised is distinct from '33024' then
-        raise exception '  FAIL: expected 33024, got %', coalesce(__raised, 'no error');
+    -- since v2.6 a taken username is an outcome, not an exception
+    select * from auth.ensure_user_from_provider('audit01', __registrator_id, 'audit01-t3', 'audit01_idp_b'
+        , 'uid-b-mallory', 'oid-b-mallory', 'jane.audit01@corp.com', 'Mallory', 'jane.audit01@corp.com')
+    into __r;
+    if __r.__event_id is distinct from 33024 or __r.__user_id is not null then
+        raise exception '  FAIL: expected outcome 33024 without a user, got %', row_to_json(__r);
     end if;
 
     select count(*) from auth.user_identity where user_id = __jane_id into __identities;

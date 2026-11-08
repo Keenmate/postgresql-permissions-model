@@ -33,7 +33,7 @@ is rolled back:
   on the app getting it right. For permission denials (32001), **c**: `has_permissions` keeps
   raising, the app library logs denials, and `get_security_events` stops promising them.
 - Refs: 01/OQ-05, 02/1, 04/OQ-04, 06/Q6, 08/Q-01
-- **Answer:**
+- **Answer:** a for authentication flows, implemented in v2.6 (`audit/design-d01-auth-outcomes.md`): changed in place, `create_*_attempt` functions, outcome = `__event_id` / `__outcome_code` / `__user_event_id`, temporary escalating lockout in `auth.user_login_state`. Permission denials (32001): still open.
 
 ### D-02 Must an entity passed by id belong to `_tenant_id`?
 This is the most common bug class found, appearing in 6 specs. Functions take a group, perm set,
@@ -263,7 +263,7 @@ tenant's user events.
 - **b)** Service users: the id range is 1-999 and overflow raises an error. The custom id is the id
   itself, not "id - 1". They always have `is_system = true` and `can_login = false`.
   (01/OQ-07, 01/OQ-08, 06/Q16)
-- **c)** Lockout: an admin unlock and a successful login both reset the failure counter. (02/8)
+- **c)** Lockout: an admin unlock and a successful login both reset the failure counter. (02/8) **Done in v2.6** (temporary lock; success resets, decay after `lockout_reset_hours`).
 - **d)** Deleting a group removes its mappings and assignments (cascade) instead of failing with a
   raw FK error. (03/3)
 - **e)** `validate_api_key` returns identity only: the user id, after the expiry, active and locked

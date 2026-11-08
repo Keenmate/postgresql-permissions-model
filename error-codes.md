@@ -9,7 +9,7 @@ For the full reference (event codes + error codes + legacy mapping + examples), 
 | Range | Type | Description |
 |-------|------|-------------|
 | 10000 — 29999 | Informational events | Logged to `public.journal` and `auth.user_event` |
-| 30000 — 39999 | Errors | Raised as PostgreSQL exceptions |
+| 30000 — 39999 | Errors | Raised as PostgreSQL exceptions. Since v2.6 the login, MFA and API-key functions return them as `__event_id` / `__outcome_code` instead (see `audit/design-d01-auth-outcomes.md`) |
 | 50000+ | Reserved | Application-specific codes |
 
 All errors are seeded in `const.event_code` with matching templates in `const.event_message`. Most are raised via dedicated `error.raise_XXXXX` functions in `016_functions_error.sql`; a few are raised inline at the call site.
@@ -25,6 +25,7 @@ All errors are seeded in `const.event_code` with matching templates in `const.ev
 | 30003 | `err_token_wrong_user` | `error.raise_30003` | Token belongs to a different user |
 | 30004 | `err_token_already_used` | `error.raise_30004` | Token already consumed |
 | 30005 | `err_token_not_found` | `error.raise_30005` | Token does not exist |
+| 30006 | `err_api_key_expired` | `error.raise_30006` | API key has expired (outcome of `create_api_key_validation_attempt`, since v2.6) |
 
 ## Validation (31001 — 31999)
 
@@ -39,6 +40,8 @@ All errors are seeded in `const.event_code` with matching templates in `const.ev
 | 31012 | `err_event_category_not_empty` | `error.raise_31012` | Category still has event codes |
 | 31013 | `err_event_id_out_of_range` | `error.raise_31013` | Event ID outside category range |
 | 31014 | `err_event_category_not_found` | `error.raise_31014` | Event category does not exist |
+| 31015 | `err_sys_param_is_system` | `error.raise_31015` | System parameter cannot be deleted or un-flagged (since v2.6) |
+| 31016 | `err_sys_param_invalid_value` | `error.raise_31016` | Invalid value for a validated system parameter, e.g. `login_lockout.*` (since v2.6) |
 
 ## Permissions (32001 — 32999)
 

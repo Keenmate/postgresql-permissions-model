@@ -4,35 +4,32 @@ set search_path = public, const, ext, stage, helpers, internal, unsecure, auth, 
 -- Test 8: Invalid/expired token rejected, wrong type rejected
 -- ============================================================================
 
--- 8a: Non-existent token raises 30005
+-- 8a: Non-existent token -> outcome 30005 (since v2.6 an outcome, not an exception)
 DO $$
 DECLARE
     __test_user_id bigint := current_setting('test.mfa_user_id')::bigint;
-    __error_code   text;
+    __r            record;
 BEGIN
     RAISE NOTICE '';
     RAISE NOTICE '-- Test 8a: Non-existent token → 30005 --';
 
-    BEGIN
-        PERFORM auth.verify_mfa_challenge('test', 1, 'test-corr-mfa-08a', __test_user_id, 'NONEXISTENT_UID', true);
-        RAISE EXCEPTION 'FAIL: Should reject non-existent token';
-    EXCEPTION WHEN OTHERS THEN
-        GET STACKED DIAGNOSTICS __error_code = RETURNED_SQLSTATE;
-        IF __error_code = '30005' THEN
-            RAISE NOTICE 'PASS: Non-existent token rejected with error 30005';
-        ELSE
-            RAISE EXCEPTION 'FAIL: Expected error 30005, got % (%)', __error_code, SQLERRM;
-        END IF;
-    END;
+    SELECT * INTO __r
+    FROM auth.create_mfa_challenge_attempt('test', 1, 'test-corr-mfa-08a', __test_user_id, 'NONEXISTENT_UID', true);
+
+    IF __r.__event_id = 30005 AND __r.__outcome_code = 'err_token_not_found' THEN
+        RAISE NOTICE 'PASS: Non-existent token rejected with outcome 30005';
+    ELSE
+        RAISE EXCEPTION 'FAIL: Expected outcome 30005, got %', row_to_json(__r);
+    END IF;
 END $$;
 
--- 8b: Invalid code + no recovery code → token marked failed, raises 38004
+-- 8b: Invalid code + no recovery code → token marked failed (persisted), outcome 38004
 DO $$
 DECLARE
     __test_user_id bigint := current_setting('test.mfa_user_id')::bigint;
     __challenge    record;
     __result       record;
-    __error_code   text;
+    __r            record;
     __token_record auth.token;
 BEGIN
     RAISE NOTICE '';
@@ -48,22 +45,21 @@ BEGIN
     FROM auth.create_mfa_challenge('test', 1, 'test-corr-mfa-08b', __test_user_id, 'totp');
 
     -- Verify with invalid code and no recovery
-    BEGIN
-        PERFORM auth.verify_mfa_challenge('test', 1, 'test-corr-mfa-08b-v', __test_user_id,
-            __challenge.__token_uid, false, null);
-        RAISE EXCEPTION 'FAIL: Should reject invalid code without recovery';
-    EXCEPTION WHEN OTHERS THEN
-        GET STACKED DIAGNOSTICS __error_code = RETURNED_SQLSTATE;
-        IF __error_code = '38004' THEN
-            RAISE NOTICE 'PASS: Invalid code without recovery rejected with error 38004';
-        ELSE
-            RAISE EXCEPTION 'FAIL: Expected error 38004, got % (%)', __error_code, SQLERRM;
-        END IF;
-    END;
+    SELECT * INTO __r
+    FROM auth.create_mfa_challenge_attempt('test', 1, 'test-corr-mfa-08b-v', __test_user_id,
+        __challenge.__token_uid, false, null);
 
-    -- Note: token state change is rolled back by the exception handler above
-    -- (PL/pgSQL rolls back to savepoint on EXCEPTION). The error code check
-    -- above already validates the function rejects invalid codes correctly.
+    IF __r.__event_id <> 38004 THEN
+        RAISE EXCEPTION 'FAIL: Expected outcome 38004, got %', row_to_json(__r);
+    END IF;
+
+    -- before v2.6 the raise rolled this state change back
+    SELECT * INTO __token_record FROM auth.token t WHERE t.uid = __challenge.__token_uid;
+    IF __token_record.token_state_code = 'failed' THEN
+        RAISE NOTICE 'PASS: Invalid code without recovery: outcome 38004, token persisted as failed';
+    ELSE
+        RAISE EXCEPTION 'FAIL: Expected token state failed, got %', __token_record.token_state_code;
+    END IF;
 END $$;
 
 -- 8c: MFA not enrolled raises 38002 on create_mfa_challenge

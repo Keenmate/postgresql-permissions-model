@@ -37,7 +37,7 @@ BEGIN
     PERFORM set_config('test.mfa_token_uid', __challenge.__token_uid, false);
 
     -- Verify the challenge with valid TOTP code
-    PERFORM auth.verify_mfa_challenge('test', 1, 'test-corr-mfa-05v', __test_user_id, __challenge.__token_uid, true);
+    PERFORM auth.create_mfa_challenge_attempt('test', 1, 'test-corr-mfa-05v', __test_user_id, __challenge.__token_uid, true);
 
     -- Check token is now used
     SELECT * INTO __token_record

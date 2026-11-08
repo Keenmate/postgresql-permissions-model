@@ -36,10 +36,13 @@ select * from auth.create_api_key('examples', 1, 'ex07',
         _api_secret := 'blue-rose-secret');
 
 
--- ── Aspect: authenticate with the key → technical user + its permissions ─────
--- __permission_full_codes contains reports.export_reports (from the set).
-select * from auth.validate_api_key('examples', 1, 'ex07',
-        _api_key := 'blue-rose-key', _api_secret := 'blue-rose-secret');
+-- ── Aspect: authenticate with the key → technical user ───────────────────────
+-- Returns the technical user and the outcome (14010 apikey_validated; failures
+-- such as 30001 wrong secret or 30006 expired return null user columns and are
+-- logged). Permissions are then checked like for any user:
+select v.*, auth.has_permission(v.__user_id, 'ex07', 'reports.export_reports', 1, false) as can_export
+from auth.create_api_key_validation_attempt('examples', 1, 'ex07',
+        _api_key := 'blue-rose-key', _api_secret := 'blue-rose-secret') v;
 
 
 -- ── Aspect: grant an additional permission directly to the key ───────────────
@@ -48,9 +51,10 @@ select * from auth.assign_api_key_permissions('examples', 1, 'ex07',
         _perm_set_code := null,
         _permission_full_codes := array['reports.read_reports']);
 
--- re-validate — the permission list now also includes reports.read_reports
-select * from auth.validate_api_key('examples', 1, 'ex07',
-        _api_key := 'blue-rose-key', _api_secret := 'blue-rose-secret');
+-- re-validate — the technical user now also has reports.read_reports
+select v.*, auth.has_permission(v.__user_id, 'ex07', 'reports.read_reports', 1, false) as can_read
+from auth.create_api_key_validation_attempt('examples', 1, 'ex07',
+        _api_key := 'blue-rose-key', _api_secret := 'blue-rose-secret') v;
 
 
 -- ── Aspect: a plain service user (no API key) — e.g. a background worker ──────

@@ -226,6 +226,7 @@ The user system uses three main tables for flexible multi-provider support and e
 - `auth.enable_user()` / `auth.disable_user()` - User status management
 - `auth.lock_user()` / `auth.unlock_user()` - Account security controls
 - `auth.update_user_password()` - Password management
+- `auth.get_user_by_email_for_authentication()` + `auth.create_user_login_attempt()` - Two-step email login: read-only lookup, then the app reports its password check; returns `__event_id`/`__outcome_code` and never raises for failures. `auth.create_mfa_challenge_attempt()` and `auth.create_api_key_validation_attempt()` follow the same outcome pattern. Lockout is temporary and escalating (`auth.user_login_state`, `login_lockout.*` sys_params)
 - `auth.assign_user_default_groups()` - Automatic group assignment
 
 **Identity Provider Management (`user_identity` table)**:
@@ -464,6 +465,7 @@ All tests are organized as suite directories with `test.json` manifests:
 | `test_auth_group_member_tenant/` | Auth-layer group member and tenant functions with permission checks |
 | `test_search_functions/` | All search functions: pagination, filtering, empty results |
 | `test_identity_user_data/` | v2.3: provider `_user_data` stored on the identity on first login, refreshed on later logins, kept on `null`, returned by `get_user_identity` |
+| `test_audit_authentication/` | v2.6: login/MFA/API-key outcomes persist (no raise), temporary escalating lockout with decay, admin lock, provider login of locked users, system sys_params |
 | `test_audit_tenancy/` | v2.5: tenant B admin/owner cannot delete/restore/purge/create other tenants, own-tenant soft delete only, `tenant_admin` contents |
 | `test_audit_registration/` | v2.4: no identity linking by username (register / second provider), explicit `create_user_identity_link` |
 | `test_tenant_scoping_security/` | v2.1 regressions: group owner ≠ tenant owner, cross-tenant assign/unassign/mapping rejected, API key expiry, `*_as_system` helpers |
@@ -486,7 +488,7 @@ All tests are organized as suite directories with `test.json` manifests:
 4. Place cleanup in the 900-999 range so it runs even on failure
 
 ### Manual Testing
-- Use the topic-grouped scripts under `examples/` (see `examples/README.md`) for interactive, self-contained usage scenarios — each runs in a transaction that rolls back
+- Use the topic-grouped scripts under `examples/` (see `examples/README.md`) for interactive, self-contained usage scenarios. They do **not** roll back - the demo rows persist (`examples/cleanup.sql` removes them, or reset with `make setup`)
 - Always test permission inheritance and tenant isolation
 - Verify audit events are properly logged
 

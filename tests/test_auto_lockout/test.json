@@ -1,6 +1,6 @@
 {
   "name": "Auto-Lockout",
-  "description": "Verifies auto-lockout after repeated login failures: sys_param config, threshold detection, event logging, window expiry",
+  "description": "Temporary auto-lockout after repeated login failures (v2.6): sys_param config, threshold, events, window expiry, two-step email login outcomes. Calls run as svc_authenticator.",
   "always_cleanup": true,
   "isolation": "transaction"
 }
