@@ -87,7 +87,7 @@ BEGIN
     RAISE NOTICE '  Step 5: Accepting invitation...';
 
     -- Count pending backend actions returned
-    SELECT count(*) FROM auth.accept_invitation('svc_app', __inviter_id, 'inv-corr-e2e-3', __inv_id, __new_user_id) INTO __pending_count;
+    SELECT count(*) FROM auth.accept_invitation('svc_app', __inviter_id, 'inv-corr-e2e-3', (select uuid from auth.invitation where invitation_id = __inv_id), __new_user_id) INTO __pending_count;
     RAISE NOTICE '    INFO: accept_invitation returned % pending backend actions', __pending_count;
 
     -- Step 6: Verify database actions executed

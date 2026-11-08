@@ -2,7 +2,7 @@
 
 | Schema | Object Name | Type | Last File | Line | Updates | Migration Updates | Ad-hoc Updates |
 |--------|-------------|------|-----------|------|---------|------------------|----------------|
-| auth | accept\_invitation | function | 055\_update\_permissions\_v2-8.sql | 1044 | 2 | 055\_update\_permissions\_v2-8.sql:1044<br>042\_functions\_invitation.sql:976 | - |
+| auth | accept\_invitation | function | 058\_update\_permissions\_v2-11.sql | 69 | 4 | 058\_update\_permissions\_v2-11.sql:69<br>058\_update\_permissions\_v2-11.sql:42<br>055\_update\_permissions\_v2-8.sql:1044<br>042\_functions\_invitation.sql:976 | - |
 | auth | active\_user\_groups | view | 015\_views.sql | 13 | 1 | 015\_views.sql:13 | - |
 | auth | api\_key | table | 013\_tables\_auth.sql | 451 | 1 | 013\_tables\_auth.sql:451 | - |
 | auth | assign\_api\_key\_permissions | function | 055\_update\_permissions\_v2-8.sql | 793 | 2 | 055\_update\_permissions\_v2-8.sql:793<br>026\_functions\_auth\_apikey.sql:216 | - |
@@ -169,7 +169,7 @@
 | auth | purge\_tenant | function | 052\_update\_permissions\_v2-5.sql | 107 | 2 | 052\_update\_permissions\_v2-5.sql:107<br>023\_functions\_auth\_tenant.sql:236 | - |
 | auth | record\_login\_failure | function | 053\_update\_permissions\_v2-6.sql | 243 | 2 | 053\_update\_permissions\_v2-6.sql:243<br>037\_functions\_auto\_lockout.sql:123 | - |
 | auth | register\_user | function | 051\_update\_permissions\_v2-4.sql | 143 | 2 | 051\_update\_permissions\_v2-4.sql:143<br>020\_functions\_auth\_user.sql:309 | - |
-| auth | reject\_invitation | function | 055\_update\_permissions\_v2-8.sql | 1082 | 2 | 055\_update\_permissions\_v2-8.sql:1082<br>042\_functions\_invitation.sql:1015 | - |
+| auth | reject\_invitation | function | 058\_update\_permissions\_v2-11.sql | 109 | 4 | 058\_update\_permissions\_v2-11.sql:109<br>058\_update\_permissions\_v2-11.sql:43<br>055\_update\_permissions\_v2-8.sql:1082<br>042\_functions\_invitation.sql:1015 | - |
 | auth | reset\_mfa | function | 056\_update\_permissions\_v2-9.sql | 716 | 2 | 056\_update\_permissions\_v2-9.sql:716<br>040\_functions\_mfa\_policy.sql:22 | - |
 | auth | resource\_access | table | 034\_tables\_resource\_access.sql | 100 | 1 | 034\_tables\_resource\_access.sql:100 | - |
 | auth | resource\_access\_default | table | 034\_tables\_resource\_access.sql | 131 | 1 | 034\_tables\_resource\_access.sql:131 | - |
@@ -656,6 +656,7 @@
 | unsecure | validate\_api\_key\_in\_tenant | function | 055\_update\_permissions\_v2-8.sql | 105 | 1 | 055\_update\_permissions\_v2-8.sql:105 | - |
 | unsecure | validate\_invitation\_in\_tenant | function | 055\_update\_permissions\_v2-8.sql | 120 | 1 | 055\_update\_permissions\_v2-8.sql:120 | - |
 | unsecure | validate\_invitation\_template\_in\_tenant | function | 055\_update\_permissions\_v2-8.sql | 136 | 1 | 055\_update\_permissions\_v2-8.sql:136 | - |
+| unsecure | validate\_invitation\_uuid\_in\_tenant | function | 058\_update\_permissions\_v2-11.sql | 47 | 1 | 058\_update\_permissions\_v2-11.sql:47 | - |
 | unsecure | validate\_mfa\_policy\_in\_tenant | function | 055\_update\_permissions\_v2-8.sql | 152 | 1 | 055\_update\_permissions\_v2-8.sql:152 | - |
 | unsecure | validate\_resource\_id | function | 034\_tables\_resource\_access.sql | 382 | 1 | 034\_tables\_resource\_access.sql:382 | - |
 | unsecure | validate\_resource\_identifier | function | 035\_functions\_resource\_access.sql | 120 | 1 | 035\_functions\_resource\_access.sql:120 | - |
@@ -667,6 +668,6 @@
 | unsecure | verify\_user\_identity | function | 056\_update\_permissions\_v2-9.sql | 889 | 2 | 056\_update\_permissions\_v2-9.sql:889<br>019\_functions\_unsecure.sql:2391 | - |
 
 ## Summary
-- **Total Objects**: 663
-- **By Type**: function: 535, index: 10, schema: 9, table: 71, trigger: 30, view: 8
-- **By Schema**: auth: 247, const: 23, error: 122, helpers: 19, internal: 6, public: 105, stage: 1, triggers: 36, unsecure: 104
+- **Total Objects**: 664
+- **By Type**: function: 536, index: 10, schema: 9, table: 71, trigger: 30, view: 8
+- **By Schema**: auth: 247, const: 23, error: 122, helpers: 19, internal: 6, public: 105, stage: 1, triggers: 36, unsecure: 105

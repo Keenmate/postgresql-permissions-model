@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-08 — v2.11: invitations are accepted and rejected by uuid
+
+**`058_update_permissions_v2-11.sql`** (`postgresql_permissionmodel` **2.11**).
+
+### Fixed (security)
+
+- **Anyone with the accept permission could accept any invitation for anyone.** `auth.accept_invitation` and `auth.reject_invitation` took the sequential invitation id, so a holder of `invitations.accept_invitation` could accept any pending invitation of the tenant for any user. For example, they could accept an "add to tenant_admins" invitation meant for someone else, for themselves.
+  - Both functions now take `_invitation_uuid`, the unguessable uuid sent to the recipient in the email or SMS link. This works for email and phone targets alike.
+  - The permission check and the v2.8 tenant check stay. An unknown uuid, or one belonging to another tenant, raises 39001.
+
+### Changed (breaking)
+
+- The id-based overloads of `accept_invitation` / `reject_invitation` are dropped.
+- Revoke and `get_invitation_actions` are admin operations and stay id-based.
+- New `unsecure.validate_invitation_uuid_in_tenant`.
+
+### Tests
+
+- `tests/test_audit_cross_tenant/005_invitation_uuid.sql`.
+- `test_invitation` now accepts and rejects by uuid.
+
 ## 2026-11-08 — v2.10: `get_invitations` and `get_api_key_permissions` scoping
 
 **`057_update_permissions_v2-10.sql`** (`postgresql_permissionmodel` **2.10**). Follow-ups to D-02.
@@ -2489,6 +2510,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.11 | 2026-11-08 | Security (breaking): `accept_invitation` / `reject_invitation` take the invitation uuid instead of the sequential id (`058_update_permissions_v2-11.sql`) |
 | 2.10 | 2026-11-08 | Security: `get_invitations` checks `get_all_invitations` in tenant 1; `get_api_key_permissions` checks `api_keys.search` in `_tenant_id` and validates the key tenant (`057_update_permissions_v2-10.sql`) |
 | 2.9 | 2026-11-08 | Security: lock/disable/delete user, password, identities, profile, MFA and blacklist check the permission in tenant 1 (D-04); `verify_user_identity` unknown-user crash (`056_update_permissions_v2-9.sql`) |
 | 2.8 | 2026-11-08 | Security: groups, members, group owners, API keys, invitations, templates and MFA policies passed by id must belong to `_tenant_id` (mismatch = not found); global templates/policies managed from tenant 1; a null tenant holds no permissions (`055_update_permissions_v2-8.sql`) |

@@ -22,6 +22,7 @@ declare
     __key_a_id    int;
     __key_b_id    int;
     __inv_a_id    bigint;
+    __inv_a_uuid  uuid;
     __tmpl_a_id   int;
     __tmpl_g_id   int;
     __mfa_a_id    bigint;
@@ -65,7 +66,7 @@ begin
     select k.__api_key_id from auth.create_api_key('audit02', 1, 'audit02-setup', 'A02 key A', null, null, null, _tenant_id := __a_id) k into __key_a_id;
     select k.__api_key_id from auth.create_api_key('audit02', 1, 'audit02-setup', 'A02 key B', null, null, null, _tenant_id := __b_id) k into __key_b_id;
 
-    select i.__invitation_id from auth.create_invitation('audit02', 1, 'audit02-setup', __a_id, 'audit02_target@example.com') i into __inv_a_id;
+    select i.__invitation_id, i.__uuid from auth.create_invitation('audit02', 1, 'audit02-setup', __a_id, 'audit02_target@example.com') i into __inv_a_id, __inv_a_uuid;
     select t.__template_id from auth.create_invitation_template('audit02', 1, 'audit02-setup', __a_id, 'a02_tmpl_a', 'A02 template A') t into __tmpl_a_id;
     select t.__template_id from auth.create_invitation_template('audit02', 1, 'audit02-setup', null, 'a02_tmpl_global', 'A02 global template') t into __tmpl_g_id;
 
@@ -78,7 +79,7 @@ begin
         ('admin_b_id', __admin_b_id::text), ('owner_b_id', __owner_b_id::text), ('member_id', __member_id::text),
         ('ga_id', __ga_id::text), ('gb_id', __gb_id::text),
         ('key_a_id', __key_a_id::text), ('key_b_id', __key_b_id::text),
-        ('inv_a_id', __inv_a_id::text), ('tmpl_a_id', __tmpl_a_id::text), ('tmpl_g_id', __tmpl_g_id::text),
+        ('inv_a_id', __inv_a_id::text), ('inv_a_uuid', __inv_a_uuid::text), ('tmpl_a_id', __tmpl_a_id::text), ('tmpl_g_id', __tmpl_g_id::text),
         ('mfa_a_id', __mfa_a_id::text);
 
     raise notice 'SETUP: A=%, B=%, admin_b=%, owner_b=%, ga=%, gb=%, key_a=%, inv_a=%, tmpl_a=%, tmpl_g=%, mfa_a=%',

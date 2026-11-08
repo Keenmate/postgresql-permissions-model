@@ -3,10 +3,10 @@
     "schema": "auth",
     "object_name": "accept_invitation",
     "object_type": "function",
-    "last_update_file": "055_update_permissions_v2-8.sql",
-    "last_update_line": 1044,
+    "last_update_file": "058_update_permissions_v2-11.sql",
+    "last_update_line": 69,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 4,
     "all_updates": [
       {
         "file": "042_functions_invitation.sql",
@@ -17,6 +17,18 @@
       {
         "file": "055_update_permissions_v2-8.sql",
         "line": 1044,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "058_update_permissions_v2-11.sql",
+        "line": 42,
+        "operation": "DROP",
+        "source": "migration"
+      },
+      {
+        "file": "058_update_permissions_v2-11.sql",
+        "line": 69,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -3142,10 +3154,10 @@
     "schema": "auth",
     "object_name": "reject_invitation",
     "object_type": "function",
-    "last_update_file": "055_update_permissions_v2-8.sql",
-    "last_update_line": 1082,
+    "last_update_file": "058_update_permissions_v2-11.sql",
+    "last_update_line": 109,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 4,
     "all_updates": [
       {
         "file": "042_functions_invitation.sql",
@@ -3156,6 +3168,18 @@
       {
         "file": "055_update_permissions_v2-8.sql",
         "line": 1082,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "058_update_permissions_v2-11.sql",
+        "line": 43,
+        "operation": "DROP",
+        "source": "migration"
+      },
+      {
+        "file": "058_update_permissions_v2-11.sql",
+        "line": 109,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -11820,6 +11844,23 @@
       {
         "file": "055_update_permissions_v2-8.sql",
         "line": 136,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "unsecure",
+    "object_name": "validate_invitation_uuid_in_tenant",
+    "object_type": "function",
+    "last_update_file": "058_update_permissions_v2-11.sql",
+    "last_update_line": 47,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "058_update_permissions_v2-11.sql",
+        "line": 47,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }

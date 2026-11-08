@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.10', 'postgresql_permissionmodel')`
-at startup (currently 2.10) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.11', 'postgresql_permissionmodel')`
+at startup (currently 2.11) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,21 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.11 — invitations are accepted and rejected by uuid (`058`)
+
+**Status in keen-auth-permissions: not adopted.** Signature change:
+
+- **`auth.accept_invitation(_updated_by, _user_id, _correlation_id, _invitation_uuid uuid, _target_user_id, _request_context, _tenant_id)`**
+  and **`auth.reject_invitation(_updated_by, _user_id, _correlation_id, _invitation_uuid uuid, _request_context, _tenant_id)`**
+  take the invitation's `uuid` (returned as `__uuid` by `create_invitation` /
+  `create_invitation_from_template`) in place of `_invitation_id`. The id-based versions are gone.
+- **Put the uuid in the invitation link**, never the id. When the recipient follows the link, the
+  backend passes that uuid on. Pass the invitation's tenant as `_tenant_id`; an unknown uuid, or one
+  of another tenant, raises 39001.
+- `revoke_invitation` and `get_invitation_actions` still take the id; they are admin operations.
 
 ---
 

@@ -39,7 +39,7 @@ BEGIN
     ) INTO __inv_id, __inv_uuid, __on_create;
 
     -- Accept
-    PERFORM auth.accept_invitation('svc_app', __inviter_id, 'inv-corr-cond-2', __inv_id, __target_id);
+    PERFORM auth.accept_invitation('svc_app', __inviter_id, 'inv-corr-cond-2', (select uuid from auth.invitation where invitation_id = __inv_id), __target_id);
 
     -- add_tenant_user should have been SKIPPED (user already in tenant)
     SELECT status_code FROM auth.invitation_action

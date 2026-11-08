@@ -61,7 +61,7 @@ BEGIN
     END IF;
 
     -- Accept the invitation
-    PERFORM auth.accept_invitation('test_inv', __inviter_id, 'inv-corr-2', __inv_id, __target_id);
+    PERFORM auth.accept_invitation('test_inv', __inviter_id, 'inv-corr-2', (select uuid from auth.invitation where invitation_id = __inv_id), __target_id);
 
     -- Verify target user was added to tenant 1
     SELECT count(*) FROM auth.tenant_user WHERE tenant_id = 1 AND user_id = __target_id INTO __count;

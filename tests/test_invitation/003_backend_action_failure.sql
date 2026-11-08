@@ -125,7 +125,7 @@ BEGIN
     END IF;
 
     -- Now accept the invitation — on_accept actions should still work
-    PERFORM auth.accept_invitation('svc_app', __inviter_id, 'inv-corr-opt-3', __inv_id, __target_id);
+    PERFORM auth.accept_invitation('svc_app', __inviter_id, 'inv-corr-opt-3', (select uuid from auth.invitation where invitation_id = __inv_id), __target_id);
 
     -- Verify target was added to group
     SELECT count(*) FROM auth.user_group_member WHERE user_group_id = __group_id AND user_id = __target_id INTO __count;

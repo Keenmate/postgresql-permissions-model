@@ -13,9 +13,9 @@ begin
     perform pg_temp.a02_expect('get_invitation_actions',
         'select * from auth.get_invitation_actions(''t'', {admin_b_id}, ''c'', {inv_a_id}, {b_id})', '39001');
     perform pg_temp.a02_expect('accept_invitation',
-        'select * from auth.accept_invitation(''t'', {admin_b_id}, ''c'', {inv_a_id}, {admin_b_id}, null, {b_id})', '39001');
+        'select * from auth.accept_invitation(''t'', {admin_b_id}, ''c'', ''{inv_a_uuid}''::uuid, {admin_b_id}, null, {b_id})', '39001');
     perform pg_temp.a02_expect('reject_invitation',
-        'select * from auth.reject_invitation(''t'', {admin_b_id}, ''c'', {inv_a_id}, null, {b_id})', '39001');
+        'select * from auth.reject_invitation(''t'', {admin_b_id}, ''c'', ''{inv_a_uuid}''::uuid, null, {b_id})', '39001');
     perform pg_temp.a02_expect('revoke_invitation',
         'select auth.revoke_invitation(''t'', {admin_b_id}, ''c'', {inv_a_id}, null, {b_id})', '39001');
 

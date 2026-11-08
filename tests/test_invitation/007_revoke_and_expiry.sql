@@ -76,7 +76,7 @@ BEGIN
 
     -- Try to accept — should fail with 39003 (expired)
     BEGIN
-        PERFORM auth.accept_invitation('svc_app', __inviter_id, 'inv-corr-exp-2', __inv_id, __target_id);
+        PERFORM auth.accept_invitation('svc_app', __inviter_id, 'inv-corr-exp-2', (select uuid from auth.invitation where invitation_id = __inv_id), __target_id);
     EXCEPTION WHEN OTHERS THEN
         IF SQLSTATE = '39003' THEN
             __caught := true;
@@ -119,11 +119,11 @@ BEGIN
     ) INTO __inv_id, __inv_uuid, __on_create;
 
     -- Reject first
-    PERFORM auth.reject_invitation('svc_app', __inviter_id, 'inv-corr-dbl-2', __inv_id);
+    PERFORM auth.reject_invitation('svc_app', __inviter_id, 'inv-corr-dbl-2', (select uuid from auth.invitation where invitation_id = __inv_id));
 
     -- Try to accept — should fail with 39002 (not pending)
     BEGIN
-        PERFORM auth.accept_invitation('svc_app', __inviter_id, 'inv-corr-dbl-3', __inv_id, __target_id);
+        PERFORM auth.accept_invitation('svc_app', __inviter_id, 'inv-corr-dbl-3', (select uuid from auth.invitation where invitation_id = __inv_id), __target_id);
     EXCEPTION WHEN OTHERS THEN
         IF SQLSTATE = '39002' THEN
             __caught := true;

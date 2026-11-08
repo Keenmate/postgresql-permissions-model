@@ -35,7 +35,7 @@ BEGIN
 
     -- Reject the invitation
     SELECT __invitation_action_id, __action_type_code, __executor_code, __payload
-    FROM auth.reject_invitation('svc_app', __inviter_id, 'inv-corr-rej-2', __inv_id)
+    FROM auth.reject_invitation('svc_app', __inviter_id, 'inv-corr-rej-2', (select uuid from auth.invitation where invitation_id = __inv_id))
     INTO __action_id, __status, __status, ___payload;
 
     -- Verify on_reject returned the notify_inviter action
