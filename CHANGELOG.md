@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-08 — v2.9: global user state needs the permission in tenant 1
+
+**`056_update_permissions_v2-9.sql`** (`postgresql_permissionmodel` **2.9**). Audit decision D-04, option a. Users are global, so their status, password, identities, profile, MFA and the blacklist apply everywhere.
+
+### Fixed (security)
+
+- **An admin of any tenant could change any user everywhere.** These functions checked the caller's permission in whatever `_tenant_id` was passed. A tenant-B admin holding `users.*` in B could therefore lock, disable, delete, re-password or reset the MFA of any user, tenant-1 admins included. The permission is now checked in tenant 1. `_tenant_id` is still accepted and used for the journal. Functions affected:
+  - `lock_user`, `unlock_user`, `enable_user`, `disable_user`, `delete_user_info`
+  - `update_user_password`, `update_user_data`, `update_user_preferences`
+  - `enable_user_identity`, `disable_user_identity`, `verify_user_identity`, `create_user_identity_link`
+  - `enroll_mfa`, `confirm_mfa_enrollment`, `disable_mfa`, `reset_mfa`
+  - `create_blacklist_user`, `delete_blacklist_user`
+- **`verify_user_identity` crashed for an unknown user.** It called the nonexistent `error.raise_52001`; it now raises 33001.
+
+### Unchanged
+
+- Self-service still needs no permission: own password, own identity link, own profile data and preferences.
+
+### Tests
+
+- New suite `tests/test_audit_global_user_state/`.
+
 ## 2026-11-08 — v2.8: entities passed by id must belong to `_tenant_id`
 
 **`055_update_permissions_v2-8.sql`** (`postgresql_permissionmodel` **2.8**). Audit decision D-02, option a. Functions took an entity by id, checked the caller's permission in `_tenant_id`, and never checked that the entity lives in `_tenant_id`. Now every such function checks the entity's tenant right after the permission check. A mismatch raises the same *not found* error as a missing id, so the caller can't tell whether the id exists in another tenant.
@@ -2451,6 +2473,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.9 | 2026-11-08 | Security: lock/disable/delete user, password, identities, profile, MFA and blacklist check the permission in tenant 1 (D-04); `verify_user_identity` unknown-user crash (`056_update_permissions_v2-9.sql`) |
 | 2.8 | 2026-11-08 | Security: groups, members, group owners, API keys, invitations, templates and MFA policies passed by id must belong to `_tenant_id` (mismatch = not found); global templates/policies managed from tenant 1; a null tenant holds no permissions (`055_update_permissions_v2-8.sql`) |
 | 2.7 | 2026-11-08 | Security: disabled groups, soft-deleted tenants, inactive providers/identities and disabled/locked users (owners included) grant nothing at check time; `_throw_err false` never raises (`054_update_permissions_v2-7.sql`) |
 | 2.6 | 2026-11-08 | Authentication outcomes instead of exceptions: lockout/MFA/API-key failures persist; temporary escalating lockout (`auth.user_login_state`); `create_user_login_attempt`, `create_mfa_challenge_attempt`, `create_api_key_validation_attempt`; system sys_params (`053_update_permissions_v2-6.sql`) |

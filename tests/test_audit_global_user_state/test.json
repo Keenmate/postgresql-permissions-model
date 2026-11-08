@@ -1,0 +1,6 @@
+{
+  "name": "Audit D-04: global user state needs the permission in tenant 1",
+  "description": "Users are global: lock, disable, enable, delete, password, identities, profile data, MFA and the blacklist apply to the user everywhere. An admin holding every users/mfa permission in tenant B is rejected (32001); the same permissions in tenant 1 work whatever _tenant_id is passed; self-service (own password, own profile, own identity link) needs no permission. Runs as non-system users (user 1 bypasses every check).",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

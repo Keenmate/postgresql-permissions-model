@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.8', 'postgresql_permissionmodel')`
-at startup (currently 2.8) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.9', 'postgresql_permissionmodel')`
+at startup (currently 2.9) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,28 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.9 — global user state needs the permission in tenant 1 (`056`)
+
+**Status in keen-auth-permissions: not adopted.** No signature changes. Behaviour changes:
+
+- **Some user functions now check the permission in tenant 1, whatever `_tenant_id` you pass:**
+  - `lock_user`, `unlock_user`, `enable_user`, `disable_user`, `delete_user_info`
+  - `update_user_password`, `update_user_data`, `update_user_preferences`
+  - `enable_user_identity`, `disable_user_identity`, `verify_user_identity`, `create_user_identity_link`
+  - `enroll_mfa`, `confirm_mfa_enrollment`, `disable_mfa`, `reset_mfa`
+  - `create_blacklist_user`, `delete_blacklist_user`
+
+  A tenant admin who held `users.*` / `mfa.*` only in their own tenant now gets 32001. Grant these
+  permissions in tenant 1 to whoever manages users: user-manager admins, and service users that
+  enroll or confirm MFA on the user's behalf.
+- **Hide these actions from tenant-only admins.** A UI that offers lock / disable / reset-MFA in a
+  tenant's admin screen should drop them unless the caller holds the permission in tenant 1.
+- **Self-service is unchanged.** Own password, own identity link, own profile data and preferences
+  still need no permission.
+- **`_tenant_id` is still accepted** and goes into the journal, so keep passing the current tenant.
 
 ---
 
