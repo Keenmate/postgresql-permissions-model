@@ -1,0 +1,6 @@
+{
+  "name": "Audit D-07: global operations need the permission in tenant 1",
+  "description": "The permission tree, providers, resource types/roles/flags, token types, languages, system parameters and event codes are global. A tenant-B admin holding every permission in B is rejected (32001); the same permissions in tenant 1 work whatever _tenant_id is passed. System parameters and event codes need a real permission (system.*). Translations are validated against _tenant_id. Runs as non-system users.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

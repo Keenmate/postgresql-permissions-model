@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-08 — v2.15: global operations need the permission in tenant 1
+
+**`062_update_permissions_v2-15.sql`** (`postgresql_permissionmodel` **2.15**). Audit decision D-07.
+
+### Fixed (security)
+
+- **Tenant admins and owners could change global objects.** These functions checked the permission in whatever `_tenant_id` was passed. Tenant admins and owners can build perm sets in their own tenant and assign them to themselves, so they could create permissions, providers, resource types, token types and languages, or disable the login provider for everyone. The permission is now checked in tenant 1 for:
+  - **Permission tree:** `create_permission`, `set_permission_as_assignable`, `ensure_permissions`.
+  - **Providers:** `create/update/delete/enable/disable_provider`, and `ensure_provider`, which returned existing providers without any check.
+  - **Resource types, roles and flags:** `create/update_resource_type`, `create/update/delete_resource_role`, and the `ensure_*` functions for them.
+  - **Token types:** `create/update/delete_token_type`.
+  - **Languages:** `create/update/delete_language`. The language code is a global key, and deleting a language deletes its translations in every tenant.
+- **System parameters and event codes had no real permission.**
+  - `auth.update_sys_param` allowed only user 1. It now needs `system.update_sys_params`.
+  - The six `public` event category / code / message create and delete functions had no check at all. They now need `system.manage_event_codes`.
+  - Both permissions are checked in tenant 1. They live under the new node `system`, which is added to `system_admin` and `full_admin`.
+- **Other tenants' translations could be changed.**
+  - `update_translation` and `delete_translation` accepted any tenant's translation, including tenant 1's, which everybody sees. The row must now belong to `_tenant_id` (37002).
+  - `copy_translations` wrote into any `_to_tenant_id`. It now copies only into `_tenant_id` (34002).
+- **`set_permission_as_assignable` by full code always crashed** with "operator does not exist: ltree = text".
+
+### Tests
+
+- New suite `tests/test_audit_global_ops/`.
+
 ## 2026-11-08 — v2.14: inactive resource roles grant nothing
 
 **`061_update_permissions_v2-14.sql`** (`postgresql_permissionmodel` **2.14**). Audit decision D-06, resource part.
@@ -2586,6 +2611,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.15 | 2026-11-08 | Security: permission tree, providers, resource types/roles, token types and languages check the permission in tenant 1; system parameters and event codes need `system.*` permissions; translations validated against `_tenant_id` (`062_update_permissions_v2-15.sql`) |
 | 2.14 | 2026-11-08 | Security: inactive resource roles grant nothing (`061_update_permissions_v2-14.sql`) |
 | 2.13 | 2026-11-08 | Security: resource access deny (user or group, any ancestor level) beats every grant; partial keys cover descendants; all resource access functions share one evaluation; group denies (`060_update_permissions_v2-13.sql`) |
 | 2.12 | 2026-11-08 | Security: tenant owners hold their tenant's `tenant_owner` perm set instead of passing every check; owner resource bypass only for active owners of live tenants; group owners only manage members (`059_update_permissions_v2-12.sql`) |

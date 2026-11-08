@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.14', 'postgresql_permissionmodel')`
-at startup (currently 2.14) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.15', 'postgresql_permissionmodel')`
+at startup (currently 2.15) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,31 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.15 — global operations need the permission in tenant 1 (`062`)
+
+**Status in keen-auth-permissions: not adopted.** No signature changes. Behaviour changes:
+
+- **These functions check their permission in tenant 1, whatever `_tenant_id` you pass:**
+  - permission tree: `create_permission`, `set_permission_as_assignable`, `ensure_permissions`;
+  - providers: `create/update/delete/enable/disable_provider`, `ensure_provider`;
+  - resource types and roles: `create/update_resource_type`, `create/update/delete_resource_role`
+    and their `ensure_*` functions;
+  - `create/update/delete_token_type`;
+  - `create/update/delete_language`.
+
+  Holders of these permissions only in another tenant now get 32001.
+- **`auth.update_sys_param` needs `system.update_sys_params` in tenant 1.** It was user 1 only.
+- **The `public` event category / code / message create and delete functions need
+  `system.manage_event_codes` in tenant 1.** They had no check.
+
+  Both new permissions are in `system_admin` and `full_admin`. Service users that seed event codes
+  at startup need `system.manage_event_codes`.
+- **Translations.**
+  - `update_translation` / `delete_translation` raise 37002 for a translation of another tenant.
+  - `copy_translations` raises 34002 unless `_to_tenant_id = _tenant_id`.
 
 ---
 

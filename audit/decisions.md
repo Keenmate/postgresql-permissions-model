@@ -136,7 +136,9 @@ caller passes.
   through. `update_sys_param` gets a real permission instead of the `user_id = 1` check, and the
   `public` event-code functions get permission checks.
 - Refs: 02/3, 02/9, 04/OQ-07, 04/OQ-08, 05/Q2, 08/Q-11, 08/Q-12
-- **Answer:**
+- **Answer:** **list accepted** ("move to d7"). Done across v2.5/v2.8/v2.9 and v2.15 (`062`). Languages
+  are global (code is a global key). `update_sys_param` and event codes got `system.*` permissions.
+  Open: translations have a tenant_id but a global unique key (see notes in v2.15).
 
 ### D-08 Fix the seeded perm sets
 - The `read_all_*` permissions sit under assignable parents (`users`, `groups`, `tenants`,
