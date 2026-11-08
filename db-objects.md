@@ -613,7 +613,7 @@
 | unsecure | get\_assigned\_group\_permissions | function | 019\_functions\_unsecure.sql | 725 | 1 | 019\_functions\_unsecure.sql:725 | - |
 | unsecure | get\_cached\_group\_ids | function | 019\_functions\_unsecure.sql | 2722 | 1 | 019\_functions\_unsecure.sql:2722 | - |
 | unsecure | get\_effective\_group\_permissions | function | 019\_functions\_unsecure.sql | 688 | 1 | 019\_functions\_unsecure.sql:688 | - |
-| unsecure | get\_effective\_resource\_access | function | 060\_update\_permissions\_v2-13.sql | 58 | 1 | 060\_update\_permissions\_v2-13.sql:58 | - |
+| unsecure | get\_effective\_resource\_access | function | 061\_update\_permissions\_v2-14.sql | 20 | 2 | 061\_update\_permissions\_v2-14.sql:20<br>060\_update\_permissions\_v2-13.sql:58 | - |
 | unsecure | get\_invitation\_actions | function | 042\_functions\_invitation.sql | 582 | 1 | 042\_functions\_invitation.sql:582 | - |
 | unsecure | get\_invitations | function | 042\_functions\_invitation.sql | 530 | 1 | 042\_functions\_invitation.sql:530 | - |
 | unsecure | get\_login\_lockout\_settings | function | 053\_update\_permissions\_v2-6.sql | 268 | 1 | 053\_update\_permissions\_v2-6.sql:268 | - |

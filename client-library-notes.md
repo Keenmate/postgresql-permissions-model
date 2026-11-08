@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.13', 'postgresql_permissionmodel')`
-at startup (currently 2.13) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.14', 'postgresql_permissionmodel')`
+at startup (currently 2.14) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,14 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.14 — inactive resource roles grant nothing (`061`)
+
+**Status in keen-auth-permissions: not adopted.** No signature changes. A resource role with
+`is_active = false` no longer grants its flags anywhere it is assigned. Switching it back on restores
+them; the assignments are kept.
 
 ---
 

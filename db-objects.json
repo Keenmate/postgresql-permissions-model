@@ -11212,14 +11212,20 @@
     "schema": "unsecure",
     "object_name": "get_effective_resource_access",
     "object_type": "function",
-    "last_update_file": "060_update_permissions_v2-13.sql",
-    "last_update_line": 58,
+    "last_update_file": "061_update_permissions_v2-14.sql",
+    "last_update_line": 20,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "060_update_permissions_v2-13.sql",
         "line": 58,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "061_update_permissions_v2-14.sql",
+        "line": 20,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }

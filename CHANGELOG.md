@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-08 — v2.14: inactive resource roles grant nothing
+
+**`061_update_permissions_v2-14.sql`** (`postgresql_permissionmodel` **2.14**). Audit decision D-06, resource part.
+
+### Fixed (security)
+
+- **A switched-off role kept granting its flags.** `unsecure.get_effective_resource_access` joined a role's flags without looking at `const.resource_role.is_active`, so the role kept granting them everywhere it was assigned. Assignments are kept, and switching the role back on restores them.
+
+### Tests
+
+- `tests/test_audit_resource_access/002_roles.sql` covers roles in the folder model:
+  - a role on a folder covers everything below it;
+  - group roles count;
+  - a deny above takes away exactly the denied flag;
+  - inactive roles grant nothing.
+
 ## 2026-11-08 — v2.13: resource access, deny wins, partial keys, one evaluation
 
 **`060_update_permissions_v2-13.sql`** (`postgresql_permissionmodel` **2.13**). Audit decision D-14.
@@ -2570,6 +2586,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.14 | 2026-11-08 | Security: inactive resource roles grant nothing (`061_update_permissions_v2-14.sql`) |
 | 2.13 | 2026-11-08 | Security: resource access deny (user or group, any ancestor level) beats every grant; partial keys cover descendants; all resource access functions share one evaluation; group denies (`060_update_permissions_v2-13.sql`) |
 | 2.12 | 2026-11-08 | Security: tenant owners hold their tenant's `tenant_owner` perm set instead of passing every check; owner resource bypass only for active owners of live tenants; group owners only manage members (`059_update_permissions_v2-12.sql`) |
 | 2.11 | 2026-11-08 | Security (breaking): `accept_invitation` / `reject_invitation` take the invitation uuid instead of the sequential id (`058_update_permissions_v2-11.sql`) |
