@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-08 — v2.16: translations are global
+
+**`063_update_permissions_v2-16.sql`** (`postgresql_permissionmodel` **2.16**). Follow-up to D-07.
+
+`public.translation` has a `tenant_id`, but its unique keys ignore it. Only one translation per language, data group, object and context could exist across all tenants, and whoever wrote it first owned it. Translations are now global, like languages.
+
+### Changed
+
+- **Writes are managed from tenant 1.** `create_translation`, `update_translation`, `delete_translation` and `copy_translations` need the permission in tenant 1, and rows are always stored with `tenant_id = 1`. `copy_translations` ignores `_from_tenant_id` / `_to_tenant_id`, which are kept for compatibility. This replaces the v2.15 per-tenant row check.
+- **Every tenant reads the same rows.** `get_group_translations` and `search_translations` return the global rows to every tenant. `search_translations` still checks `translations.read_translations` in the caller's `_tenant_id`.
+- **Existing data moves to tenant 1.** Rows of other tenants are moved there, and the column defaults to 1.
+
+### Tests
+
+- `tests/test_audit_global_ops` covers translations as global objects.
+
 ## 2026-11-08 — v2.15: global operations need the permission in tenant 1
 
 **`062_update_permissions_v2-15.sql`** (`postgresql_permissionmodel` **2.15**). Audit decision D-07.
@@ -2611,6 +2627,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.16 | 2026-11-08 | Translations are global: writes need the permission in tenant 1 and are stored in tenant 1; every tenant reads the same rows (`063_update_permissions_v2-16.sql`) |
 | 2.15 | 2026-11-08 | Security: permission tree, providers, resource types/roles, token types and languages check the permission in tenant 1; system parameters and event codes need `system.*` permissions; translations validated against `_tenant_id` (`062_update_permissions_v2-15.sql`) |
 | 2.14 | 2026-11-08 | Security: inactive resource roles grant nothing (`061_update_permissions_v2-14.sql`) |
 | 2.13 | 2026-11-08 | Security: resource access deny (user or group, any ancestor level) beats every grant; partial keys cover descendants; all resource access functions share one evaluation; group denies (`060_update_permissions_v2-13.sql`) |

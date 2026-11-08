@@ -48,13 +48,15 @@ begin
     perform pg_temp.d07_expect('create_event_code (nobody)',
         'select * from public.create_event_code(''t'', {nobody_id}, ''c'', 11999, ''d07_code'', ''tenant_event'', ''D07 code'')', '32001');
 
-    -- translations of tenant 1 (shown to everyone) by id, and copying into tenant 1
-    perform pg_temp.d07_expect('update_translation of tenant 1',
-        'select * from public.update_translation(''t'', {admin_b_id}, ''c'', {tr_id}, ''Hijacked'', {b_id})', '37002');
-    perform pg_temp.d07_expect('delete_translation of tenant 1',
-        'select * from public.delete_translation(''t'', {admin_b_id}, ''c'', {tr_id}, {b_id})', '37002');
-    perform pg_temp.d07_expect('copy_translations into tenant 1',
-        'select * from public.copy_translations(''t'', {admin_b_id}, ''c'', ''en'', ''en'', true, null, {b_id}, 1, {b_id})', '34002');
+    -- translations are global (v2.16): managed from tenant 1 only
+    perform pg_temp.d07_expect('create_translation',
+        'select * from public.create_translation(''t'', {admin_b_id}, ''c'', ''en'', ''d07_group'', ''D07'', ''d07_obj'', _tenant_id := {b_id})', '32001');
+    perform pg_temp.d07_expect('update_translation',
+        'select * from public.update_translation(''t'', {admin_b_id}, ''c'', {tr_id}, ''Hijacked'', {b_id})', '32001');
+    perform pg_temp.d07_expect('delete_translation',
+        'select * from public.delete_translation(''t'', {admin_b_id}, ''c'', {tr_id}, {b_id})', '32001');
+    perform pg_temp.d07_expect('copy_translations',
+        'select * from public.copy_translations(''t'', {admin_b_id}, ''c'', ''en'', ''en'', true, null, {b_id}, 1, {b_id})', '32001');
 end $$;
 
 do $$

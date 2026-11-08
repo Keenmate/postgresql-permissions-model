@@ -431,7 +431,7 @@
 | public | auth | schema | 001\_create\_basic\_structure.sql | 18 | 1 | 001\_create\_basic\_structure.sql:18 | - |
 | public | check\_version | function | 049\_update\_permissions\_v2-2.sql | 23 | 3 | 049\_update\_permissions\_v2-2.sql:23<br>018\_functions\_public.sql:502<br>002\_create\_version\_management.sql:68 | - |
 | public | const | schema | 001\_create\_basic\_structure.sql | 13 | 1 | 001\_create\_basic\_structure.sql:13 | - |
-| public | copy\_translations | function | 062\_update\_permissions\_v2-15.sql | 2012 | 2 | 062\_update\_permissions\_v2-15.sql:2012<br>032\_functions\_translation.sql:171 | - |
+| public | copy\_translations | function | 063\_update\_permissions\_v2-16.sql | 179 | 3 | 063\_update\_permissions\_v2-16.sql:179<br>062\_update\_permissions\_v2-15.sql:2012<br>032\_functions\_translation.sql:171 | - |
 | public | create\_event\_category | function | 062\_update\_permissions\_v2-15.sql | 1668 | 2 | 062\_update\_permissions\_v2-15.sql:1668<br>018\_functions\_public.sql:657 | - |
 | public | create\_event\_code | function | 062\_update\_permissions\_v2-15.sql | 1743 | 2 | 062\_update\_permissions\_v2-15.sql:1743<br>018\_functions\_public.sql:697 | - |
 | public | create\_event\_message | function | 062\_update\_permissions\_v2-15.sql | 1847 | 2 | 062\_update\_permissions\_v2-15.sql:1847<br>018\_functions\_public.sql:763 | - |
@@ -441,13 +441,13 @@
 | public | create\_journal\_message\_for\_entity\_by\_code | function | 018\_functions\_public.sql | 334 | 1 | 018\_functions\_public.sql:334 | - |
 | public | create\_language | function | 062\_update\_permissions\_v2-15.sql | 1352 | 2 | 062\_update\_permissions\_v2-15.sql:1352<br>031\_functions\_language.sql:26 | - |
 | public | create\_token\_type | function | 062\_update\_permissions\_v2-15.sql | 1228 | 2 | 062\_update\_permissions\_v2-15.sql:1228<br>025\_functions\_auth\_token.sql:348 | - |
-| public | create\_translation | function | 032\_functions\_translation.sql | 23 | 1 | 032\_functions\_translation.sql:23 | - |
+| public | create\_translation | function | 063\_update\_permissions\_v2-16.sql | 40 | 2 | 063\_update\_permissions\_v2-16.sql:40<br>032\_functions\_translation.sql:23 | - |
 | public | delete\_event\_category | function | 062\_update\_permissions\_v2-15.sql | 1709 | 2 | 062\_update\_permissions\_v2-15.sql:1709<br>018\_functions\_public.sql:840 | - |
 | public | delete\_event\_code | function | 062\_update\_permissions\_v2-15.sql | 1810 | 2 | 062\_update\_permissions\_v2-15.sql:1810<br>018\_functions\_public.sql:804 | - |
 | public | delete\_event\_message | function | 062\_update\_permissions\_v2-15.sql | 1889 | 2 | 062\_update\_permissions\_v2-15.sql:1889<br>018\_functions\_public.sql:873 | - |
 | public | delete\_language | function | 062\_update\_permissions\_v2-15.sql | 1527 | 2 | 062\_update\_permissions\_v2-15.sql:1527<br>031\_functions\_language.sql:207 | - |
 | public | delete\_token\_type | function | 062\_update\_permissions\_v2-15.sql | 1314 | 2 | 062\_update\_permissions\_v2-15.sql:1314<br>025\_functions\_auth\_token.sql:434 | - |
-| public | delete\_translation | function | 062\_update\_permissions\_v2-15.sql | 1984 | 2 | 062\_update\_permissions\_v2-15.sql:1984<br>032\_functions\_translation.sql:140 | - |
+| public | delete\_translation | function | 063\_update\_permissions\_v2-16.sql | 151 | 3 | 063\_update\_permissions\_v2-16.sql:151<br>062\_update\_permissions\_v2-15.sql:1984<br>032\_functions\_translation.sql:140 | - |
 | public | error | schema | 001\_create\_basic\_structure.sql | 12 | 1 | 001\_create\_basic\_structure.sql:12 | - |
 | public | ext | schema | 001\_create\_basic\_structure.sql | 17 | 1 | 001\_create\_basic\_structure.sql:17 | - |
 | public | format\_journal\_message | function | 018\_functions\_public.sql | 140 | 1 | 018\_functions\_public.sql:140 | - |
@@ -456,7 +456,7 @@
 | public | get\_default\_language | function | 031\_functions\_language.sql | 441 | 1 | 031\_functions\_language.sql:441 | - |
 | public | get\_event\_message\_template | function | 018\_functions\_public.sql | 174 | 1 | 018\_functions\_public.sql:174 | - |
 | public | get\_frontend\_languages | function | 031\_functions\_language.sql | 330 | 1 | 031\_functions\_language.sql:330 | - |
-| public | get\_group\_translations | function | 032\_functions\_translation.sql | 271 | 1 | 032\_functions\_translation.sql:271 | - |
+| public | get\_group\_translations | function | 063\_update\_permissions\_v2-16.sql | 277 | 2 | 063\_update\_permissions\_v2-16.sql:277<br>032\_functions\_translation.sql:271 | - |
 | public | get\_journal\_entry | function | 018\_functions\_public.sql | 368 | 1 | 018\_functions\_public.sql:368 | - |
 | public | get\_journal\_payload | function | 018\_functions\_public.sql | 414 | 1 | 018\_functions\_public.sql:414 | - |
 | public | get\_language | function | 031\_functions\_language.sql | 239 | 1 | 031\_functions\_language.sql:239 | - |
@@ -481,12 +481,12 @@
 | public | purge\_audit\_data | function | 018\_functions\_public.sql | 986 | 1 | 018\_functions\_public.sql:986 | - |
 | public | search\_journal | function | 018\_functions\_public.sql | 552 | 1 | 018\_functions\_public.sql:552 | - |
 | public | search\_journal\_msgs | function | 018\_functions\_public.sql | 912 | 1 | 018\_functions\_public.sql:912 | - |
-| public | search\_translations | function | 032\_functions\_translation.sql | 317 | 1 | 032\_functions\_translation.sql:317 | - |
+| public | search\_translations | function | 063\_update\_permissions\_v2-16.sql | 320 | 2 | 063\_update\_permissions\_v2-16.sql:320<br>032\_functions\_translation.sql:317 | - |
 | public | stage | schema | 001\_create\_basic\_structure.sql | 19 | 1 | 001\_create\_basic\_structure.sql:19 | - |
 | public | start\_version\_update | function | 018\_functions\_public.sql | 13 | 2 | 018\_functions\_public.sql:13<br>002\_create\_version\_management.sql:25 | - |
 | public | stop\_version\_update | function | 018\_functions\_public.sql | 32 | 2 | 018\_functions\_public.sql:32<br>002\_create\_version\_management.sql:46 | - |
 | public | tmp\_default\_groups | table | 019\_functions\_unsecure.sql | 1675 | 2 | 019\_functions\_unsecure.sql:1675<br>019\_functions\_unsecure.sql:1644 | - |
-| public | translation | table | 030\_tables\_language.sql | 48 | 1 | 030\_tables\_language.sql:48 | - |
+| public | translation | table | 063\_update\_permissions\_v2-16.sql | 37 | 2 | 063\_update\_permissions\_v2-16.sql:37<br>030\_tables\_language.sql:48 | - |
 | public | trg\_auth\_calculate\_api\_key | trigger | 017\_functions\_triggers.sql | 231 | 1 | 017\_functions\_triggers.sql:231 | - |
 | public | trg\_auth\_calculate\_perm\_set | trigger | 017\_functions\_triggers.sql | 219 | 1 | 017\_functions\_triggers.sql:219 | - |
 | public | trg\_auth\_calculate\_permission | trigger | 017\_functions\_triggers.sql | 211 | 1 | 017\_functions\_triggers.sql:211 | - |
@@ -522,7 +522,7 @@
 | public | unsecure | schema | 001\_create\_basic\_structure.sql | 15 | 1 | 001\_create\_basic\_structure.sql:15 | - |
 | public | update\_language | function | 062\_update\_permissions\_v2-15.sql | 1436 | 2 | 062\_update\_permissions\_v2-15.sql:1436<br>031\_functions\_language.sql:113 | - |
 | public | update\_token\_type | function | 062\_update\_permissions\_v2-15.sql | 1263 | 2 | 062\_update\_permissions\_v2-15.sql:1263<br>025\_functions\_auth\_token.sql:383 | - |
-| public | update\_translation | function | 062\_update\_permissions\_v2-15.sql | 1933 | 2 | 062\_update\_permissions\_v2-15.sql:1933<br>032\_functions\_translation.sql:86 | - |
+| public | update\_translation | function | 063\_update\_permissions\_v2-16.sql | 100 | 3 | 063\_update\_permissions\_v2-16.sql:100<br>062\_update\_permissions\_v2-15.sql:1933<br>032\_functions\_translation.sql:86 | - |
 | public | uq\_version | index | 002\_create\_version\_management.sql | 23 | 1 | 002\_create\_version\_management.sql:23 | - |
 | public | validate\_token | function | 018\_functions\_public.sql | 432 | 1 | 018\_functions\_public.sql:432 | - |
 | stage | external\_group\_member | table | 014\_tables\_stage.sql | 13 | 1 | 014\_tables\_stage.sql:13 | - |

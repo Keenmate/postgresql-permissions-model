@@ -26,3 +26,31 @@ begin
     perform pg_temp.d07_expect('tenant 1: create_event_category',
         'select * from public.create_event_category(''t'', {sysadmin_id}, ''c'', ''d07_cat'', ''D07'', 900000, 900099)', null);
 end $$;
+
+-- Translations are global: a tenant 1 admin manages them whatever _tenant_id is
+-- passed, rows always land in tenant 1, and every tenant reads the same rows.
+do $$
+declare
+    __tr int;
+begin
+    perform pg_temp.d07_expect('tenant 1: create_translation',
+        'select * from public.create_translation(''t'', {sysadmin_id}, ''c'', ''en'', ''d07_group'', ''D07'', ''d07_obj'', _tenant_id := {b_id})', null);
+
+    select translation_id from public.translation where data_group = 'd07_group' and data_object_code = 'd07_obj' into __tr;
+    if (select tenant_id from public.translation where translation_id = __tr) = 1 then
+        raise notice 'PASS: translation created from tenant B lands in tenant 1 (global)';
+    else
+        raise notice 'FAIL: translation not stored as global';
+    end if;
+
+    perform pg_temp.d07_expect('tenant 1: update_translation',
+        format('select * from public.update_translation(''t'', {sysadmin_id}, ''c'', %s, ''D07 updated'', {b_id})', __tr), null);
+
+    if exists(select from public.search_translations((select val::bigint from _d07 where key = 'admin_b_id'), 'c',
+                  _language_code := 'en', _data_group := 'd07_group',
+                  _tenant_id := (select val::int from _d07 where key = 'b_id')) s) then
+        raise notice 'PASS: tenant B admin reads the global rows from tenant B';
+    else
+        raise notice 'FAIL: search_translations from tenant B returns nothing';
+    end if;
+end $$;

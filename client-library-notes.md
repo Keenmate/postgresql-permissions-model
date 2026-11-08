@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.15', 'postgresql_permissionmodel')`
-at startup (currently 2.15) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.16', 'postgresql_permissionmodel')`
+at startup (currently 2.16) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,21 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.16 — translations are global (`063`)
+
+**Status in keen-auth-permissions: not adopted.** No signature changes. Behaviour changes:
+
+- **Translation writes need the permission in tenant 1.** This covers `create_translation`,
+  `update_translation`, `delete_translation` and `copy_translations`, and rows are stored in
+  tenant 1 whatever `_tenant_id` you pass. Tenant-only translation managers now get 32001.
+- **`copy_translations` ignores `_from_tenant_id` / `_to_tenant_id`.** It copies between languages
+  of the global set.
+- **`get_group_translations` and `search_translations` return the same global rows in every
+  tenant.** Search still needs `translations.read_translations` in the caller's tenant.
+- **This supersedes the v2.15 translation notes:** no 37002 / 34002 for tenant mismatches any more.
 
 ---
 

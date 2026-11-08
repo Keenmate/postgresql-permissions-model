@@ -8166,10 +8166,10 @@
     "schema": "public",
     "object_name": "copy_translations",
     "object_type": "function",
-    "last_update_file": "062_update_permissions_v2-15.sql",
-    "last_update_line": 2012,
+    "last_update_file": "063_update_permissions_v2-16.sql",
+    "last_update_line": 179,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 3,
     "all_updates": [
       {
         "file": "032_functions_translation.sql",
@@ -8180,6 +8180,12 @@
       {
         "file": "062_update_permissions_v2-15.sql",
         "line": 2012,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "063_update_permissions_v2-16.sql",
+        "line": 179,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -8372,14 +8378,20 @@
     "schema": "public",
     "object_name": "create_translation",
     "object_type": "function",
-    "last_update_file": "032_functions_translation.sql",
-    "last_update_line": 23,
+    "last_update_file": "063_update_permissions_v2-16.sql",
+    "last_update_line": 40,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "032_functions_translation.sql",
         "line": 23,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "063_update_permissions_v2-16.sql",
+        "line": 40,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -8504,10 +8516,10 @@
     "schema": "public",
     "object_name": "delete_translation",
     "object_type": "function",
-    "last_update_file": "062_update_permissions_v2-15.sql",
-    "last_update_line": 1984,
+    "last_update_file": "063_update_permissions_v2-16.sql",
+    "last_update_line": 151,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 3,
     "all_updates": [
       {
         "file": "032_functions_translation.sql",
@@ -8518,6 +8530,12 @@
       {
         "file": "062_update_permissions_v2-15.sql",
         "line": 1984,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "063_update_permissions_v2-16.sql",
+        "line": 151,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -8663,14 +8681,20 @@
     "schema": "public",
     "object_name": "get_group_translations",
     "object_type": "function",
-    "last_update_file": "032_functions_translation.sql",
-    "last_update_line": 271,
+    "last_update_file": "063_update_permissions_v2-16.sql",
+    "last_update_line": 277,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "032_functions_translation.sql",
         "line": 271,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "063_update_permissions_v2-16.sql",
+        "line": 277,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -9088,14 +9112,20 @@
     "schema": "public",
     "object_name": "search_translations",
     "object_type": "function",
-    "last_update_file": "032_functions_translation.sql",
-    "last_update_line": 317,
+    "last_update_file": "063_update_permissions_v2-16.sql",
+    "last_update_line": 320,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "032_functions_translation.sql",
         "line": 317,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "063_update_permissions_v2-16.sql",
+        "line": 320,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -9191,15 +9221,21 @@
     "schema": "public",
     "object_name": "translation",
     "object_type": "table",
-    "last_update_file": "030_tables_language.sql",
-    "last_update_line": 48,
+    "last_update_file": "063_update_permissions_v2-16.sql",
+    "last_update_line": 37,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "030_tables_language.sql",
         "line": 48,
         "operation": "CREATE",
+        "source": "migration"
+      },
+      {
+        "file": "063_update_permissions_v2-16.sql",
+        "line": 37,
+        "operation": "ALTER",
         "source": "migration"
       }
     ]
@@ -9833,10 +9869,10 @@
     "schema": "public",
     "object_name": "update_translation",
     "object_type": "function",
-    "last_update_file": "062_update_permissions_v2-15.sql",
-    "last_update_line": 1933,
+    "last_update_file": "063_update_permissions_v2-16.sql",
+    "last_update_line": 100,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 3,
     "all_updates": [
       {
         "file": "032_functions_translation.sql",
@@ -9847,6 +9883,12 @@
       {
         "file": "062_update_permissions_v2-15.sql",
         "line": 1933,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "063_update_permissions_v2-16.sql",
+        "line": 100,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
