@@ -1393,6 +1393,14 @@ if [[ -f "$LOCAL_ENV_FILE" ]]; then
     prepare_environment "$LOCAL_ENV_FILE"
 fi
 
+# Bash arithmetic reads a leading zero as octal ("051" -> 41, "008" is an error), so normalize
+# CLI and env range values to decimal the way file prefixes are parsed. -1 (all) stays as is.
+for __range_var in UPDATE_START_NUMBER UPDATE_END_NUMBER DBUPDATESTARTNUMBER DBUPDATEENDNUMBER; do
+    if [[ ${!__range_var} =~ ^[0-9]+$ ]]; then
+        printf -v "$__range_var" '%d' "$((10#${!__range_var}))"
+    fi
+done
+
 # Resolve migration range: CLI flags win; otherwise fall back to env vars loaded above.
 if [[ $UPDATE_START_NUMBER -eq -1 ]] && [[ -n "$DBUPDATESTARTNUMBER" ]] && [[ $DBUPDATESTARTNUMBER -gt 0 ]]; then
     UPDATE_START_NUMBER=$DBUPDATESTARTNUMBER
@@ -1400,6 +1408,7 @@ fi
 if [[ $UPDATE_END_NUMBER -eq -1 ]] && [[ -n "$DBUPDATEENDNUMBER" ]] && [[ $DBUPDATEENDNUMBER -ge 1 ]]; then
     UPDATE_END_NUMBER=$DBUPDATEENDNUMBER
 fi
+
 
 # Set default tool paths if not defined
 : ${DBPSQLFILE:=psql}
