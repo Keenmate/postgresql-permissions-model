@@ -94,7 +94,10 @@ such as changing the permission tree. The code comment there says "NOT REALLY SA
   checks get faster because the owner lookup goes away. Option a keeps a second code path that
   every future fix would have to remember.
 - Refs: 02/5, 04/OQ-01, 04/OQ-07, 05/Q8, 05/Q9, 08/Q-03
-- **Answer:**
+- **Answer:** **b**. A tenant owner is like a SharePoint site collection owner: a super admin of
+  their own tenant (every resource, standard operations, tenant configuration), nothing elsewhere.
+  Done in v2.12 (`059`): run-own-tenant `tenant_owner` perm set derived from the owner row; resource
+  bypass kept for active owners of live tenants; group owners only manage members.
 
 ### D-06 Does every inactive or deleted state remove access?
 The proposed rule:

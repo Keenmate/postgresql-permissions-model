@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-08 — v2.12: ownership is a perm set, not a bypass
+
+**`059_update_permissions_v2-12.sql`** (`postgresql_permissionmodel` **2.12**). Audit decision D-05, option b. A tenant owner works like a SharePoint site collection owner: a super admin of their own tenant (every resource, every standard operation, tenant configuration) and nothing in other tenants or globally.
+
+### Fixed (security)
+
+- **Tenant owners passed every permission check.** `auth.has_permissions` returned true for a tenant-wide owner for any permission code. That included global, tenant-1-only ones such as creating tenants, providers, the permission tree and global user state. The shortcut is gone.
+  - Owners now hold their tenant's **`tenant_owner`** perm set, derived from the owner row in the permission rebuild. It's cached and visible like any other grant.
+  - Removing the owner row, or changing the set, takes effect at the next check (new trigger `trg_auth_owner_cache`).
+- **Disabled or locked owners, and owners of soft-deleted tenants, saw every resource.** The resource-access owner bypass (`has_resource_access`, `filter_accessible_resources`, `get_resource_access_flags`, `get_resource_access_matrix`) now applies only to an active, unlocked owner of a live tenant (`unsecure.is_active_tenant_owner`).
+- **Group owners could appoint more owners.** A group owner now only manages the members of their own group.
+
+### Changed
+
+- **`tenant_owner` now holds the run-own-tenant permissions**, and it exists in every tenant. `create_tenant` copies it, like `tenant_admin` and `tenant_member`. The permissions cover:
+  - the tenant itself;
+  - groups, mappings and members;
+  - assignments and perm sets;
+  - API keys and invitations;
+  - MFA policies and resource grants;
+  - user reads and the tenant journal.
+
+  It holds no `*_all` / `read_all_*` permissions and nothing global.
+- **`can_manage_user_group` has no tenant-owner shortcut any more.** Members may manage each other when the group allows it, owners of the group manage its members, and everybody else needs the permission. A permission holder may now manage an owned group too; it used to get 52401.
+- **`verify_owner_or_permission` (appointing owners) checks only `tenants.assign_owner` / `assign_group_owner`.**
+- **`create_tenant` inserts the owner row itself** instead of calling `auth.create_owner` (an `auth` → `auth` call).
+
+### Tests
+
+- New suite `tests/test_audit_owner/`.
+- `test_audit_permission_state` now checks the owner against a `tenant_owner` permission.
+
 ## 2026-11-08 — v2.11: invitations are accepted and rejected by uuid
 
 **`058_update_permissions_v2-11.sql`** (`postgresql_permissionmodel` **2.11**).
@@ -2510,6 +2542,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.12 | 2026-11-08 | Security: tenant owners hold their tenant's `tenant_owner` perm set instead of passing every check; owner resource bypass only for active owners of live tenants; group owners only manage members (`059_update_permissions_v2-12.sql`) |
 | 2.11 | 2026-11-08 | Security (breaking): `accept_invitation` / `reject_invitation` take the invitation uuid instead of the sequential id (`058_update_permissions_v2-11.sql`) |
 | 2.10 | 2026-11-08 | Security: `get_invitations` checks `get_all_invitations` in tenant 1; `get_api_key_permissions` checks `api_keys.search` in `_tenant_id` and validates the key tenant (`057_update_permissions_v2-10.sql`) |
 | 2.9 | 2026-11-08 | Security: lock/disable/delete user, password, identities, profile, MFA and blacklist check the permission in tenant 1 (D-04); `verify_user_identity` unknown-user crash (`056_update_permissions_v2-9.sql`) |

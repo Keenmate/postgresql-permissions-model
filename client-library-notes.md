@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.11', 'postgresql_permissionmodel')`
-at startup (currently 2.11) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.12', 'postgresql_permissionmodel')`
+at startup (currently 2.12) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,34 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.12 — ownership is a perm set, not a bypass (`059`)
+
+**Status in keen-auth-permissions: not adopted.** No signature changes. Behaviour changes:
+
+- **Tenant owners no longer pass every check.** They hold their tenant's `tenant_owner` perm set,
+  which shows up in the permission cache, `get_users_groups_and_permissions` and so on. Its
+  contents:
+  - the tenant itself;
+  - groups, mappings and members;
+  - assignments and perm sets;
+  - API keys and invitations;
+  - MFA policies and resource grants;
+  - user reads and the journal.
+
+  Owners get 32001 for global or cross-tenant permissions they used to pass: creating tenants,
+  providers, the permission tree, `*_all`, and global user state. An app that relied on "owner can
+  do anything" must grant those permissions explicitly (in tenant 1 for global ones).
+- **App-specific permissions.** If your app defines its own permissions that owners should hold, add
+  them to the `tenant_owner` perm set. Changing tenant 1's set is the template for new tenants;
+  existing tenants have their own copy.
+- **A permission holder may now manage members of a group that has owners.** It used to get 52401.
+  Group owners can still manage their group's members, but can no longer appoint other owners
+  (32001).
+- **Resource access.** Owners still see every resource of their tenant, but not while disabled,
+  locked, or when the tenant is soft-deleted.
 
 ---
 

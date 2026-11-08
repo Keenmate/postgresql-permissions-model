@@ -77,11 +77,13 @@ begin
         __b_id, __perm, __g_id, __gm_id, __u_group, __u_direct, __u_mapped, __owner_b;
 end $$;
 
--- silent check helper for this suite
+-- silent check helper for this suite; the owner is checked on a permission of the
+-- tenant_owner perm set (owners hold that set, not arbitrary permissions - v2.12)
 create or replace function pg_temp.a04_can(_who text) returns boolean
     language sql
 as $$
 select auth.has_permission((select val::bigint from _a04 where key = _who), 'audit04',
-                           (select val from _a04 where key = 'perm'),
+                           case when _who = 'owner_b' then 'groups.create_group'
+                                else (select val from _a04 where key = 'perm') end,
                            (select val::int from _a04 where key = 'b_id'), false);
 $$;

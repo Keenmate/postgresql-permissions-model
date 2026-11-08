@@ -1,0 +1,6 @@
+{
+  "name": "Audit D-05: ownership is a perm set, not a bypass",
+  "description": "A tenant owner holds their tenant's tenant_owner perm set (run-own-tenant permissions, derived from the owner row, cached and visible), never global or cross-tenant permissions. Removing ownership removes the permissions at once. Owners see every resource of their tenant only while active, unlocked and the tenant is live. Group owners manage members of their own group only.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

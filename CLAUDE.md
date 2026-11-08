@@ -41,7 +41,7 @@ This system manages the complete lifecycle of authorization entities:
 - Each domain has paired permissions: `domain.read_*` (own tenant) + `domain.read_all_*` (cross-tenant from admin).
 - **Tenant Users** (`auth.tenant_user`) - Links users to tenants they have access to
 - **User Tenant Preferences** (`auth.user_tenant_preference`) - Per-tenant user settings/preferences
-- **Ownership** (`auth.owner`) - Tracks tenant owners and group owners
+- **Ownership** (`auth.owner`) - Tracks tenant owners and group owners. A tenant owner holds the tenant's `tenant_owner` perm set (derived in the permission rebuild, no bypass) and sees every resource of the tenant; a group owner manages the members of that group
 
 **User Management:**
 - **Users** (`auth.user_info`) - Core user data
@@ -467,6 +467,7 @@ All tests are organized as suite directories with `test.json` manifests:
 | `test_search_functions/` | All search functions: pagination, filtering, empty results |
 | `test_identity_user_data/` | v2.3: provider `_user_data` stored on the identity on first login, refreshed on later logins, kept on `null`, returned by `get_user_identity` |
 | `test_audit_authentication/` | v2.6: login/MFA/API-key outcomes persist (no raise), temporary escalating lockout with decay, admin lock, provider login of locked users, system sys_params |
+| `test_audit_owner/` | v2.12: tenant owners hold the `tenant_owner` perm set (cached, nothing global or cross-tenant), removing the owner row removes it; owner resource access only while active/unlocked and tenant live; group owners only manage members |
 | `test_audit_global_user_state/` | v2.9: lock/disable/delete user, password, identities, profile, MFA and blacklist need the permission in tenant 1; tenant-B admins are rejected; self-service stays free |
 | `test_audit_cross_tenant/` | v2.8/v2.10/v2.11: tenant B's admin and owner cannot read or change tenant A's groups, members, group owners, API keys, invitations, templates or MFA policies by id (not-found errors, nothing changed); global templates/policies only from tenant 1; `get_invitations` / `get_api_key_permissions` scoping; invitations accepted/rejected by uuid only |
 | `test_audit_permission_state/` | v2.7: disabled groups, soft-deleted tenants, inactive providers/identities and disabled/locked users (owners too) grant nothing; switching back restores; `_throw_err false` never raises |
