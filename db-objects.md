@@ -55,7 +55,7 @@
 | auth | delete\_user\_group\_mapping | function | 048\_update\_permissions\_v2-1.sql | 381 | 2 | 048\_update\_permissions\_v2-1.sql:381<br>021\_functions\_auth\_group.sql:525 | - |
 | auth | delete\_user\_group\_member | function | 055\_update\_permissions\_v2-8.sql | 649 | 2 | 055\_update\_permissions\_v2-8.sql:649<br>021\_functions\_auth\_group.sql:276 | - |
 | auth | delete\_user\_info | function | 056\_update\_permissions\_v2-9.sql | 187 | 2 | 056\_update\_permissions\_v2-9.sql:187<br>020\_functions\_auth\_user.sql:730 | - |
-| auth | deny\_resource\_access | function | 035\_functions\_resource\_access.sql | 968 | 1 | 035\_functions\_resource\_access.sql:968 | - |
+| auth | deny\_resource\_access | function | 060\_update\_permissions\_v2-13.sql | 383 | 3 | 060\_update\_permissions\_v2-13.sql:383<br>060\_update\_permissions\_v2-13.sql:49<br>035\_functions\_resource\_access.sql:968 | - |
 | auth | disable\_mfa | function | 056\_update\_permissions\_v2-9.sql | 673 | 2 | 056\_update\_permissions\_v2-9.sql:673<br>038\_functions\_mfa.sql:171 | - |
 | auth | disable\_provider | function | 024\_functions\_auth\_provider.sql | 222 | 1 | 024\_functions\_auth\_provider.sql:222 | - |
 | auth | disable\_user | function | 056\_update\_permissions\_v2-9.sql | 150 | 2 | 056\_update\_permissions\_v2-9.sql:150<br>020\_functions\_auth\_user.sql:47 | - |
@@ -82,7 +82,7 @@
 | auth | ensure\_user\_group\_mappings | function | 021\_functions\_auth\_group.sql | 1264 | 1 | 021\_functions\_auth\_group.sql:1264 | - |
 | auth | ensure\_user\_groups | function | 021\_functions\_auth\_group.sql | 1131 | 1 | 021\_functions\_auth\_group.sql:1131 | - |
 | auth | ensure\_user\_info | function | 020\_functions\_auth\_user.sql | 562 | 1 | 020\_functions\_auth\_user.sql:562 | - |
-| auth | filter\_accessible\_resources | function | 059\_update\_permissions\_v2-12.sql | 654 | 2 | 059\_update\_permissions\_v2-12.sql:654<br>035\_functions\_resource\_access.sql:311 | - |
+| auth | filter\_accessible\_resources | function | 060\_update\_permissions\_v2-13.sql | 186 | 3 | 060\_update\_permissions\_v2-13.sql:186<br>059\_update\_permissions\_v2-12.sql:654<br>035\_functions\_resource\_access.sql:311 | - |
 | auth | generate\_api\_key | function | 026\_functions\_auth\_apikey.sql | 22 | 1 | 026\_functions\_auth\_apikey.sql:22 | - |
 | auth | generate\_api\_key\_username | function | 026\_functions\_auth\_apikey.sql | 13 | 1 | 026\_functions\_auth\_apikey.sql:13 | - |
 | auth | generate\_api\_secret | function | 026\_functions\_auth\_apikey.sql | 30 | 1 | 026\_functions\_auth\_apikey.sql:30 | - |
@@ -104,8 +104,8 @@
 | auth | get\_perm\_sets | function | 022\_functions\_auth\_permission.sql | 303 | 1 | 022\_functions\_auth\_permission.sql:303 | - |
 | auth | get\_provider\_users | function | 024\_functions\_auth\_provider.sql | 252 | 1 | 024\_functions\_auth\_provider.sql:252 | - |
 | auth | get\_providers | function | 024\_functions\_auth\_provider.sql | 279 | 1 | 024\_functions\_auth\_provider.sql:279 | - |
-| auth | get\_resource\_access\_flags | function | 059\_update\_permissions\_v2-12.sql | 835 | 2 | 059\_update\_permissions\_v2-12.sql:835<br>035\_functions\_resource\_access.sql:500 | - |
-| auth | get\_resource\_access\_matrix | function | 059\_update\_permissions\_v2-12.sql | 957 | 2 | 059\_update\_permissions\_v2-12.sql:957<br>035\_functions\_resource\_access.sql:634 | - |
+| auth | get\_resource\_access\_flags | function | 060\_update\_permissions\_v2-13.sql | 233 | 3 | 060\_update\_permissions\_v2-13.sql:233<br>059\_update\_permissions\_v2-12.sql:835<br>035\_functions\_resource\_access.sql:500 | - |
+| auth | get\_resource\_access\_matrix | function | 060\_update\_permissions\_v2-13.sql | 268 | 3 | 060\_update\_permissions\_v2-13.sql:268<br>059\_update\_permissions\_v2-12.sql:957<br>035\_functions\_resource\_access.sql:634 | - |
 | auth | get\_resource\_grants | function | 035\_functions\_resource\_access.sql | 1203 | 1 | 035\_functions\_resource\_access.sql:1203 | - |
 | auth | get\_resource\_role\_assignments | function | 044\_functions\_resource\_roles.sql | 814 | 1 | 044\_functions\_resource\_roles.sql:814 | - |
 | auth | get\_resource\_role\_flags | function | 044\_functions\_resource\_roles.sql | 218 | 1 | 044\_functions\_resource\_roles.sql:218 | - |
@@ -118,7 +118,7 @@
 | auth | get\_tenant\_members | function | 023\_functions\_auth\_tenant.sql | 126 | 1 | 023\_functions\_auth\_tenant.sql:126 | - |
 | auth | get\_tenant\_users | function | 023\_functions\_auth\_tenant.sql | 67 | 1 | 023\_functions\_auth\_tenant.sql:67 | - |
 | auth | get\_tenants | function | 023\_functions\_auth\_tenant.sql | 13 | 1 | 023\_functions\_auth\_tenant.sql:13 | - |
-| auth | get\_user\_accessible\_resources | function | 035\_functions\_resource\_access.sql | 1294 | 1 | 035\_functions\_resource\_access.sql:1294 | - |
+| auth | get\_user\_accessible\_resources | function | 060\_update\_permissions\_v2-13.sql | 311 | 2 | 060\_update\_permissions\_v2-13.sql:311<br>035\_functions\_resource\_access.sql:1294 | - |
 | auth | get\_user\_assigned\_groups | function | 021\_functions\_auth\_group.sql | 740 | 1 | 021\_functions\_auth\_group.sql:740 | - |
 | auth | get\_user\_assigned\_permissions | function | 022\_functions\_auth\_permission.sql | 812 | 1 | 022\_functions\_auth\_permission.sql:812 | - |
 | auth | get\_user\_audit\_trail | function | 028\_functions\_auth\_event.sql | 125 | 1 | 028\_functions\_auth\_event.sql:125 | - |
@@ -141,7 +141,7 @@
 | auth | has\_owner | function | 027\_functions\_auth\_owner.sql | 13 | 1 | 027\_functions\_auth\_owner.sql:13 | - |
 | auth | has\_permission | function | 022\_functions\_auth\_permission.sql | 144 | 1 | 022\_functions\_auth\_permission.sql:144 | - |
 | auth | has\_permissions | function | 059\_update\_permissions\_v2-12.sql | 77 | 4 | 059\_update\_permissions\_v2-12.sql:77<br>055\_update\_permissions\_v2-8.sql:182<br>054\_update\_permissions\_v2-7.sql:50<br>022\_functions\_auth\_permission.sql:63 | - |
-| auth | has\_resource\_access | function | 059\_update\_permissions\_v2-12.sql | 506 | 2 | 059\_update\_permissions\_v2-12.sql:506<br>035\_functions\_resource\_access.sql:154 | - |
+| auth | has\_resource\_access | function | 060\_update\_permissions\_v2-13.sql | 147 | 3 | 060\_update\_permissions\_v2-13.sql:147<br>059\_update\_permissions\_v2-12.sql:506<br>035\_functions\_resource\_access.sql:154 | - |
 | auth | invitation | table | 041\_tables\_invitation.sql | 235 | 1 | 041\_tables\_invitation.sql:235 | - |
 | auth | invitation\_action | table | 041\_tables\_invitation.sql | 275 | 1 | 041\_tables\_invitation.sql:275 | - |
 | auth | invitation\_template | table | 041\_tables\_invitation.sql | 311 | 1 | 041\_tables\_invitation.sql:311 | - |
@@ -613,6 +613,7 @@
 | unsecure | get\_assigned\_group\_permissions | function | 019\_functions\_unsecure.sql | 725 | 1 | 019\_functions\_unsecure.sql:725 | - |
 | unsecure | get\_cached\_group\_ids | function | 019\_functions\_unsecure.sql | 2722 | 1 | 019\_functions\_unsecure.sql:2722 | - |
 | unsecure | get\_effective\_group\_permissions | function | 019\_functions\_unsecure.sql | 688 | 1 | 019\_functions\_unsecure.sql:688 | - |
+| unsecure | get\_effective\_resource\_access | function | 060\_update\_permissions\_v2-13.sql | 58 | 1 | 060\_update\_permissions\_v2-13.sql:58 | - |
 | unsecure | get\_invitation\_actions | function | 042\_functions\_invitation.sql | 582 | 1 | 042\_functions\_invitation.sql:582 | - |
 | unsecure | get\_invitations | function | 042\_functions\_invitation.sql | 530 | 1 | 042\_functions\_invitation.sql:530 | - |
 | unsecure | get\_login\_lockout\_settings | function | 053\_update\_permissions\_v2-6.sql | 268 | 1 | 053\_update\_permissions\_v2-6.sql:268 | - |
@@ -671,6 +672,6 @@
 | unsecure | verify\_user\_identity | function | 056\_update\_permissions\_v2-9.sql | 889 | 2 | 056\_update\_permissions\_v2-9.sql:889<br>019\_functions\_unsecure.sql:2391 | - |
 
 ## Summary
-- **Total Objects**: 667
-- **By Type**: function: 538, index: 10, schema: 9, table: 71, trigger: 31, view: 8
-- **By Schema**: auth: 247, const: 23, error: 122, helpers: 19, internal: 6, public: 106, stage: 1, triggers: 37, unsecure: 106
+- **Total Objects**: 668
+- **By Type**: function: 539, index: 10, schema: 9, table: 71, trigger: 31, view: 8
+- **By Schema**: auth: 247, const: 23, error: 122, helpers: 19, internal: 6, public: 106, stage: 1, triggers: 37, unsecure: 107

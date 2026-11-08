@@ -229,7 +229,9 @@ inactive groups.
 - **Rec:** accept all three. Removing a flag from a type mapping makes existing grants with that
   flag stop counting (07/OQ-11).
 - Refs: 07/OQ-1, 07/OQ-2, 07/OQ-3, 07/OQ-7, 07/OQ-11, 07/OQ-16
-- **Answer:**
+- **Answer:** Deny wins: a deny for the user or any of their groups on any parent blocks everything
+  below it, no exceptions (an exceptions table later if ever needed). Partial keys and bulk == single
+  accepted. Done in v2.13 (`060`); group denies added.
 
 ### D-15 What happens when the target is missing, foreign or a system object?
 Today update, delete and state-change functions silently change 0 rows and still journal (and

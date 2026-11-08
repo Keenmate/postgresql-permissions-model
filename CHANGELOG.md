@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-08 — v2.13: resource access, deny wins, partial keys, one evaluation
+
+**`060_update_permissions_v2-13.sql`** (`postgresql_permissionmodel` **2.13**). Audit decision D-14.
+
+### Fixed (security)
+
+- **A deny on a parent was overridden by a grant below it.** A deny for the user **or any group the user is in**, at any ancestor level (type or path), now beats every grant. Before:
+  - only the user's own deny counted;
+  - it counted only at the most specific type level that had any row, so a doc grant beat a project deny;
+  - group denies were never checked.
+
+  Exceptions to a deny are not supported.
+- **Lists and the single check disagreed.** `filter_accessible_resources` and `get_resource_access_flags` compared keys in the wrong direction. A project grant therefore did not show its docs in lists, although `has_resource_access` allowed them.
+- **The accessible-resources list and the matrix ignored denies above the resource.** `get_user_accessible_resources` and `get_resource_access_matrix` now apply them.
+
+### Changed
+
+- **Partial keys work again.** A stored partial key, such as `{"proj": 2}` on the doc type, covers every resource whose key contains it. This was lost in `d71afdb`.
+- **One evaluation for everything.** `has_resource_access`, `filter_accessible_resources`, `get_resource_access_flags`, `get_resource_access_matrix` and `get_user_accessible_resources` all evaluate through the new `unsecure.get_effective_resource_access`.
+- **`get_resource_access_matrix` shows, per type, what applies to every resource of that type under the asked resource.** A grant or deny on one specific child no longer shows up as a flag for the whole type.
+- **`get_user_accessible_resources` reports one `__source` string per resource**, listing all sources.
+- **`deny_resource_access` takes `_user_group_id`** (new last parameter). A group must belong to `_tenant_id`.
+
+### Tests
+
+- New suite `tests/test_audit_resource_access/`.
+- `test_resource_access/009` updated to the new matrix meaning.
+
 ## 2026-11-08 — v2.12: ownership is a perm set, not a bypass
 
 **`059_update_permissions_v2-12.sql`** (`postgresql_permissionmodel` **2.12**). Audit decision D-05, option b. A tenant owner works like a SharePoint site collection owner: a super admin of their own tenant (every resource, every standard operation, tenant configuration) and nothing in other tenants or globally.
@@ -2542,6 +2570,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.13 | 2026-11-08 | Security: resource access deny (user or group, any ancestor level) beats every grant; partial keys cover descendants; all resource access functions share one evaluation; group denies (`060_update_permissions_v2-13.sql`) |
 | 2.12 | 2026-11-08 | Security: tenant owners hold their tenant's `tenant_owner` perm set instead of passing every check; owner resource bypass only for active owners of live tenants; group owners only manage members (`059_update_permissions_v2-12.sql`) |
 | 2.11 | 2026-11-08 | Security (breaking): `accept_invitation` / `reject_invitation` take the invitation uuid instead of the sequential id (`058_update_permissions_v2-11.sql`) |
 | 2.10 | 2026-11-08 | Security: `get_invitations` checks `get_all_invitations` in tenant 1; `get_api_key_permissions` checks `api_keys.search` in `_tenant_id` and validates the key tenant (`057_update_permissions_v2-10.sql`) |

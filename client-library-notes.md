@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.12', 'postgresql_permissionmodel')`
-at startup (currently 2.12) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.13', 'postgresql_permissionmodel')`
+at startup (currently 2.13) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,29 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.13 — resource access: deny wins, partial keys, one evaluation (`060`)
+
+**Status in keen-auth-permissions: not adopted.** One signature addition, several behaviour changes:
+
+- **A deny now wins everywhere.** A deny for the user or any of their groups on a resource or any
+  ancestor (parent type or parent path) blocks the user, whatever grants exist below it. Apps that
+  used a child grant to make an exception to a parent deny must remove the parent deny instead.
+- **`auth.deny_resource_access(..., _resource_path, _user_group_id integer default null)`** can deny
+  a group. Pass exactly one of `_target_user_id` / `_user_group_id`.
+- **Partial keys grant again.** A grant on the doc type with only `{"proj": 2}` covers every doc of
+  project 2.
+- **Lists match single checks.** `filter_accessible_resources`, `get_resource_access_flags`, the
+  matrix and `get_user_accessible_resources` now return exactly what `has_resource_access` allows.
+  Lists will start showing child resources covered by a parent grant, and stop showing resources
+  denied above them.
+- **`get_resource_access_matrix` meaning.** For each type, it shows the flags that apply to every
+  resource of that type under the asked resource. A grant on one folder no longer makes a type
+  writable project-wide; ask the matrix for that folder instead.
+- **`get_user_accessible_resources.__source`** is one comma-separated string of all sources per
+  resource.
 
 ---
 

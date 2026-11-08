@@ -41,7 +41,11 @@ BEGIN
 
     SELECT val FROM _ra_test_data WHERE key = 'user_id_2' INTO __user_id_2;
 
-    -- User 2 has read denied on project.invoices (from 008 TEST 4)
+    -- 008 TEST 4 denied one specific invoice; that does not deny "invoices of the
+    -- project" (v2.13). Deny read on every invoice of project 1000 (partial key).
+    PERFORM auth.deny_resource_access('test', 1, 'test-matrix-2', 'project.invoices',
+        '{"project_id": 1000}'::jsonb, __user_id_2, array['read']);
+
     SELECT count(*)
     FROM auth.get_resource_access_matrix(__user_id_2, 'test-matrix-2', 'project', '{"project_id": 1000}'::jsonb)
     WHERE __resource_type = 'project.invoices' AND __access_flag = 'read'
@@ -111,23 +115,23 @@ BEGIN
         '{"project_id": 3000, "folder_id": 1}'::jsonb,
         _target_user_id := __user_id_3, _access_flags := array['write']);
 
-    -- Matrix should show:
+    -- The matrix shows what applies to every resource of each type under the asked
+    -- resource (v2.13). For project 3000:
     -- project: read (direct)
-    -- project.documents: read (inherited from project) + write (direct)
+    -- project.documents: read (inherited from project); the write is for folder 1 only
     -- project.invoices: read (inherited from project)
 
     SELECT count(*)
     FROM auth.get_resource_access_matrix(__user_id_3, 'test-matrix-4', 'project', '{"project_id": 3000}'::jsonb)
     INTO __count_total;
 
-    -- At least 4 entries: project/read, project.documents/read, project.documents/write, project.invoices/read
-    IF __count_total >= 4 THEN
-        RAISE NOTICE '  PASS: Matrix has >= 4 entries with inherited + direct (count=%)', __count_total;
+    IF __count_total = 3 THEN
+        RAISE NOTICE '  PASS: Matrix for the project has 3 entries (count=%)', __count_total;
     ELSE
-        RAISE EXCEPTION '  FAIL: Expected >= 4 entries, got %', __count_total;
+        RAISE EXCEPTION '  FAIL: Expected 3 entries for the project, got %', __count_total;
     END IF;
 
-    -- Check project.documents has both read (inherited) and write (direct)
+    -- Project level: documents readable (inherited), not writable (folder 1 only)
     SELECT exists(
         SELECT 1 FROM auth.get_resource_access_matrix(__user_id_3, 'test-matrix-4', 'project', '{"project_id": 3000}'::jsonb)
         WHERE __resource_type = 'project.documents' AND __access_flag = 'read'
@@ -138,9 +142,21 @@ BEGIN
         WHERE __resource_type = 'project.documents' AND __access_flag = 'write'
     ) INTO __has_child_write;
 
-    IF __has_parent_read AND __has_child_write THEN
-        RAISE NOTICE '  PASS: project.documents has both inherited read and direct write';
+    IF __has_parent_read AND NOT __has_child_write THEN
+        RAISE NOTICE '  PASS: project level: documents read inherited, write not (it is for folder 1 only)';
     ELSE
-        RAISE EXCEPTION '  FAIL: project.documents missing flags (read=%, write=%)', __has_parent_read, __has_child_write;
+        RAISE EXCEPTION '  FAIL: project level documents flags wrong (read=%, write=%)', __has_parent_read, __has_child_write;
+    END IF;
+
+    -- Folder 1 level: documents writable and readable
+    SELECT exists(
+        SELECT 1 FROM auth.get_resource_access_matrix(__user_id_3, 'test-matrix-4', 'project.documents', '{"project_id": 3000, "folder_id": 1}'::jsonb)
+        WHERE __resource_type = 'project.documents' AND __access_flag = 'write'
+    ) INTO __has_child_write;
+
+    IF __has_child_write THEN
+        RAISE NOTICE '  PASS: folder 1 level: documents write';
+    ELSE
+        RAISE EXCEPTION '  FAIL: folder 1 level: documents write missing';
     END IF;
 END $$;

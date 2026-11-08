@@ -1,0 +1,6 @@
+{
+  "name": "Audit D-14: resource access semantics",
+  "description": "A deny for the user or any of their groups at any ancestor level (type or path) beats every grant. A stored partial key covers every resource it is a part of. has_resource_access, filter_accessible_resources, get_resource_access_flags, get_resource_access_matrix and get_user_accessible_resources give the same answer. Groups can be denied. Runs as a plain user (user 1 and owners bypass).",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}
