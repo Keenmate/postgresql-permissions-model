@@ -1,0 +1,6 @@
+{
+  "name": "Audit 05: tenant lifecycle scoping",
+  "description": "An admin or owner of tenant B must not delete, restore, purge or create tenants other than soft-deleting B itself; tenant lifecycle otherwise requires the permission in tenant 1. The tenant_admin perm set carries no lifecycle or cross-tenant permissions. Runs as non-system users (user 1 bypasses every check).",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

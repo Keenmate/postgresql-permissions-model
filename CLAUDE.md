@@ -464,6 +464,7 @@ All tests are organized as suite directories with `test.json` manifests:
 | `test_auth_group_member_tenant/` | Auth-layer group member and tenant functions with permission checks |
 | `test_search_functions/` | All search functions: pagination, filtering, empty results |
 | `test_identity_user_data/` | v2.3: provider `_user_data` stored on the identity on first login, refreshed on later logins, kept on `null`, returned by `get_user_identity` |
+| `test_audit_tenancy/` | v2.5: tenant B admin/owner cannot delete/restore/purge/create other tenants, own-tenant soft delete only, `tenant_admin` contents |
 | `test_audit_registration/` | v2.4: no identity linking by username (register / second provider), explicit `create_user_identity_link` |
 | `test_tenant_scoping_security/` | v2.1 regressions: group owner ≠ tenant owner, cross-tenant assign/unassign/mapping rejected, API key expiry, `*_as_system` helpers |
 

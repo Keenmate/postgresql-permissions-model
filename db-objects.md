@@ -29,7 +29,7 @@
 | auth | create\_resource\_role | function | 044\_functions\_resource\_roles.sql | 502 | 1 | 044\_functions\_resource\_roles.sql:502 | - |
 | auth | create\_resource\_type | function | 035\_functions\_resource\_access.sql | 1577 | 1 | 035\_functions\_resource\_access.sql:1577 | - |
 | auth | create\_service\_user\_info | function | 020\_functions\_auth\_user.sql | 268 | 1 | 020\_functions\_auth\_user.sql:268 | - |
-| auth | create\_tenant | function | 023\_functions\_auth\_tenant.sql | 435 | 1 | 023\_functions\_auth\_tenant.sql:435 | - |
+| auth | create\_tenant | function | 052\_update\_permissions\_v2-5.sql | 139 | 2 | 052\_update\_permissions\_v2-5.sql:139<br>023\_functions\_auth\_tenant.sql:435 | - |
 | auth | create\_token | function | 025\_functions\_auth\_token.sql | 13 | 1 | 025\_functions\_auth\_token.sql:13 | - |
 | auth | create\_user\_event | function | 028\_functions\_auth\_event.sql | 13 | 1 | 028\_functions\_auth\_event.sql:13 | - |
 | auth | create\_user\_group | function | 021\_functions\_auth\_group.sql | 58 | 1 | 021\_functions\_auth\_group.sql:58 | - |
@@ -46,7 +46,7 @@
 | auth | delete\_perm\_set\_permissions | function | 022\_functions\_auth\_permission.sql | 400 | 1 | 022\_functions\_auth\_permission.sql:400 | - |
 | auth | delete\_provider | function | 024\_functions\_auth\_provider.sql | 162 | 1 | 024\_functions\_auth\_provider.sql:162 | - |
 | auth | delete\_resource\_role | function | 044\_functions\_resource\_roles.sql | 102 | 1 | 044\_functions\_resource\_roles.sql:102 | - |
-| auth | delete\_tenant | function | 023\_functions\_auth\_tenant.sql | 159 | 1 | 023\_functions\_auth\_tenant.sql:159 | - |
+| auth | delete\_tenant | function | 052\_update\_permissions\_v2-5.sql | 42 | 2 | 052\_update\_permissions\_v2-5.sql:42<br>023\_functions\_auth\_tenant.sql:159 | - |
 | auth | delete\_tenant\_by\_uuid | function | 023\_functions\_auth\_tenant.sql | 191 | 1 | 023\_functions\_auth\_tenant.sql:191 | - |
 | auth | delete\_user\_group | function | 021\_functions\_auth\_group.sql | 233 | 1 | 021\_functions\_auth\_group.sql:233 | - |
 | auth | delete\_user\_group\_mapping | function | 048\_update\_permissions\_v2-1.sql | 381 | 2 | 048\_update\_permissions\_v2-1.sql:381<br>021\_functions\_auth\_group.sql:525 | - |
@@ -163,7 +163,7 @@
 | auth | process\_external\_group\_member\_sync | function | 021\_functions\_auth\_group.sql | 914 | 1 | 021\_functions\_auth\_group.sql:914 | - |
 | auth | process\_external\_group\_member\_sync\_by\_mapping | function | 021\_functions\_auth\_group.sql | 796 | 1 | 021\_functions\_auth\_group.sql:796 | - |
 | auth | provider | table | 013\_tables\_auth.sql | 13 | 1 | 013\_tables\_auth.sql:13 | - |
-| auth | purge\_tenant | function | 023\_functions\_auth\_tenant.sql | 236 | 1 | 023\_functions\_auth\_tenant.sql:236 | - |
+| auth | purge\_tenant | function | 052\_update\_permissions\_v2-5.sql | 107 | 2 | 052\_update\_permissions\_v2-5.sql:107<br>023\_functions\_auth\_tenant.sql:236 | - |
 | auth | record\_login\_failure | function | 037\_functions\_auto\_lockout.sql | 123 | 1 | 037\_functions\_auto\_lockout.sql:123 | - |
 | auth | register\_user | function | 051\_update\_permissions\_v2-4.sql | 143 | 2 | 051\_update\_permissions\_v2-4.sql:143<br>020\_functions\_auth\_user.sql:309 | - |
 | auth | reject\_invitation | function | 042\_functions\_invitation.sql | 1015 | 1 | 042\_functions\_invitation.sql:1015 | - |
@@ -172,7 +172,7 @@
 | auth | resource\_access\_default | table | 034\_tables\_resource\_access.sql | 131 | 1 | 034\_tables\_resource\_access.sql:131 | - |
 | auth | resource\_role\_assignment | table | 034\_tables\_resource\_access.sql | 235 | 1 | 034\_tables\_resource\_access.sql:235 | - |
 | auth | resource\_role\_assignment\_default | table | 034\_tables\_resource\_access.sql | 271 | 1 | 034\_tables\_resource\_access.sql:271 | - |
-| auth | restore\_tenant | function | 023\_functions\_auth\_tenant.sql | 206 | 1 | 023\_functions\_auth\_tenant.sql:206 | - |
+| auth | restore\_tenant | function | 052\_update\_permissions\_v2-5.sql | 80 | 2 | 052\_update\_permissions\_v2-5.sql:80<br>023\_functions\_auth\_tenant.sql:206 | - |
 | auth | revoke\_all\_resource\_access | function | 035\_functions\_resource\_access.sql | 1149 | 1 | 035\_functions\_resource\_access.sql:1149 | - |
 | auth | revoke\_all\_resource\_roles | function | 044\_functions\_resource\_roles.sql | 450 | 1 | 044\_functions\_resource\_roles.sql:450 | - |
 | auth | revoke\_invitation | function | 042\_functions\_invitation.sql | 1053 | 1 | 042\_functions\_invitation.sql:1053 | - |
@@ -216,7 +216,7 @@
 | auth | update\_resource\_role | function | 044\_functions\_resource\_roles.sql | 707 | 1 | 044\_functions\_resource\_roles.sql:707 | - |
 | auth | update\_resource\_type | function | 035\_functions\_resource\_access.sql | 1663 | 1 | 035\_functions\_resource\_access.sql:1663 | - |
 | auth | update\_sys\_param | function | 018\_functions\_public.sql | 80 | 1 | 018\_functions\_public.sql:80 | - |
-| auth | update\_tenant | function | 023\_functions\_auth\_tenant.sql | 527 | 1 | 023\_functions\_auth\_tenant.sql:527 | - |
+| auth | update\_tenant | function | 052\_update\_permissions\_v2-5.sql | 231 | 2 | 052\_update\_permissions\_v2-5.sql:231<br>023\_functions\_auth\_tenant.sql:527 | - |
 | auth | update\_user\_data | function | 020\_functions\_auth\_user.sql | 657 | 2 | 020\_functions\_auth\_user.sql:657<br>020\_functions\_auth\_user.sql:599 | - |
 | auth | update\_user\_group | function | 021\_functions\_auth\_group.sql | 77 | 1 | 021\_functions\_auth\_group.sql:77 | - |
 | auth | update\_user\_last\_selected\_tenant | function | 023\_functions\_auth\_tenant.sql | 373 | 1 | 023\_functions\_auth\_tenant.sql:373 | - |

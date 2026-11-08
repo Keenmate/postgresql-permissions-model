@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-08 — v2.5: tenant lifecycle scoping
+
+**`052_update_permissions_v2-5.sql`** (`postgresql_permissionmodel` **2.5**). Found by the permission-model audit (`audit/`, domain 05).
+
+### Fixed (security)
+
+- **Any tenant admin or owner could delete and purge every other tenant.** `auth.delete_tenant`, `restore_tenant` and `purge_tenant` checked the permission in the caller's `_tenant_id`, then acted on whatever tenant `_tenant_uuid` named. Two things made that check easy to pass: the `tenant_admin` perm set, copied into every new tenant, held the whole `tenants` node; and tenant-wide owners pass every check. So `delete_tenant(_tenant_uuid := <other>, _tenant_id := <own>)` followed by `purge_tenant` destroyed another customer's tenant. Now:
+  - `delete_tenant`: a tenant's own admin may soft-delete that tenant. Deleting any other tenant needs `tenants.delete_tenant` in tenant 1.
+  - `restore_tenant`, `purge_tenant` and `create_tenant` need their permission in tenant 1. `_tenant_id` stays in the signature but no longer widens access. The `Tenant creator` perm set therefore only works when assigned in tenant 1.
+  - `update_tenant`: renaming stays with the tenant's own admin. Changing `is_removable` or `code` also needs `tenants.update_tenant` in tenant 1, so a tenant can't make itself undeletable or change its code past the identity ledger.
+
+### Changed
+
+- **`tenant_admin` perm set** now lists explicit permissions instead of the whole `tenants` node: `update_tenant`, `delete_tenant`, `get_tenants`, `read_tenants`, `get_users`, `get_groups`, `assign_owner`, `assign_group_owner`. It no longer grants `create_tenant`, `purge_tenant` or the cross-tenant `get_all_*` / `read_all_*` permissions. 052 rewrites the template in tenant 1 and every existing copy, and invalidates the caches of their holders.
+- New suite `tests/test_audit_tenancy/`. It runs as a tenant-B admin, a tenant-B owner and a tenant-1 admin, never as user 1.
+
 ## 2026-11-08 — v2.4: no identity linking by username
 
 **`051_update_permissions_v2-4.sql`** (`postgresql_permissionmodel` **2.4**). Found by the permission-model audit (`audit/`, domain 01).
@@ -2333,6 +2349,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.5 | 2026-11-08 | Security: tenant delete/restore/purge/create authorize against tenant 1 (own-tenant soft delete allowed); `tenant_admin` without lifecycle and cross-tenant permissions (`052_update_permissions_v2-5.sql`) |
 | 2.4 | 2026-11-08 | Security: no identity linking by username in `register_user` / `ensure_user_from_provider`; new `auth.create_user_identity_link` (`051_update_permissions_v2-4.sql`) |
 | 2.3 | 2026-10-31 | `ensure_user_from_provider` stores `_user_data` on the identity (`050_update_permissions_v2-3.sql`) |
 | 2.2 | 2026-10-27 | Drop ambiguous `check_version(text, text)` overload; record `versions_management` 1.1/1.2 (`049_update_permissions_v2-2.sql`) |
