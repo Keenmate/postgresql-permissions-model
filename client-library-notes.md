@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.6', 'postgresql_permissionmodel')`
-at startup and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.7', 'postgresql_permissionmodel')`
+at startup (currently 2.7) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,25 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.7 — disabled and deleted state removes access (`054`)
+
+**Status in keen-auth-permissions: not adopted.** No signature changes. Behaviour changes:
+
+- **`auth.has_permission(s)` with `_throw_err := false` never raises any more.** It returns `false`
+  for an unknown, disabled or locked user, where it used to raise 33001 / 33003 / 33004 when the
+  cache needed a rebuild. If the library relied on catching those to detect a disabled user, check
+  the user's state explicitly instead. With `_throw_err := true` (the default) the codes are still
+  raised: 33003 disabled, 33004 locked, 33001 unknown.
+- **Permission checks inside a soft-deleted tenant are denied** (32001, or `false`), for owners too.
+  An app that lets users keep working in a tenant after it was closed will now see 32001. Treat it
+  like a revoked permission.
+- **Access ends immediately, not after the cache expires.** Disabling a group, provider, identity
+  or user, or soft-deleting a tenant, removes access at the next check. Libraries that cache
+  permission results on their side should keep that cache short, or listen to the
+  `pg_notify` channels, so they don't undo this.
 
 ---
 

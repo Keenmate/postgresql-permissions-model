@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-08 — v2.7: disabled and deleted state removes access
+
+**`054_update_permissions_v2-7.sql`** (`postgresql_permissionmodel` **2.7**). Audit decision D-06, RBAC part. Switching something off now counts for nothing at the moment of the check, not only after the cache expires. No data is deleted; switching it back on restores access.
+
+### Fixed (security)
+
+- **Disabled groups still granted their permissions.** Disabling a group expired its members' caches, but the rebuild read the view `auth.user_group_members`, which includes inactive groups, so the next check granted everything again. The rebuild now skips inactive groups. Memberships are kept, so re-enabling restores them.
+- **Soft-deleted tenants regained their permissions.** Soft delete cleared the cache, but the rebuild never checked `tenant.deleted_at`. The rebuild skips soft-deleted tenants, and `auth.has_permissions` denies inside a soft-deleted tenant, **owners included**. Restore brings everything back.
+- **Disabled and locked tenant owners passed every check.** The owner shortcut in `auth.has_permissions` ran before any state check. The user's state is now checked first, on every call (one primary-key lookup), so a missed cache invalidation can no longer grant access.
+- **Mapped memberships from an inactive provider or a disabled identity still counted.** External and synced memberships now count only while the provider is active and the user's identity at that provider is not disabled.
+  - The new trigger `trg_cache_user_identity_status` expires the user's cache when their identity is enabled or disabled.
+  - The provider status trigger now fires on re-enable as well as on disable.
+
+### Changed
+
+- **`_throw_err := false` never raises any more.** For a disabled, locked or unknown user it used to raise 33003 / 33004 / 33001 whenever the cache needed a rebuild; it now returns `false`. With `_throw_err := true` those codes are still raised.
+- **Group permission assignments count only in the group's own tenant.** Since v2.1 they're only written there, but older mismatched rows produced stray cache rows.
+- New suite `tests/test_audit_permission_state/`.
+
 ## 2026-11-08 — v2.6: authentication outcomes instead of exceptions
 
 **`053_update_permissions_v2-6.sql`** (`postgresql_permissionmodel` **2.6**). Design: `audit/design-d01-auth-outcomes.md`. **Breaking:** functions are changed in place and some are removed; `keen-auth-permissions` needs a matching update.
@@ -2398,6 +2417,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.7 | 2026-11-08 | Security: disabled groups, soft-deleted tenants, inactive providers/identities and disabled/locked users (owners included) grant nothing at check time; `_throw_err false` never raises (`054_update_permissions_v2-7.sql`) |
 | 2.6 | 2026-11-08 | Authentication outcomes instead of exceptions: lockout/MFA/API-key failures persist; temporary escalating lockout (`auth.user_login_state`); `create_user_login_attempt`, `create_mfa_challenge_attempt`, `create_api_key_validation_attempt`; system sys_params (`053_update_permissions_v2-6.sql`) |
 | 2.5 | 2026-11-08 | Security: tenant delete/restore/purge/create authorize against tenant 1 (own-tenant soft delete allowed); `tenant_admin` without lifecycle and cross-tenant permissions (`052_update_permissions_v2-5.sql`) |
 | 2.4 | 2026-11-08 | Security: no identity linking by username in `register_user` / `ensure_user_from_provider`; new `auth.create_user_identity_link` (`051_update_permissions_v2-4.sql`) |

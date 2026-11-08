@@ -1,0 +1,6 @@
+{
+  "name": "Audit 04: disabled and deleted state removes access",
+  "description": "v2.7 (decision D-06, RBAC): inactive groups, soft-deleted tenants, inactive providers/identities (mapped memberships) and disabled/locked users grant nothing at check time, owners included; switching back restores access; _throw_err false never raises. Runs as non-system users.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

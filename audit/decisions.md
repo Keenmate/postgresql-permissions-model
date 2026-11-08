@@ -107,7 +107,9 @@ The proposed rule:
   revoke calls skip the "type is active" validation.
 - Refs: 01/OQ-04, 02/4, 03/1, 03/6, 04/OQ-02, 04/OQ-03, 04/OQ-05, 05/Q3, 06/Q3, 06/Q7, 07/OQ-4,
   07/OQ-5, 07/OQ-8, 07/OQ-9, 08/Q-17
-- **Answer:**
+- **Answer:** **a**, including the "what it does not mean" list: no data deleted, pre-provisioning
+  allowed, tenant-1 admin reads unaffected, revokes never blocked. RBAC part done in v2.7 (`054`).
+  Resource access and API-key expiry are still to do, together with D-14.
 
 ### D-07 Which operations are global (tenant 1 only)?
 Today many global objects are changed by checking a permission against whatever `_tenant_id` the

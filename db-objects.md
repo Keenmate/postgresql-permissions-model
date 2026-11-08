@@ -140,7 +140,7 @@
 | auth | get\_users\_groups\_and\_permissions | function | 022\_functions\_auth\_permission.sql | 790 | 1 | 022\_functions\_auth\_permission.sql:790 | - |
 | auth | has\_owner | function | 027\_functions\_auth\_owner.sql | 13 | 1 | 027\_functions\_auth\_owner.sql:13 | - |
 | auth | has\_permission | function | 022\_functions\_auth\_permission.sql | 144 | 1 | 022\_functions\_auth\_permission.sql:144 | - |
-| auth | has\_permissions | function | 022\_functions\_auth\_permission.sql | 63 | 1 | 022\_functions\_auth\_permission.sql:63 | - |
+| auth | has\_permissions | function | 054\_update\_permissions\_v2-7.sql | 50 | 2 | 054\_update\_permissions\_v2-7.sql:50<br>022\_functions\_auth\_permission.sql:63 | - |
 | auth | has\_resource\_access | function | 035\_functions\_resource\_access.sql | 154 | 1 | 035\_functions\_resource\_access.sql:154 | - |
 | auth | invitation | table | 041\_tables\_invitation.sql | 235 | 1 | 041\_tables\_invitation.sql:235 | - |
 | auth | invitation\_action | table | 041\_tables\_invitation.sql | 275 | 1 | 041\_tables\_invitation.sql:275 | - |
@@ -425,7 +425,7 @@
 | public | \_\_temp\_external\_group\_sync | table | 021\_functions\_auth\_group.sql | 1036 | 2 | 021\_functions\_auth\_group.sql:1036<br>021\_functions\_auth\_group.sql:927 | - |
 | public | \_\_temp\_members\_comparison | table | 021\_functions\_auth\_group.sql | 910 | 2 | 021\_functions\_auth\_group.sql:910<br>021\_functions\_auth\_group.sql:835 | - |
 | public | \_\_temp\_users\_groups | table | 022\_functions\_auth\_permission.sql | 770 | 1 | 022\_functions\_auth\_permission.sql:770 | - |
-| public | \_\_temp\_users\_groups\_permissions | table | 019\_functions\_unsecure.sql | 2204 | 2 | 019\_functions\_unsecure.sql:2204<br>019\_functions\_unsecure.sql:2203 | - |
+| public | \_\_temp\_users\_groups\_permissions | table | 054\_update\_permissions\_v2-7.sql | 212 | 4 | 054\_update\_permissions\_v2-7.sql:212<br>054\_update\_permissions\_v2-7.sql:211<br>019\_functions\_unsecure.sql:2204<br>019\_functions\_unsecure.sql:2203 | - |
 | public | \_\_version | table | 002\_create\_version\_management.sql | 12 | 1 | 002\_create\_version\_management.sql:12 | - |
 | public | auth | schema | 001\_create\_basic\_structure.sql | 18 | 1 | 001\_create\_basic\_structure.sql:18 | - |
 | public | check\_version | function | 049\_update\_permissions\_v2-2.sql | 23 | 3 | 049\_update\_permissions\_v2-2.sql:23<br>018\_functions\_public.sql:502<br>002\_create\_version\_management.sql:68 | - |
@@ -501,6 +501,7 @@
 | public | trg\_cache\_user\_group\_member\_delete | trigger | 033\_triggers\_cache\_and\_notify.sql | 469 | 1 | 033\_triggers\_cache\_and\_notify.sql:469 | - |
 | public | trg\_cache\_user\_group\_member\_insert | trigger | 033\_triggers\_cache\_and\_notify.sql | 576 | 1 | 033\_triggers\_cache\_and\_notify.sql:576 | - |
 | public | trg\_cache\_user\_group\_status | trigger | 033\_triggers\_cache\_and\_notify.sql | 484 | 1 | 033\_triggers\_cache\_and\_notify.sql:484 | - |
+| public | trg\_cache\_user\_identity\_status | trigger | 054\_update\_permissions\_v2-7.sql | 397 | 2 | 054\_update\_permissions\_v2-7.sql:397<br>054\_update\_permissions\_v2-7.sql:396 | - |
 | public | trg\_calculate\_translation | trigger | 030\_tables\_language.sql | 180 | 1 | 030\_tables\_language.sql:180 | - |
 | public | trg\_const\_sys\_param\_validate | trigger | 053\_update\_permissions\_v2-6.sql | 166 | 2 | 053\_update\_permissions\_v2-6.sql:166<br>053\_update\_permissions\_v2-6.sql:165 | - |
 | public | trg\_notify\_api\_key | trigger | 033\_triggers\_cache\_and\_notify.sql | 568 | 1 | 033\_triggers\_cache\_and\_notify.sql:568 | - |
@@ -524,12 +525,13 @@
 | public | validate\_token | function | 018\_functions\_public.sql | 432 | 1 | 018\_functions\_public.sql:432 | - |
 | stage | external\_group\_member | table | 014\_tables\_stage.sql | 13 | 1 | 014\_tables\_stage.sql:13 | - |
 | triggers | cache\_provider\_before\_delete | function | 033\_triggers\_cache\_and\_notify.sql | 91 | 1 | 033\_triggers\_cache\_and\_notify.sql:91 | - |
-| triggers | cache\_provider\_status\_change | function | 033\_triggers\_cache\_and\_notify.sql | 113 | 1 | 033\_triggers\_cache\_and\_notify.sql:113 | - |
+| triggers | cache\_provider\_status\_change | function | 054\_update\_permissions\_v2-7.sql | 358 | 2 | 054\_update\_permissions\_v2-7.sql:358<br>033\_triggers\_cache\_and\_notify.sql:113 | - |
 | triggers | cache\_user\_group\_before\_delete | function | 033\_triggers\_cache\_and\_notify.sql | 66 | 1 | 033\_triggers\_cache\_and\_notify.sql:66 | - |
 | triggers | cache\_user\_group\_id\_on\_user\_change | function | 033\_triggers\_cache\_and\_notify.sql | 150 | 1 | 033\_triggers\_cache\_and\_notify.sql:150 | - |
 | triggers | cache\_user\_group\_member\_delete | function | 033\_triggers\_cache\_and\_notify.sql | 36 | 1 | 033\_triggers\_cache\_and\_notify.sql:36 | - |
 | triggers | cache\_user\_group\_member\_insert | function | 033\_triggers\_cache\_and\_notify.sql | 138 | 1 | 033\_triggers\_cache\_and\_notify.sql:138 | - |
 | triggers | cache\_user\_group\_status\_change | function | 033\_triggers\_cache\_and\_notify.sql | 49 | 1 | 033\_triggers\_cache\_and\_notify.sql:49 | - |
+| triggers | cache\_user\_identity\_status\_change | function | 054\_update\_permissions\_v2-7.sql | 384 | 1 | 054\_update\_permissions\_v2-7.sql:384 | - |
 | triggers | calculate\_api\_key | function | 017\_functions\_triggers.sql | 174 | 1 | 017\_functions\_triggers.sql:174 | - |
 | triggers | calculate\_api\_key\_search\_values | function | 017\_functions\_triggers.sql | 163 | 1 | 017\_functions\_triggers.sql:163 | - |
 | triggers | calculate\_perm\_set | function | 017\_functions\_triggers.sql | 150 | 1 | 017\_functions\_triggers.sql:150 | - |
@@ -629,7 +631,7 @@
 | unsecure | purge\_journal | function | 019\_functions\_unsecure.sql | 2591 | 1 | 019\_functions\_unsecure.sql:2591 | - |
 | unsecure | purge\_user\_events | function | 019\_functions\_unsecure.sql | 2651 | 1 | 019\_functions\_unsecure.sql:2651 | - |
 | unsecure | recalculate\_user\_groups | function | 019\_functions\_unsecure.sql | 2016 | 1 | 019\_functions\_unsecure.sql:2016 | - |
-| unsecure | recalculate\_user\_permissions | function | 019\_functions\_unsecure.sql | 2143 | 1 | 019\_functions\_unsecure.sql:2143 | - |
+| unsecure | recalculate\_user\_permissions | function | 054\_update\_permissions\_v2-7.sql | 151 | 2 | 054\_update\_permissions\_v2-7.sql:151<br>019\_functions\_unsecure.sql:2143 | - |
 | unsecure | reject\_invitation | function | 042\_functions\_invitation.sql | 137 | 1 | 042\_functions\_invitation.sql:137 | - |
 | unsecure | resolve\_action\_payload | function | 042\_functions\_invitation.sql | 475 | 1 | 042\_functions\_invitation.sql:475 | - |
 | unsecure | restore\_tenant | function | 019\_functions\_unsecure.sql | 1989 | 1 | 019\_functions\_unsecure.sql:1989 | - |
@@ -659,6 +661,6 @@
 | unsecure | verify\_user\_identity | function | 019\_functions\_unsecure.sql | 2391 | 1 | 019\_functions\_unsecure.sql:2391 | - |
 
 ## Summary
-- **Total Objects**: 655
-- **By Type**: function: 528, index: 10, schema: 9, table: 71, trigger: 29, view: 8
-- **By Schema**: auth: 247, const: 23, error: 121, helpers: 19, internal: 6, public: 104, stage: 1, triggers: 35, unsecure: 99
+- **Total Objects**: 657
+- **By Type**: function: 529, index: 10, schema: 9, table: 71, trigger: 30, view: 8
+- **By Schema**: auth: 247, const: 23, error: 121, helpers: 19, internal: 6, public: 105, stage: 1, triggers: 36, unsecure: 99

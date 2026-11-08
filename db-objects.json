@@ -2409,14 +2409,20 @@
     "schema": "auth",
     "object_name": "has_permissions",
     "object_type": "function",
-    "last_update_file": "022_functions_auth_permission.sql",
-    "last_update_line": 63,
+    "last_update_file": "054_update_permissions_v2-7.sql",
+    "last_update_line": 50,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "022_functions_auth_permission.sql",
         "line": 63,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "054_update_permissions_v2-7.sql",
+        "line": 50,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -7476,10 +7482,10 @@
     "schema": "public",
     "object_name": "__temp_users_groups_permissions",
     "object_type": "table",
-    "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2204,
+    "last_update_file": "054_update_permissions_v2-7.sql",
+    "last_update_line": 212,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 4,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
@@ -7490,6 +7496,18 @@
       {
         "file": "019_functions_unsecure.sql",
         "line": 2204,
+        "operation": "CREATE",
+        "source": "migration"
+      },
+      {
+        "file": "054_update_permissions_v2-7.sql",
+        "line": 211,
+        "operation": "DROP",
+        "source": "migration"
+      },
+      {
+        "file": "054_update_permissions_v2-7.sql",
+        "line": 212,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -8802,6 +8820,29 @@
   },
   {
     "schema": "public",
+    "object_name": "trg_cache_user_identity_status",
+    "object_type": "trigger",
+    "last_update_file": "054_update_permissions_v2-7.sql",
+    "last_update_line": 397,
+    "last_update_source": "migration",
+    "total_updates": 2,
+    "all_updates": [
+      {
+        "file": "054_update_permissions_v2-7.sql",
+        "line": 396,
+        "operation": "DROP",
+        "source": "migration"
+      },
+      {
+        "file": "054_update_permissions_v2-7.sql",
+        "line": 397,
+        "operation": "CREATE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "public",
     "object_name": "trg_calculate_translation",
     "object_type": "trigger",
     "last_update_file": "030_tables_language.sql",
@@ -9201,14 +9242,20 @@
     "schema": "triggers",
     "object_name": "cache_provider_status_change",
     "object_type": "function",
-    "last_update_file": "033_triggers_cache_and_notify.sql",
-    "last_update_line": 113,
+    "last_update_file": "054_update_permissions_v2-7.sql",
+    "last_update_line": 358,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "033_triggers_cache_and_notify.sql",
         "line": 113,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "054_update_permissions_v2-7.sql",
+        "line": 358,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -9294,6 +9341,23 @@
       {
         "file": "033_triggers_cache_and_notify.sql",
         "line": 49,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "triggers",
+    "object_name": "cache_user_identity_status_change",
+    "object_type": "function",
+    "last_update_file": "054_update_permissions_v2-7.sql",
+    "last_update_line": 384,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "054_update_permissions_v2-7.sql",
+        "line": 384,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -11016,14 +11080,20 @@
     "schema": "unsecure",
     "object_name": "recalculate_user_permissions",
     "object_type": "function",
-    "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2143,
+    "last_update_file": "054_update_permissions_v2-7.sql",
+    "last_update_line": 151,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
         "line": 2143,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "054_update_permissions_v2-7.sql",
+        "line": 151,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
