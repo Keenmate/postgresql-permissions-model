@@ -4,6 +4,40 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-08 — v2.8: entities passed by id must belong to `_tenant_id`
+
+**`055_update_permissions_v2-8.sql`** (`postgresql_permissionmodel` **2.8**). Audit decision D-02, option a. Functions took an entity by id, checked the caller's permission in `_tenant_id`, and never checked that the entity lives in `_tenant_id`. Now every such function checks the entity's tenant right after the permission check. A mismatch raises the same *not found* error as a missing id, so the caller can't tell whether the id exists in another tenant.
+
+### Fixed (security)
+
+- **Joining another tenant's groups.** An admin of tenant B, or the plain owner of B with no perm set at all (owners skip the group-management check), could call `create_user_group_member` with tenant A's group id and `_tenant_id = B`. That made them a member of A's `tenant_admins` group and gave them A's permissions. The same hole was in:
+  - `delete_user_group_member`;
+  - `create_owner` / `delete_owner` for a group;
+  - `set_user_group_as_external` / `_hybrid` / `_internal`, where turning a group external deleted A's manual members;
+  - `ensure_user_group_mapping`.
+- **Other tenants' API keys.** `delete_api_key` deleted a key of any tenant, and `assign_api_key_permissions` gave a foreign key's technical user permissions in the caller's tenant.
+- **Other tenants' invitations.** `accept_invitation`, `reject_invitation`, `revoke_invitation` and `get_invitation_actions` accepted any tenant's invitation.
+- **Other tenants' and global invitation templates.** `update_invitation_template` and `delete_invitation_template` changed both.
+- **Other tenants' and global MFA policies.** `delete_mfa_policy` deleted both. `create_mfa_policy` accepted a group of another tenant.
+- **Group reads by id.** `get_user_group_by_id` and `get_assigned_group_permissions` returned groups of other tenants.
+- **`auth.has_permissions` with `_tenant_id := null`** granted any permission the user held in *any* tenant. A tenant-B admin could therefore create global MFA policies, and `get_mfa_policies(null)` listed every tenant's policies. A null tenant now holds nothing.
+
+### Changed
+
+- **Mismatches now raise instead of doing nothing.** Functions that already filtered on the tenant used to report success without changing anything; they now raise *not found*:
+  - `update_user_group`, and enable / disable / lock / unlock / delete group;
+  - `update_api_key`, `unassign_api_key_permissions`;
+  - `update_api_key_secret`, which used to return a freshly generated secret that was never stored.
+- **Global invitation templates and MFA policies (`tenant_id` null) are managed from tenant 1.** `create_mfa_policy`, `get_mfa_policies` and `create_invitation_template` check the permission in tenant 1 when `_tenant_id` is null.
+- New validators:
+  - `unsecure.validate_user_group_in_tenant`
+  - `unsecure.validate_api_key_in_tenant`
+  - `unsecure.validate_invitation_in_tenant`
+  - `unsecure.validate_invitation_template_in_tenant`
+  - `unsecure.validate_mfa_policy_in_tenant`
+- New error code 30007 `err_api_key_not_found`.
+- New suite `tests/test_audit_cross_tenant/`. `test_ownership` now creates its group in its own tenant; it relied on the cross-tenant group owner.
+
 ## 2026-11-08 — v2.7: disabled and deleted state removes access
 
 **`054_update_permissions_v2-7.sql`** (`postgresql_permissionmodel` **2.7**). Audit decision D-06, RBAC part. Switching something off now counts for nothing at the moment of the check, not only after the cache expires. No data is deleted; switching it back on restores access.
@@ -2417,6 +2451,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.8 | 2026-11-08 | Security: groups, members, group owners, API keys, invitations, templates and MFA policies passed by id must belong to `_tenant_id` (mismatch = not found); global templates/policies managed from tenant 1; a null tenant holds no permissions (`055_update_permissions_v2-8.sql`) |
 | 2.7 | 2026-11-08 | Security: disabled groups, soft-deleted tenants, inactive providers/identities and disabled/locked users (owners included) grant nothing at check time; `_throw_err false` never raises (`054_update_permissions_v2-7.sql`) |
 | 2.6 | 2026-11-08 | Authentication outcomes instead of exceptions: lockout/MFA/API-key failures persist; temporary escalating lockout (`auth.user_login_state`); `create_user_login_attempt`, `create_mfa_challenge_attempt`, `create_api_key_validation_attempt`; system sys_params (`053_update_permissions_v2-6.sql`) |
 | 2.5 | 2026-11-08 | Security: tenant delete/restore/purge/create authorize against tenant 1 (own-tenant soft delete allowed); `tenant_admin` without lifecycle and cross-tenant permissions (`052_update_permissions_v2-5.sql`) |

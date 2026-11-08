@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.7', 'postgresql_permissionmodel')`
-at startup (currently 2.7) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.8', 'postgresql_permissionmodel')`
+at startup (currently 2.8) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,42 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.8 — entities passed by id must belong to `_tenant_id` (`055`)
+
+**Status in keen-auth-permissions: not adopted.** No signature changes. Behaviour changes:
+
+- **Pass the entity's own tenant as `_tenant_id`.** Every function that takes a group, API key,
+  invitation, invitation template or MFA policy id now raises *not found* when the entity belongs to
+  another tenant:
+
+  | Entity | Error raised on a mismatch |
+  |---|---|
+  | group | 33011 |
+  | API key | 30007 (new) |
+  | invitation | 39001 |
+  | template | 39006 |
+  | MFA policy | 38007 |
+
+  - **Tenant-1 admins** who managed other tenants' entities while passing `_tenant_id := 1` now get
+    *not found*. They must call with the entity's tenant and hold the permission there.
+  - **Libraries** that defaulted `_tenant_id` to 1 for these calls must pass the current tenant.
+- **Silent no-ops became errors.** These used to report success without changing anything on a
+  mismatch, and now raise:
+  - `update_user_group`;
+  - enable / disable / lock / unlock / delete group;
+  - `update_api_key`, `unassign_api_key_permissions`.
+
+  `update_api_key_secret` used to return a secret that was never stored. Map these errors to
+  "not found" in the UI.
+- **Global templates and MFA policies.** Templates and policies with `tenant_id` null are managed
+  with `_tenant_id := 1`; the permission is checked in tenant 1. Passing null to
+  `create_mfa_policy`, `get_mfa_policies` or `create_invitation_template` checks tenant 1 too.
+- **`has_permission(s)` with `_tenant_id := null` is denied** (32001, or `false`). It used to
+  succeed if the user held the permission in any tenant.
+- **Error 30007 `err_api_key_not_found`** is new; add it to the error mapping.
 
 ---
 

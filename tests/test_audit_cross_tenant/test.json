@@ -1,0 +1,6 @@
+{
+  "name": "Audit 02: entities passed by id must belong to _tenant_id",
+  "description": "An admin or owner of tenant B must not read or change groups, members, owners, API keys, invitations, templates or MFA policies of tenant A by passing A's ids with _tenant_id = B. A mismatch raises the same not-found error as a missing id and changes nothing. Runs as non-system users (user 1 bypasses every check).",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

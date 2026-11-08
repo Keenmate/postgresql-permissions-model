@@ -467,6 +467,7 @@ All tests are organized as suite directories with `test.json` manifests:
 | `test_search_functions/` | All search functions: pagination, filtering, empty results |
 | `test_identity_user_data/` | v2.3: provider `_user_data` stored on the identity on first login, refreshed on later logins, kept on `null`, returned by `get_user_identity` |
 | `test_audit_authentication/` | v2.6: login/MFA/API-key outcomes persist (no raise), temporary escalating lockout with decay, admin lock, provider login of locked users, system sys_params |
+| `test_audit_cross_tenant/` | v2.8: tenant B's admin and owner cannot read or change tenant A's groups, members, group owners, API keys, invitations, templates or MFA policies by id (not-found errors, nothing changed); global templates/policies only from tenant 1 |
 | `test_audit_permission_state/` | v2.7: disabled groups, soft-deleted tenants, inactive providers/identities and disabled/locked users (owners too) grant nothing; switching back restores; `_throw_err false` never raises |
 | `test_audit_tenancy/` | v2.5: tenant B admin/owner cannot delete/restore/purge/create other tenants, own-tenant soft delete only, `tenant_admin` contents |
 | `test_audit_registration/` | v2.4: no identity linking by username (register / second provider), explicit `create_user_identity_link` |

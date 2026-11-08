@@ -26,6 +26,7 @@ All errors are seeded in `const.event_code` with matching templates in `const.ev
 | 30004 | `err_token_already_used` | `error.raise_30004` | Token already consumed |
 | 30005 | `err_token_not_found` | `error.raise_30005` | Token does not exist |
 | 30006 | `err_api_key_expired` | `error.raise_30006` | API key has expired (outcome of `create_api_key_validation_attempt`, since v2.6) |
+| 30007 | `err_api_key_not_found` | `error.raise_30007` | API key does not exist in the caller's tenant (since v2.8) |
 
 ## Validation (31001 — 31999)
 

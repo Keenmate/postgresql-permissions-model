@@ -49,7 +49,9 @@ to the caller's `_tenant_id`.
   it should go through explicit tenant-1-only functions (see D-07), not through a general exception.
 - Refs: 01/OQ-09, 01/OQ-10, 02/9, 03/2, 03/3, 03/12, 03/16, 04/OQ-18, 05/Q2, 05/Q8, 06/Q1, 06/Q4,
   07/OQ-13
-- **Answer:**
+- **Answer:** **a**. Done in v2.8 (`055`) for groups, members, group owners, API keys,
+  invitations, invitation templates and MFA policies. Global templates and policies (`tenant_id` null)
+  belong to tenant 1. User lock/disable/MFA reset are global user state: see D-04, still open.
 
 ### D-03 What makes a user a member of a tenant?
 `auth.tenant_user` is written only by invitations, yet `search_users` filters on it. The other tenant

@@ -38,7 +38,7 @@ BEGIN
 
     -- Create test group
     INSERT INTO auth.user_group (created_by, updated_by, tenant_id, title, code, is_assignable, is_active, is_external, is_system)
-    VALUES ('test_own', 'test_own', 1, 'Ownership Test Group', 'own_test_group', true, true, false, false)
+    VALUES ('test_own', 'test_own', __test_tenant_id, 'Ownership Test Group', 'own_test_group', true, true, false, false)
     ON CONFLICT DO NOTHING;
 
     SELECT user_group_id INTO __test_group_id FROM auth.user_group WHERE code = 'own_test_group';
