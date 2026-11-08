@@ -568,6 +568,23 @@
   },
   {
     "schema": "auth",
+    "object_name": "create_user_identity_link",
+    "object_type": "function",
+    "last_update_file": "051_update_permissions_v2-4.sql",
+    "last_update_line": 214,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "051_update_permissions_v2-4.sql",
+        "line": 214,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
     "object_name": "create_user_tenant_preferences",
     "object_type": "function",
     "last_update_file": "023_functions_auth_tenant.sql",
@@ -2787,14 +2804,20 @@
     "schema": "auth",
     "object_name": "register_user",
     "object_type": "function",
-    "last_update_file": "020_functions_auth_user.sql",
-    "last_update_line": 309,
+    "last_update_file": "051_update_permissions_v2-4.sql",
+    "last_update_line": 143,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "020_functions_auth_user.sql",
         "line": 309,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "051_update_permissions_v2-4.sql",
+        "line": 143,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -5335,6 +5358,23 @@
       {
         "file": "048_update_permissions_v2-1.sql",
         "line": 79,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "error",
+    "object_name": "raise_33024",
+    "object_type": "function",
+    "last_update_file": "051_update_permissions_v2-4.sql",
+    "last_update_line": 56,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "051_update_permissions_v2-4.sql",
+        "line": 56,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -10041,14 +10081,20 @@
     "schema": "unsecure",
     "object_name": "create_user_info",
     "object_type": "function",
-    "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 1498,
+    "last_update_file": "051_update_permissions_v2-4.sql",
+    "last_update_line": 101,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
         "line": 1498,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "051_update_permissions_v2-4.sql",
+        "line": 101,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }

@@ -81,6 +81,7 @@ All errors are seeded in `const.event_code` with matching templates in `const.ev
 | 33021 | `err_group_not_resolvable` | `error.raise_33021` | Group identifier could not be resolved |
 | 33022 | `err_group_mapping_not_found` | `error.raise_33022` | Group mapping does not exist in the tenant (since v2.1) |
 | 33023 | `err_group_mapping_already_exists` | `error.raise_33023` | Group already has this mapping (since v2.1) |
+| 33024 | `err_username_already_exists` | `error.raise_33024` | Username already exists; link the identity with `auth.create_user_identity_link` (since v2.4) |
 
 ## Tenant (34001 — 34999)
 

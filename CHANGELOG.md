@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-08 — v2.4: no identity linking by username
+
+**`051_update_permissions_v2-4.sql`** (`postgresql_permissionmodel` **2.4**). Found by the permission-model audit (`audit/`, domain 01).
+
+### Fixed (security)
+
+- **Account takeover through registration or a second provider.** `unsecure.create_user_info` returned the *existing* user when the username was taken, and both callers attached a new identity to whatever user came back:
+  - `auth.register_user` only checked for an existing *email identity*. Registering `jane@corp.com` with any password added an email identity with that password to an SSO-only user whose username is `jane@corp.com`. The email login then returned the victim's `user_id` together with the attacker's hash.
+  - `auth.ensure_user_from_provider` did the same on a first login from another provider whose username claim matched an existing username.
+
+  Now:
+  - `create_user_info` raises the new **33024** for an existing username.
+  - `register_user` also checks the username up front and raises **33007**, the same error as for an email identity already in use, so the caller can't tell which one it was.
+  - A first provider login with a taken username raises **33024**.
+
+### Added
+
+- **`auth.create_user_identity_link`** links an additional identity to an existing user explicitly. Rules:
+  - A user can link to their own account with no permission. Linking to someone else's account requires the new `users.create_user_identity_link`.
+  - The target must exist, be a `normal` user that can log in, and be neither disabled nor locked.
+  - An identity already used by anyone, matched by uid or oid, raises 33007.
+  - A linked email identity starts unverified.
+  - The link is recorded as the new user event **10036 `identity_linked`**.
+
+  The app must have authenticated both sides, the current session and the new identity, before calling it. The database can't check either.
+- New suite `tests/test_audit_registration/`. The attacks run as the seeded `svc_registrator`, not user 1.
+
 ## 2026-10-31 — v2.3: provider user data stored on the identity
 
 **`050_update_permissions_v2-3.sql`** (`postgresql_permissionmodel` **2.3**).
@@ -2306,6 +2333,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.4 | 2026-11-08 | Security: no identity linking by username in `register_user` / `ensure_user_from_provider`; new `auth.create_user_identity_link` (`051_update_permissions_v2-4.sql`) |
 | 2.3 | 2026-10-31 | `ensure_user_from_provider` stores `_user_data` on the identity (`050_update_permissions_v2-3.sql`) |
 | 2.2 | 2026-10-27 | Drop ambiguous `check_version(text, text)` overload; record `versions_management` 1.1/1.2 (`049_update_permissions_v2-2.sql`) |
 | 2.1 | 2026-10-26 | Security: `is_owner` null-group, tenant-scoped assign/unassign_permission and group mapping writers, API key expiry; `get_tenant_groups` columns; `*_as_system` group helpers (`048_update_permissions_v2-1.sql`) |

@@ -1,0 +1,6 @@
+{
+  "name": "Audit 01: registration & identity linking",
+  "description": "Account takeover by username: register_user and ensure_user_from_provider must never attach a new identity to an existing user; linking goes through auth.create_user_identity_link. Attacks run as the registrator service user, not user 1.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

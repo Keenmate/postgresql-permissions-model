@@ -230,7 +230,7 @@ The user system uses three main tables for flexible multi-provider support and e
 
 **Identity Provider Management (`user_identity` table)**:
 - `auth.ensure_user_from_provider()` - User provisioning from external providers
-- `auth.create_user_identity()` - Add new identity provider to existing user
+- `auth.create_user_identity_link()` - Explicitly link an additional identity to an existing user (self-link free, others need `users.create_user_identity_link`). `register_user` / `ensure_user_from_provider` never link by username (33007 / 33024)
 - `auth.enable_user_identity()` / `auth.disable_user_identity()` - Control provider access
 - Multiple identities per user: Windows GUID, AzureAD UID, Google ID, etc.
 - **Last used provider determines permissions** - `provider_groups` and `provider_roles` from most recent login drive permission calculations
@@ -464,6 +464,7 @@ All tests are organized as suite directories with `test.json` manifests:
 | `test_auth_group_member_tenant/` | Auth-layer group member and tenant functions with permission checks |
 | `test_search_functions/` | All search functions: pagination, filtering, empty results |
 | `test_identity_user_data/` | v2.3: provider `_user_data` stored on the identity on first login, refreshed on later logins, kept on `null`, returned by `get_user_identity` |
+| `test_audit_registration/` | v2.4: no identity linking by username (register / second provider), explicit `create_user_identity_link` |
 | `test_tenant_scoping_security/` | v2.1 regressions: group owner ≠ tenant owner, cross-tenant assign/unassign/mapping rejected, API key expiry, `*_as_system` helpers |
 
 **Test-writing rule:** don't call security-relevant functions as user 1. `auth.has_permissions` and resource access return `true` for user 1 straight away, so tenant, permission and owner logic never runs. Use a dedicated admin user with an explicit perm set, include a second tenant for any function that takes an id, and assert the returned column values, not just row counts.
