@@ -19,7 +19,6 @@ BEGIN
     WHERE user_id IN (SELECT user_id FROM auth.user_info WHERE code LIKE 'ra_test_%' OR code LIKE 'ra_temp_%');
     DELETE FROM auth.user_group_member WHERE created_by = 'test';
     DELETE FROM auth.user_group WHERE code LIKE 'ra_test_%';
-    DELETE FROM auth.tenant_user WHERE created_by = 'test';
     DELETE FROM auth.user_info WHERE code LIKE 'ra_test_%' OR code LIKE 'ra_temp_%';
     DELETE FROM auth.tenant WHERE code = 'ra_test_tenant_2';
     -- Delete per-type flag mappings before resource types

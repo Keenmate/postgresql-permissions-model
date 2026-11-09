@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-09 — v2.17: tenant membership is computed
+
+**`064_update_permissions_v2-17.sql`** (`postgresql_permissionmodel` **2.17**). Audit decision D-03.
+
+### Fixed
+
+- **The tenant member reads disagreed.** Only the invitation action `add_tenant_user` wrote `auth.tenant_user`, yet `search_users` filtered on it. `get_tenant_users`, `get_tenant_members` and `get_user_available_tenants` used direct group membership instead. A user with a direct grant, an owner row or a resource grant in a tenant had real access there, but appeared in none of these reads and could not select the tenant.
+- **`update_user_last_selected_tenant` checked the caller's membership** instead of the target user's.
+
+### Changed
+
+- **Membership is computed, not stored.** A user is a member of tenant T when something grants them something in T:
+  - membership in an active group of T (direct, or mapped through an active provider and identity);
+  - a direct permission or perm-set assignment in T;
+  - an owner row in T;
+  - a resource grant (not a deny), or a resource role whose role is active.
+- **One rule for every read.** The new view `auth.tenant_members (tenant_id, user_id, source_code)` gives the rule. `search_users`, `get_tenant_users`, `get_tenant_members`, `get_user_available_tenants`, `update_user_last_selected_tenant`, `notify_tenant_users` and the invitation condition `user_not_in_tenant` all use it.
+- **Members without groups are listed.** `get_tenant_users` / `get_tenant_members` return them with an empty group list. `get_tenant_members` now checks `tenants.get_users` / `tenants.get_all_users`, like `get_tenant_users`.
+- **The invitation action `add_tenant_user` adds the user to the tenant's Tenant Members group.** Tenant 1 gets that group too. A missing group raises the new error 34008.
+- **`auth.tenant_user` is dropped.** Its rows never granted anything.
+- **New indexes** for membership lookups by user and by tenant.
+
+### Tests
+
+- New suite `tests/test_audit_tenant_membership/`. Older suites no longer insert into `auth.tenant_user`.
+
 ## 2026-11-08 — v2.16: translations are global
 
 **`063_update_permissions_v2-16.sql`** (`postgresql_permissionmodel` **2.16**). Follow-up to D-07.
@@ -2627,6 +2653,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.17 | 2026-11-09 | Tenant membership is computed (group, direct grant, owner, resource grant) by one view `auth.tenant_members` used by every member read; `auth.tenant_user` dropped; `add_tenant_user` joins Tenant Members (`064_update_permissions_v2-17.sql`) |
 | 2.16 | 2026-11-08 | Translations are global: writes need the permission in tenant 1 and are stored in tenant 1; every tenant reads the same rows (`063_update_permissions_v2-16.sql`) |
 | 2.15 | 2026-11-08 | Security: permission tree, providers, resource types/roles, token types and languages check the permission in tenant 1; system parameters and event codes need `system.*` permissions; translations validated against `_tenant_id` (`062_update_permissions_v2-15.sql`) |
 | 2.14 | 2026-11-08 | Security: inactive resource roles grant nothing (`061_update_permissions_v2-14.sql`) |

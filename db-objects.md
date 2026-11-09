@@ -115,14 +115,14 @@
 | auth | get\_sys\_param | function | 018\_functions\_public.sql | 63 | 1 | 018\_functions\_public.sql:63 | - |
 | auth | get\_tenant\_by\_id | function | 023\_functions\_auth\_tenant.sql | 46 | 1 | 023\_functions\_auth\_tenant.sql:46 | - |
 | auth | get\_tenant\_groups | function | 048\_update\_permissions\_v2-1.sql | 433 | 2 | 048\_update\_permissions\_v2-1.sql:433<br>023\_functions\_auth\_tenant.sql:98 | - |
-| auth | get\_tenant\_members | function | 023\_functions\_auth\_tenant.sql | 126 | 1 | 023\_functions\_auth\_tenant.sql:126 | - |
-| auth | get\_tenant\_users | function | 023\_functions\_auth\_tenant.sql | 67 | 1 | 023\_functions\_auth\_tenant.sql:67 | - |
+| auth | get\_tenant\_members | function | 064\_update\_permissions\_v2-17.sql | 255 | 2 | 064\_update\_permissions\_v2-17.sql:255<br>023\_functions\_auth\_tenant.sql:126 | - |
+| auth | get\_tenant\_users | function | 064\_update\_permissions\_v2-17.sql | 220 | 2 | 064\_update\_permissions\_v2-17.sql:220<br>023\_functions\_auth\_tenant.sql:67 | - |
 | auth | get\_tenants | function | 023\_functions\_auth\_tenant.sql | 13 | 1 | 023\_functions\_auth\_tenant.sql:13 | - |
 | auth | get\_user\_accessible\_resources | function | 060\_update\_permissions\_v2-13.sql | 311 | 2 | 060\_update\_permissions\_v2-13.sql:311<br>035\_functions\_resource\_access.sql:1294 | - |
 | auth | get\_user\_assigned\_groups | function | 021\_functions\_auth\_group.sql | 740 | 1 | 021\_functions\_auth\_group.sql:740 | - |
 | auth | get\_user\_assigned\_permissions | function | 022\_functions\_auth\_permission.sql | 812 | 1 | 022\_functions\_auth\_permission.sql:812 | - |
 | auth | get\_user\_audit\_trail | function | 028\_functions\_auth\_event.sql | 125 | 1 | 028\_functions\_auth\_event.sql:125 | - |
-| auth | get\_user\_available\_tenants | function | 023\_functions\_auth\_tenant.sql | 268 | 1 | 023\_functions\_auth\_tenant.sql:268 | - |
+| auth | get\_user\_available\_tenants | function | 064\_update\_permissions\_v2-17.sql | 293 | 2 | 064\_update\_permissions\_v2-17.sql:293<br>023\_functions\_auth\_tenant.sql:268 | - |
 | auth | get\_user\_by\_email\_for\_authentication | function | 053\_update\_permissions\_v2-6.sql | 422 | 3 | 053\_update\_permissions\_v2-6.sql:422<br>053\_update\_permissions\_v2-6.sql:250<br>020\_functions\_auth\_user.sql:460 | - |
 | auth | get\_user\_by\_id | function | 020\_functions\_auth\_user.sql | 382 | 1 | 020\_functions\_auth\_user.sql:382 | - |
 | auth | get\_user\_by\_provider\_oid | function | 020\_functions\_auth\_user.sql | 939 | 1 | 020\_functions\_auth\_user.sql:939 | - |
@@ -157,7 +157,7 @@
 | auth | notify\_perm\_set\_users | view | 015\_views.sql | 105 | 1 | 015\_views.sql:105 | - |
 | auth | notify\_permission\_users | view | 015\_views.sql | 128 | 1 | 015\_views.sql:128 | - |
 | auth | notify\_provider\_users | view | 015\_views.sql | 166 | 1 | 015\_views.sql:166 | - |
-| auth | notify\_tenant\_users | view | 015\_views.sql | 175 | 1 | 015\_views.sql:175 | - |
+| auth | notify\_tenant\_users | view | 064\_update\_permissions\_v2-17.sql | 117 | 2 | 064\_update\_permissions\_v2-17.sql:117<br>015\_views.sql:175 | - |
 | auth | owner | table | 013\_tables\_auth.sql | 353 | 1 | 013\_tables\_auth.sql:353 | - |
 | auth | perm\_set | table | 013\_tables\_auth.sql | 259 | 1 | 013\_tables\_auth.sql:259 | - |
 | auth | perm\_set\_perm | table | 013\_tables\_auth.sql | 282 | 1 | 013\_tables\_auth.sql:282 | - |
@@ -190,7 +190,7 @@
 | auth | search\_user\_events | function | 028\_functions\_auth\_event.sql | 34 | 1 | 028\_functions\_auth\_event.sql:34 | - |
 | auth | search\_user\_group\_mappings | function | 021\_functions\_auth\_group.sql | 352 | 1 | 021\_functions\_auth\_group.sql:352 | - |
 | auth | search\_user\_groups | function | 021\_functions\_auth\_group.sql | 1040 | 1 | 021\_functions\_auth\_group.sql:1040 | - |
-| auth | search\_users | function | 020\_functions\_auth\_user.sql | 959 | 1 | 020\_functions\_auth\_user.sql:959 | - |
+| auth | search\_users | function | 064\_update\_permissions\_v2-17.sql | 145 | 2 | 064\_update\_permissions\_v2-17.sql:145<br>020\_functions\_auth\_user.sql:959 | - |
 | auth | seed\_permission\_data | function | 022\_functions\_auth\_permission.sql | 467 | 1 | 022\_functions\_auth\_permission.sql:467 | - |
 | auth | set\_permission\_as\_assignable | function | 062\_update\_permissions\_v2-15.sql | 127 | 2 | 062\_update\_permissions\_v2-15.sql:127<br>022\_functions\_auth\_permission.sql:179 | - |
 | auth | set\_token\_as\_failed | function | 025\_functions\_auth\_token.sql | 173 | 1 | 025\_functions\_auth\_token.sql:173 | - |
@@ -202,7 +202,8 @@
 | auth | set\_user\_group\_as\_internal | function | 055\_update\_permissions\_v2-8.sql | 557 | 2 | 055\_update\_permissions\_v2-8.sql:557<br>021\_functions\_auth\_group.sql:700 | - |
 | auth | tenant | table | 013\_tables\_auth.sql | 34 | 1 | 013\_tables\_auth.sql:34 | - |
 | auth | tenant\_identity | table | 013\_tables\_auth.sql | 80 | 1 | 013\_tables\_auth.sql:80 | - |
-| auth | tenant\_user | table | 013\_tables\_auth.sql | 139 | 1 | 013\_tables\_auth.sql:139 | - |
+| auth | tenant\_members | view | 064\_update\_permissions\_v2-17.sql | 77 | 1 | 064\_update\_permissions\_v2-17.sql:77 | - |
+| auth | tenant\_user | table | 064\_update\_permissions\_v2-17.sql | 613 | 2 | 064\_update\_permissions\_v2-17.sql:613<br>013\_tables\_auth.sql:139 | - |
 | auth | throw\_no\_access | function | 022\_functions\_auth\_permission.sql | 13 | 1 | 022\_functions\_auth\_permission.sql:13 | - |
 | auth | token | table | 013\_tables\_auth.sql | 420 | 1 | 013\_tables\_auth.sql:420 | - |
 | auth | unassign\_api\_key\_permissions | function | 055\_update\_permissions\_v2-8.sql | 854 | 2 | 055\_update\_permissions\_v2-8.sql:854<br>026\_functions\_auth\_apikey.sql:275 | - |
@@ -222,7 +223,7 @@
 | auth | update\_tenant | function | 052\_update\_permissions\_v2-5.sql | 231 | 2 | 052\_update\_permissions\_v2-5.sql:231<br>023\_functions\_auth\_tenant.sql:527 | - |
 | auth | update\_user\_data | function | 056\_update\_permissions\_v2-9.sql | 441 | 3 | 056\_update\_permissions\_v2-9.sql:441<br>020\_functions\_auth\_user.sql:657<br>020\_functions\_auth\_user.sql:599 | - |
 | auth | update\_user\_group | function | 055\_update\_permissions\_v2-8.sql | 289 | 2 | 055\_update\_permissions\_v2-8.sql:289<br>021\_functions\_auth\_group.sql:77 | - |
-| auth | update\_user\_last\_selected\_tenant | function | 023\_functions\_auth\_tenant.sql | 373 | 1 | 023\_functions\_auth\_tenant.sql:373 | - |
+| auth | update\_user\_last\_selected\_tenant | function | 064\_update\_permissions\_v2-17.sql | 322 | 2 | 064\_update\_permissions\_v2-17.sql:322<br>023\_functions\_auth\_tenant.sql:373 | - |
 | auth | update\_user\_password | function | 056\_update\_permissions\_v2-9.sql | 224 | 2 | 056\_update\_permissions\_v2-9.sql:224<br>020\_functions\_auth\_user.sql:285 | - |
 | auth | update\_user\_preferences | function | 056\_update\_permissions\_v2-9.sql | 514 | 2 | 056\_update\_permissions\_v2-9.sql:514<br>020\_functions\_auth\_user.sql:894 | - |
 | auth | update\_user\_tenant\_preferences | function | 023\_functions\_auth\_tenant.sql | 321 | 1 | 023\_functions\_auth\_tenant.sql:321 | - |
@@ -330,6 +331,7 @@
 | error | raise\_34005 | function | 016\_functions\_error.sql | 622 | 1 | 016\_functions\_error.sql:622 | - |
 | error | raise\_34006 | function | 016\_functions\_error.sql | 633 | 1 | 016\_functions\_error.sql:633 | - |
 | error | raise\_34007 | function | 016\_functions\_error.sql | 644 | 1 | 016\_functions\_error.sql:644 | - |
+| error | raise\_34008 | function | 064\_update\_permissions\_v2-17.sql | 55 | 1 | 064\_update\_permissions\_v2-17.sql:55 | - |
 | error | raise\_35001 | function | 016\_functions\_error.sql | 508 | 1 | 016\_functions\_error.sql:508 | - |
 | error | raise\_35002 | function | 016\_functions\_error.sql | 519 | 1 | 016\_functions\_error.sql:519 | - |
 | error | raise\_35003 | function | 016\_functions\_error.sql | 530 | 1 | 016\_functions\_error.sql:530 | - |
@@ -474,7 +476,13 @@
 | public | ix\_invitation\_target | index | 041\_tables\_invitation.sql | 268 | 1 | 041\_tables\_invitation.sql:268 | - |
 | public | ix\_invitation\_tenant | index | 041\_tables\_invitation.sql | 266 | 1 | 041\_tables\_invitation.sql:266 | - |
 | public | ix\_invitation\_token | index | 041\_tables\_invitation.sql | 270 | 1 | 041\_tables\_invitation.sql:270 | - |
+| public | ix\_permission\_assignment\_user | index | 064\_update\_permissions\_v2-17.sql | 68 | 1 | 064\_update\_permissions\_v2-17.sql:68 | - |
+| public | ix\_ra\_tenant\_user | index | 064\_update\_permissions\_v2-17.sql | 70 | 1 | 064\_update\_permissions\_v2-17.sql:70 | - |
+| public | ix\_ra\_user\_tenant | index | 064\_update\_permissions\_v2-17.sql | 69 | 1 | 064\_update\_permissions\_v2-17.sql:69 | - |
 | public | ix\_resource\_type\_path | index | 034\_tables\_resource\_access.sql | 43 | 1 | 034\_tables\_resource\_access.sql:43 | - |
+| public | ix\_rra\_tenant\_user | index | 064\_update\_permissions\_v2-17.sql | 72 | 1 | 064\_update\_permissions\_v2-17.sql:72 | - |
+| public | ix\_rra\_user\_tenant | index | 064\_update\_permissions\_v2-17.sql | 71 | 1 | 064\_update\_permissions\_v2-17.sql:71 | - |
+| public | ix\_user\_group\_member\_user | index | 064\_update\_permissions\_v2-17.sql | 67 | 1 | 064\_update\_permissions\_v2-17.sql:67 | - |
 | public | journal | table | 014\_tables\_stage.sql | 49 | 1 | 014\_tables\_stage.sql:49 | - |
 | public | journal\_default | table | 014\_tables\_stage.sql | 87 | 1 | 014\_tables\_stage.sql:87 | - |
 | public | journal\_keys | function | 018\_functions\_public.sql | 129 | 1 | 018\_functions\_public.sql:129 | - |
@@ -599,14 +607,14 @@
 | unsecure | create\_user\_system | function | 019\_functions\_unsecure.sql | 474 | 1 | 019\_functions\_unsecure.sql:474 | - |
 | unsecure | delete\_invitation\_template | function | 042\_functions\_invitation.sql | 1323 | 1 | 042\_functions\_invitation.sql:1323 | - |
 | unsecure | delete\_perm\_set\_permissions | function | 019\_functions\_unsecure.sql | 1444 | 1 | 019\_functions\_unsecure.sql:1444 | - |
-| unsecure | delete\_tenant | function | 019\_functions\_unsecure.sql | 1868 | 1 | 019\_functions\_unsecure.sql:1868 | - |
+| unsecure | delete\_tenant | function | 064\_update\_permissions\_v2-17.sql | 532 | 2 | 064\_update\_permissions\_v2-17.sql:532<br>019\_functions\_unsecure.sql:1868 | - |
 | unsecure | delete\_user\_by\_id | function | 019\_functions\_unsecure.sql | 497 | 1 | 019\_functions\_unsecure.sql:497 | - |
 | unsecure | delete\_user\_by\_username\_as\_system | function | 019\_functions\_unsecure.sql | 486 | 1 | 019\_functions\_unsecure.sql:486 | - |
 | unsecure | ensure\_audit\_partitions | function | 019\_functions\_unsecure.sql | 2540 | 1 | 019\_functions\_unsecure.sql:2540 | - |
 | unsecure | ensure\_invitation\_templates | function | 042\_functions\_invitation.sql | 1432 | 1 | 042\_functions\_invitation.sql:1432 | - |
 | unsecure | ensure\_resource\_access\_partition | function | 034\_tables\_resource\_access.sql | 333 | 1 | 034\_tables\_resource\_access.sql:333 | - |
-| unsecure | evaluate\_invitation\_condition | function | 042\_functions\_invitation.sql | 393 | 1 | 042\_functions\_invitation.sql:393 | - |
-| unsecure | execute\_database\_action | function | 042\_functions\_invitation.sql | 699 | 1 | 042\_functions\_invitation.sql:699 | - |
+| unsecure | evaluate\_invitation\_condition | function | 064\_update\_permissions\_v2-17.sql | 373 | 2 | 064\_update\_permissions\_v2-17.sql:373<br>042\_functions\_invitation.sql:393 | - |
+| unsecure | execute\_database\_action | function | 064\_update\_permissions\_v2-17.sql | 447 | 2 | 064\_update\_permissions\_v2-17.sql:447<br>042\_functions\_invitation.sql:699 | - |
 | unsecure | expire\_tokens | function | 019\_functions\_unsecure.sql | 573 | 1 | 019\_functions\_unsecure.sql:573 | - |
 | unsecure | fail\_invitation\_action | function | 042\_functions\_invitation.sql | 282 | 1 | 042\_functions\_invitation.sql:282 | - |
 | unsecure | get\_all\_permissions | function | 019\_functions\_unsecure.sql | 1202 | 1 | 019\_functions\_unsecure.sql:1202 | - |
@@ -672,6 +680,6 @@
 | unsecure | verify\_user\_identity | function | 056\_update\_permissions\_v2-9.sql | 889 | 2 | 056\_update\_permissions\_v2-9.sql:889<br>019\_functions\_unsecure.sql:2391 | - |
 
 ## Summary
-- **Total Objects**: 668
-- **By Type**: function: 539, index: 10, schema: 9, table: 71, trigger: 31, view: 8
-- **By Schema**: auth: 247, const: 23, error: 122, helpers: 19, internal: 6, public: 106, stage: 1, triggers: 37, unsecure: 107
+- **Total Objects**: 676
+- **By Type**: function: 540, index: 16, schema: 9, table: 71, trigger: 31, view: 9
+- **By Schema**: auth: 248, const: 23, error: 123, helpers: 19, internal: 6, public: 112, stage: 1, triggers: 37, unsecure: 107

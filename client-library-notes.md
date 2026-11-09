@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.16', 'postgresql_permissionmodel')`
-at startup (currently 2.16) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.17', 'postgresql_permissionmodel')`
+at startup (currently 2.17) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,28 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.17 — tenant membership is computed (`064`)
+
+**Status in keen-auth-permissions: not adopted.**
+
+- **`auth.tenant_user` is dropped.** Read membership from the new view
+  `auth.tenant_members (tenant_id, user_id, source_code)`. A user can appear there once per source:
+  `group`, `assignment`, `owner`, `resource_access`, `resource_role`.
+- **Member lists include users without groups.**
+  - `search_users` (tenant filter), `get_tenant_users`, `get_tenant_members` and
+    `get_user_available_tenants` now also return users who belong through a direct grant, an owner
+    row or a resource grant.
+  - `__user_groups` is `{}` for them, and `__user_tenant_groups` is `'[]'`.
+  - Members of disabled groups only no longer count.
+- **`get_tenant_members` needs `tenants.get_users`** (`tenants.get_all_users` across tenants)
+  instead of `tenants.get_tenants`.
+- **`update_user_last_selected_tenant` checks that the target user is a member.** It raises 34001
+  (was 34001 through the 52108 alias, checked on the caller).
+- **The invitation action `add_tenant_user` adds the user to the tenant's `tenant_members` group.**
+  It raises 34008 if the tenant has none.
 
 ---
 

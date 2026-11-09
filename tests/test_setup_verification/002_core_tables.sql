@@ -14,7 +14,7 @@ BEGIN
     FROM unnest(ARRAY[
         'user_info', 'user_identity', 'user_data', 'user_group', 'user_group_member',
         'user_group_mapping', 'user_event', 'user_permission_cache',
-        'tenant', 'tenant_user', 'user_tenant_preference',
+        'tenant', 'user_tenant_preference',
         'permission', 'perm_set', 'perm_set_perm', 'permission_assignment',
         'provider', 'token', 'api_key', 'owner',
         'user_mfa', 'mfa_policy'

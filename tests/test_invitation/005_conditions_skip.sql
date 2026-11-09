@@ -20,10 +20,11 @@ BEGIN
     SELECT val FROM _inv_test_data WHERE key = 'target_id' INTO __target_id;
     SELECT val FROM _inv_test_data WHERE key = 'group_id' INTO __group_id;
 
-    -- Ensure target is already in tenant 1
-    INSERT INTO auth.tenant_user (created_by, tenant_id, user_id)
-    VALUES ('test_inv', 1, __target_id)
-    ON CONFLICT (tenant_id, user_id) DO NOTHING;
+    -- Ensure target is already in tenant 1 (membership is computed: a group of tenant 1)
+    INSERT INTO auth.user_group_member (created_by, user_group_id, user_id, member_type_code)
+    SELECT 'test_inv', ug.user_group_id, __target_id, 'manual'
+    FROM auth.user_group ug WHERE ug.tenant_id = 1 AND ug.code = 'tenant_members'
+    ON CONFLICT DO NOTHING;
 
     -- Create invitation with condition: add_tenant_user only if NOT in tenant
     SELECT __invitation_id, __uuid, __on_create_actions

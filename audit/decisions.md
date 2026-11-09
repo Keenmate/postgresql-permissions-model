@@ -65,7 +65,10 @@ functions use group membership. Permission calculation requires neither.
 - **Rec:** **a**. Membership becomes explicit and indexed (useful for the performance phase), and
   it gives D-02 and D-04 a way to decide whether a user is in a tenant.
 - Refs: 01/OQ-06, 03/13, 03/15, 04/OQ-13, 05/Q4, 05/Q5, 07/OQ-13
-- **Answer:**
+- **Answer:** **computed** (neither a nor b as written). The user rejected a maintained table: "on every log in, on
+  every groups reconfiguration ... we would have to update this table"; "you cannot be a member of tenant when you
+  have no permissions in it, are not part of any group and so on". A resource grant counts; `add_tenant_user`
+  joins the Tenant Members group. Done in v2.17 (`064`): view `auth.tenant_members`, `tenant_user` dropped.
 
 ### D-04 Who may change global user state?
 Users are global: lock, disable, enable, password, MFA reset, identities and blacklist apply to the

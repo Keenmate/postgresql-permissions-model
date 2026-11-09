@@ -57,10 +57,6 @@ BEGIN
     VALUES ('test', 'test', 'RA Test Tenant 2', 'ra_test_tenant_2')
     RETURNING tenant_id INTO __tenant_id_2;
 
-    -- Add user 1 to tenant 2
-    INSERT INTO auth.tenant_user (created_by, tenant_id, user_id)
-    VALUES ('test', __tenant_id_2, __user_id_1);
-
     -- Create resource types (with ltree path for hierarchy support)
     -- key_schema defines the expected jsonb structure for resource_id
     INSERT INTO const.resource_type (code, source, path, key_schema)

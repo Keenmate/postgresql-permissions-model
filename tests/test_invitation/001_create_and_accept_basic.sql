@@ -64,7 +64,9 @@ BEGIN
     PERFORM auth.accept_invitation('test_inv', __inviter_id, 'inv-corr-2', (select uuid from auth.invitation where invitation_id = __inv_id), __target_id);
 
     -- Verify target user was added to tenant 1
-    SELECT count(*) FROM auth.tenant_user WHERE tenant_id = 1 AND user_id = __target_id INTO __count;
+    SELECT count(*) FROM auth.user_group_member ugm
+    INNER JOIN auth.user_group ug ON ug.user_group_id = ugm.user_group_id
+    WHERE ug.tenant_id = 1 AND ug.code = 'tenant_members' AND ugm.user_id = __target_id INTO __count;
     IF __count = 1 THEN
         RAISE NOTICE '  PASS: Target user added to tenant';
     ELSE

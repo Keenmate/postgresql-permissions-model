@@ -53,9 +53,6 @@ BEGIN
     VALUES ('test', 'test', 'RAP Test Tenant 2', 'rap_test_tenant_2')
     RETURNING tenant_id INTO __tenant_id_2;
 
-    INSERT INTO auth.tenant_user (created_by, tenant_id, user_id)
-    VALUES ('test', __tenant_id_2, __user_id_1);
-
     -- 'fsitem' — path-first resource type (empty key_schema, paths are identity)
     INSERT INTO const.resource_type (code, source, path, key_schema)
     VALUES ('fsitem', 'test', 'fsitem'::ext.ltree, '{}'::jsonb)

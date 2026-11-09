@@ -57,9 +57,6 @@ BEGIN
     VALUES ('test', 'test', 'RR Test Tenant 2', 'rr_test_tenant_2')
     RETURNING tenant_id INTO __tenant_id_2;
 
-    INSERT INTO auth.tenant_user (created_by, tenant_id, user_id)
-    VALUES ('test', __tenant_id_2, __user_id_1);
-
     -- Resource types (reuse existing if present, or create)
     INSERT INTO const.resource_type (code, source, path, key_schema)
     VALUES ('asset', 'test_roles', 'asset'::ext.ltree, '{"id": "bigint"}'::jsonb)

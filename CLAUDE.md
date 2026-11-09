@@ -39,7 +39,7 @@ This system manages the complete lifecycle of authorization entities:
 - **Tenant 1** is reserved as the admin/super tenant. In single-tenant apps there's no difference. In multi-tenant apps, tenant 1 is the admin console with cross-tenant visibility.
 - Search/get functions use `_tenant_id` (caller's tenant for permission checks) + `_target_tenant_id` (which tenant's data to query). If `_tenant_id = 1`, cross-tenant access is allowed with `read_all_*` permissions. If `_tenant_id != 1`, only own-tenant data is returned.
 - Each domain has paired permissions: `domain.read_*` (own tenant) + `domain.read_all_*` (cross-tenant from admin).
-- **Tenant Users** (`auth.tenant_user`) - Links users to tenants they have access to
+- **Tenant Members** (`auth.tenant_members` view) - Computed membership (v2.17, no table): a user belongs to a tenant through an active group membership, a direct assignment, an owner row or a resource grant/role there. Every tenant-member read uses it
 - **User Tenant Preferences** (`auth.user_tenant_preference`) - Per-tenant user settings/preferences
 - **Ownership** (`auth.owner`) - Tracks tenant owners and group owners. A tenant owner holds the tenant's `tenant_owner` perm set (derived in the permission rebuild, no bypass) and sees every resource of the tenant; a group owner manages the members of that group
 
@@ -467,6 +467,7 @@ All tests are organized as suite directories with `test.json` manifests:
 | `test_search_functions/` | All search functions: pagination, filtering, empty results |
 | `test_identity_user_data/` | v2.3: provider `_user_data` stored on the identity on first login, refreshed on later logins, kept on `null`, returned by `get_user_identity` |
 | `test_audit_authentication/` | v2.6: login/MFA/API-key outcomes persist (no raise), temporary escalating lockout with decay, admin lock, provider login of locked users, system sys_params |
+| `test_audit_tenant_membership/` | v2.17: membership is computed (group, direct grant, owner, resource grant/role; denies and disabled groups don't count); search_users / get_tenant_users / get_tenant_members / available tenants / notify_tenant_users agree; last selected tenant checks the target; `add_tenant_user` joins Tenant Members |
 | `test_audit_global_ops/` | v2.15: permission tree, providers, resource types/roles, token types, languages, system parameters, event codes and (v2.16, global) translations need the permission in tenant 1; tenant-B admins with every permission in B are rejected; every tenant reads the global translations |
 | `test_audit_resource_access/` | v2.13: user/group deny at any ancestor level beats every grant, partial keys cover descendants, has_resource_access / filter / flags / matrix / accessible list agree, group denies; v2.14: roles on folders cover descendants, denies remove only the denied flag, inactive roles grant nothing |
 | `test_audit_owner/` | v2.12: tenant owners hold the `tenant_owner` perm set (cached, nothing global or cross-tenant), removing the owner row removes it; owner resource access only while active/unlocked and tenant live; group owners only manage members |

@@ -94,7 +94,9 @@ BEGIN
     RAISE NOTICE '  Step 6: Verifying database actions...';
 
     -- User should be in tenant 1
-    SELECT count(*) FROM auth.tenant_user WHERE tenant_id = 1 AND user_id = __new_user_id INTO __count;
+    SELECT count(*) FROM auth.user_group_member ugm
+    INNER JOIN auth.user_group ug ON ug.user_group_id = ugm.user_group_id
+    WHERE ug.tenant_id = 1 AND ug.code = 'tenant_members' AND ugm.user_id = __new_user_id INTO __count;
     IF __count = 1 THEN
         RAISE NOTICE '    PASS: User added to tenant 1';
     ELSE

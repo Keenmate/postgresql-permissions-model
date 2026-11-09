@@ -94,6 +94,7 @@ All errors are seeded in `const.event_code` with matching templates in `const.ev
 | 34001 | `err_no_tenant_access` | `error.raise_34001` | User has no access to tenant |
 | 34002 | `err_cross_tenant_requires_admin` | `error.raise_34002` | Cross-tenant operation requires admin tenant (tenant_id = 1) |
 | 34003 | `err_tenant_not_resolvable` | `error.raise_34003` | Tenant identifier could not be resolved |
+| 34008 | `err_tenant_members_group_missing` | `error.raise_34008` | Tenant has no Tenant Members group (invitation action `add_tenant_user`, since v2.17) |
 
 ## Resource access / roles (35001 — 35999)
 

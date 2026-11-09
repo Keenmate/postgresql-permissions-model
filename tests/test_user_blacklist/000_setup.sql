@@ -31,11 +31,6 @@ BEGIN
     SELECT user_id INTO __test_user_id
     FROM unsecure.create_user_info('test_bl', 1, 'test_blacklist', 'bl_admin_user@test.com', 'bl_admin@test.com', 'Blacklist Admin', null);
 
-    -- Add to first tenant
-    INSERT INTO auth.tenant_user (created_by, user_id, tenant_id)
-    VALUES ('test_bl', __test_user_id, 1)
-    ON CONFLICT DO NOTHING;
-
     -- Assign manage_blacklist and search_blacklist permissions directly
     INSERT INTO auth.permission_assignment (created_by, tenant_id, user_id, permission_id)
     SELECT 'test_bl', 1, __test_user_id, p.permission_id

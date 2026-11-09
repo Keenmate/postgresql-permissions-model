@@ -59,23 +59,13 @@ BEGIN
     PERFORM set_config('test_ct.user3_id', __user3_id::text, false);
 
     -- -----------------------------------------------------------------------
-    -- Link users to tenants
+    -- Users belong to their tenants through the permission assignments below (v2.17)
     -- -----------------------------------------------------------------------
     -- Admin user in all tenants (admin console user needs access to target tenants)
-    INSERT INTO auth.tenant_user (created_by, tenant_id, user_id)
-    VALUES ('test_ct', 1, __admin_user_id);
-    INSERT INTO auth.tenant_user (created_by, tenant_id, user_id)
-    VALUES ('test_ct', __tenant2_id, __admin_user_id);
-    INSERT INTO auth.tenant_user (created_by, tenant_id, user_id)
-    VALUES ('test_ct', __tenant3_id, __admin_user_id);
 
     -- Regular user 2 in tenant 2
-    INSERT INTO auth.tenant_user (created_by, tenant_id, user_id)
-    VALUES ('test_ct', __tenant2_id, __user2_id);
 
     -- Regular user 3 in tenant 3
-    INSERT INTO auth.tenant_user (created_by, tenant_id, user_id)
-    VALUES ('test_ct', __tenant3_id, __user3_id);
 
     -- -----------------------------------------------------------------------
     -- Create test groups in each tenant (for search_user_groups tests)

@@ -1,0 +1,6 @@
+{
+  "name": "Audit D-03: tenant membership is computed",
+  "description": "A user is a member of a tenant when something grants them something there: a membership in an active group (direct or mapped), a direct permission assignment, an owner row, or a resource grant / resource role (denies don't count). search_users, get_tenant_users, get_tenant_members, get_user_available_tenants, notify_tenant_users, update_user_last_selected_tenant and invitations all use this one rule. auth.tenant_user is gone.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

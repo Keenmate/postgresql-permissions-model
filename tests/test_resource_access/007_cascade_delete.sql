@@ -118,7 +118,6 @@ BEGIN
     DELETE FROM auth.perm_set WHERE tenant_id = __temp_tenant_id;
     DELETE FROM auth.user_group_member WHERE user_group_id IN (SELECT user_group_id FROM auth.user_group WHERE tenant_id = __temp_tenant_id);
     DELETE FROM auth.user_group WHERE tenant_id = __temp_tenant_id;
-    DELETE FROM auth.tenant_user WHERE tenant_id = __temp_tenant_id;
     DELETE FROM public.journal WHERE tenant_id = __temp_tenant_id;
     -- Delete the tenant (should cascade to resource_access)
     DELETE FROM auth.tenant WHERE tenant_id = __temp_tenant_id;

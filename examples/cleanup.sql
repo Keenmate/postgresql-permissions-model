@@ -78,7 +78,6 @@ begin
     delete from auth.user_data              where user_id = any(__user_ids);
     delete from auth.user_tenant_preference where user_id = any(__user_ids) or tenant_id = any(__tenant_ids);
     delete from auth.owner                  where user_id = any(__user_ids) or tenant_id = any(__tenant_ids);
-    delete from auth.tenant_user            where user_id = any(__user_ids) or tenant_id = any(__tenant_ids);
 
     -- Audit journal rows scoped to the demo tenants (create_tenant writes these)
     delete from public.journal where tenant_id = any(__tenant_ids);

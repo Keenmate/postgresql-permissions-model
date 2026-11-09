@@ -17,7 +17,6 @@ BEGIN
     WHERE user_id IN (SELECT user_id FROM auth.user_info WHERE code LIKE 'rap_test_%');
     DELETE FROM auth.user_group_member WHERE created_by = 'test';
     DELETE FROM auth.user_group WHERE code LIKE 'rap_test_%';
-    DELETE FROM auth.tenant_user WHERE created_by = 'test';
     DELETE FROM auth.user_info WHERE code LIKE 'rap_test_%';
     DELETE FROM auth.tenant WHERE code = 'rap_test_tenant_2';
     DELETE FROM const.resource_role_flag WHERE resource_role_code = 'fsitem_editor';

@@ -18,9 +18,6 @@ BEGIN
     VALUES ('test_ct', 'test_ct', 'normal', 'ct_limited_admin', 'ct_limited_admin', 'CT Limited Admin', 'ct_limited@test.com', true, true)
     RETURNING user_id INTO __limited_admin_id;
 
-    INSERT INTO auth.tenant_user (created_by, tenant_id, user_id)
-    VALUES ('test_ct', 1, __limited_admin_id);
-
     -- Only assign regular read permissions in tenant 1, NOT read_all_*
     -- When _tenant_id = 1 without target, the system checks read_all_* which this user lacks
     INSERT INTO auth.permission_assignment (created_by, tenant_id, user_id, permission_id)

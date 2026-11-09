@@ -20,7 +20,6 @@ BEGIN
     DELETE FROM public.journal WHERE created_by = 'idp_test';
     DELETE FROM auth.user_identity WHERE uid LIKE 'idp_test_%';
     DELETE FROM auth.user_data WHERE user_id IN (SELECT user_id FROM auth.user_info WHERE username LIKE 'idp_test_%');
-    DELETE FROM auth.tenant_user WHERE user_id IN (SELECT user_id FROM auth.user_info WHERE username LIKE 'idp_test_%');
     DELETE FROM auth.user_info WHERE username LIKE 'idp_test_%';
     DELETE FROM auth.provider WHERE code = 'test_idp';
 

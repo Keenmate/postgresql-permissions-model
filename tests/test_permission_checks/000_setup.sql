@@ -37,12 +37,6 @@ BEGIN
     VALUES ('pchk_test', 'pchk_test', 'normal', 'pchk_del_bl_user', 'pchk_del_bl_user', 'Perm Check Delete BL User', 'pchk_del_bl@test.com', true, true)
     RETURNING user_id INTO __test_user_delete_bl_id;
 
-    -- Add users to tenant 1
-    INSERT INTO auth.tenant_user (created_by, tenant_id, user_id) VALUES ('pchk_test', 1, __test_user_id) ON CONFLICT DO NOTHING;
-    INSERT INTO auth.tenant_user (created_by, tenant_id, user_id) VALUES ('pchk_test', 1, __test_user2_id) ON CONFLICT DO NOTHING;
-    INSERT INTO auth.tenant_user (created_by, tenant_id, user_id) VALUES ('pchk_test', 1, __test_user_delete_id) ON CONFLICT DO NOTHING;
-    INSERT INTO auth.tenant_user (created_by, tenant_id, user_id) VALUES ('pchk_test', 1, __test_user_delete_bl_id) ON CONFLICT DO NOTHING;
-
     -- Create test permissions
     INSERT INTO auth.permission (created_by, updated_by, code, full_code, node_path, is_assignable)
     VALUES ('pchk_test', 'pchk_test', 'pchk_test_perm_a', 'pchk_test_perm_a'::ltree, '998'::ltree, true)
