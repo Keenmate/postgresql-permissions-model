@@ -13,6 +13,7 @@ set search_path = public, const, ext, stage, helpers, internal, unsecure, auth, 
 --   not members of T:
 --     d03_denied   a resource deny only
 --     d03_inactive member of a disabled group of T only
+--     d03_picker   member of an active group of T that grants nothing (a picker list)
 --     d03_outsider member of U's Tenant Members group
 --     d03_invitee  nothing yet (joins T by invitation in 003)
 --   d03_sysadmin   full_admin in tenant 1
@@ -25,6 +26,7 @@ declare
     __u       int;
     __ps_id   int;
     __off_g   int;
+    __pick_g  int;
     __ids     jsonb := '{}';
     __name    text;
     __id      bigint;
@@ -35,7 +37,7 @@ begin
     raise notice '=================================================================';
 
     foreach __name in array array['admin', 'member', 'direct', 'owner', 'res', 'role', 'denied', 'inactive',
-                                  'outsider', 'invitee', 'sysadmin']
+                                  'outsider', 'invitee', 'sysadmin', 'picker']
     loop
         insert into auth.user_info (created_by, updated_by, user_type_code, username, original_username, display_name, email, can_login)
         values ('d03', 'd03', 'normal', 'd03_' || __name, 'd03_' || __name, 'D03 ' || __name, 'd03_' || __name || '@test.com', true)
@@ -87,6 +89,13 @@ begin
     returning user_group_id into __off_g;
     insert into auth.user_group_member (created_by, user_group_id, user_id, member_type_code)
     values ('d03', __off_g, (select val from _d03 where key = 'inactive'), 'manual');
+
+    -- member of a group of T that grants nothing (list of candidates)
+    insert into auth.user_group (created_by, updated_by, tenant_id, title, code, is_assignable, is_active, is_external, is_system)
+    values ('d03', 'd03', __t, 'D03 Picker', 'd03_picker', true, true, false, false)
+    returning user_group_id into __pick_g;
+    insert into auth.user_group_member (created_by, user_group_id, user_id, member_type_code)
+    values ('d03', __pick_g, (select val from _d03 where key = 'picker'), 'manual');
 
     -- member of U only
     insert into auth.user_group_member (created_by, user_group_id, user_id, member_type_code)

@@ -1,0 +1,6 @@
+{
+  "name": "Audit: external group sync (v2.19)",
+  "description": "Azure-like provider with sync. ABC Azure users (synced, tenant_member perm set) and Product owners (synced picker list mapped to three Azure groups, grants nothing). Sync needs groups.sync_members in tenant 1; each run adds and removes (membership only, never the user); the full sync runs; login never adds or removes members of synced groups; picker members are not tenant members; a user created by the sync claims the account at first login.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

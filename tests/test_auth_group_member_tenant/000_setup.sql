@@ -31,6 +31,9 @@ BEGIN
 
     SELECT user_group_id INTO __test_group_id FROM auth.user_group WHERE code = 'agmt_test_group';
 
+    -- The group must grant something, or its members are not tenant members (v2.19)
+    PERFORM unsecure.assign_permission('test_agmt', 1, null, __test_group_id, null, 'tenant_member', _tenant_id := 1);
+
     -- Store IDs for subsequent tests
     PERFORM set_config('test_agmt.user_id', __test_user_id::text, false);
     PERFORM set_config('test_agmt.target_id', __test_target_id::text, false);

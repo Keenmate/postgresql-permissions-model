@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.18', 'postgresql_permissionmodel')`
-at startup (currently 2.18) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.19', 'postgresql_permissionmodel')`
+at startup (currently 2.19) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,26 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.19 — external group sync works (`066`)
+
+**Status in keen-auth-permissions: not adopted.**
+
+- **Both sync functions need `groups.sync_members` in tenant 1** (`svc_group_syncer` has it):
+  `process_external_group_member_sync` and `process_external_group_member_sync_by_mapping`.
+- **The full sync works now** and runs every mapping of every synced group (or of `_user_group_id`).
+  Load `stage.external_group_member` for **every** mapping first: a mapping with nothing staged
+  loses all its members.
+- **Each run returns `__state_code` `created` / `updated` / `deleted`.** `deleted` means the
+  membership was removed; the user still exists.
+- **Synced groups (`is_synced`) are no longer touched by login.** Token groups and roles mapped to a
+  synced group are ignored. Their members come from the sync only.
+- **33025** when syncing a group that is not `is_synced`.
+- **Tenant membership ignores groups that grant nothing.** `search_users`, `get_tenant_users`,
+  `get_tenant_members`, `get_user_available_tenants` and `notify_tenant_users` no longer list users
+  who are only on a picker list.
 
 ---
 

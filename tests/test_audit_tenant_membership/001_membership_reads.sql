@@ -47,14 +47,14 @@ declare
     __exp  int[];
 begin
     for __r in select key, val from _d03
-               where key in ('admin', 'member', 'direct', 'owner', 'res', 'role', 'denied', 'inactive', 'outsider')
+               where key in ('admin', 'member', 'direct', 'owner', 'res', 'role', 'denied', 'inactive', 'outsider', 'picker')
                order by key
     loop
         __got := array(select a.__tenant_id from auth.get_user_available_tenants(__r.val, 'd03', __r.val) a
                        where a.__tenant_id in (__t, __u) order by 1);
         __exp := case
                      when __r.key = 'outsider' then array[__u]
-                     when __r.key in ('denied', 'inactive') then '{}'::int[]
+                     when __r.key in ('denied', 'inactive', 'picker') then '{}'::int[]
                      else array[__t]
                  end;
         if __got = __exp then

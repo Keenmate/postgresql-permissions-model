@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-09 — v2.19: external group sync works
+
+**`066_update_permissions_v2-19.sql`** (`postgresql_permissionmodel` **2.19**).
+
+Sync lets an app reference users before their first login. For example, a combo of potential product owners lists the members of a local group mapped to several Azure groups. People who leave the Azure group lose the membership on the sync schedule.
+
+### Fixed
+
+- **`auth.process_external_group_member_sync` always failed** ("operator does not exist: boolean || integer"). It was the only place that removed members; the per-mapping function only added.
+- **Neither sync function checked a permission.** The check was commented out, and any user could create users and memberships through the sync.
+- **Login and sync undid each other.** A login whose token lacked the group deleted the synced membership, and the next sync added it back.
+
+### Changed
+
+- **One source per group.** A synced group (`is_synced`) takes its members only from the sync; login neither adds nor removes them. Other external and hybrid groups take mapped members from the token at login, as before.
+- **Each per-mapping run reconciles fully.** It adds the staged members, creating missing users when `create_missing_users_on_sync` is on, and removes the mapping's members who are no longer staged. Removal deletes the membership only, never the user. A user in several mapped groups stays a member while any of the mappings still has them.
+- **The full sync runs every mapping of the synced groups** (optionally of one group). A mapping with nothing staged loses all its members, so load every mapping first.
+- **New permission `groups.sync_members`**, checked in tenant 1, since the syncer serves every tenant. `svc_group_syncer`, `system_admin` and `full_admin` have it. The logic lives in `unsecure.process_external_group_member_sync_by_mapping`.
+- **New error 33025** for syncing a group that is not `is_synced`.
+- **Picker groups don't make tenant members** (refines v2.17). A group counts toward tenant membership only if it grants something: a permission or perm set assignment, or a resource grant or role. Members of a list such as "potential product owners" don't appear in the tenant's combobox or user lists.
+
+### Tests
+
+- New suite `tests/test_audit_group_sync/`. `test_audit_tenant_membership` covers picker groups.
+
 ## 2026-11-09 — v2.18: pre-provisioned users
 
 **`065_update_permissions_v2-18.sql`** (`postgresql_permissionmodel` **2.18**). Follow-up to v2.4 and D-03.
@@ -36,7 +61,7 @@ The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/
 ### Changed
 
 - **Membership is computed, not stored.** A user is a member of tenant T when something grants them something in T:
-  - membership in an active group of T (direct, or mapped through an active provider and identity);
+  - membership in an active group of T that grants something (direct, or mapped through an active provider and identity). A group that grants nothing, such as a picker list, does not count (since v2.19);
   - a direct permission or perm-set assignment in T;
   - an owner row in T;
   - a resource grant (not a deny), or a resource role whose role is active.
@@ -2674,6 +2699,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.19 | 2026-11-09 | External group sync works: synced groups take members only from the sync, each run adds and removes, `groups.sync_members` in tenant 1; groups that grant nothing don't make tenant members (`066_update_permissions_v2-19.sql`) |
 | 2.18 | 2026-11-09 | Pre-provisioned users: `ensure_user_info` needs `users.register_user` in tenant 1 and can pre-create the identity by object id; first login claims a user pre-provisioned for that provider; `ensure_groups_and_permissions` callable twice per transaction (`065_update_permissions_v2-18.sql`) |
 | 2.17 | 2026-11-09 | Tenant membership is computed (group, direct grant, owner, resource grant) by one view `auth.tenant_memberships` used by every member read; `auth.tenant_user` dropped; `add_tenant_user` joins Tenant Members (`064_update_permissions_v2-17.sql`) |
 | 2.16 | 2026-11-08 | Translations are global: writes need the permission in tenant 1 and are stored in tenant 1; every tenant reads the same rows (`063_update_permissions_v2-16.sql`) |

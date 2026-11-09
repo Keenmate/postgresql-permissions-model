@@ -14,9 +14,12 @@
  * Membership is not stored any more, it is computed: a user is a member of
  * tenant T when something grants them something in T -
  *
- *  - a membership in an active group of T (direct, or mapped through an
- *    active provider and a not-disabled identity, as in the permission
- *    rebuild),
+ *  - a membership in an active group of T that grants something (a
+ *    permission / perm set assignment, or a resource grant or role) - direct,
+ *    or mapped through an active provider and a not-disabled identity, as in
+ *    the permission rebuild. A group that grants nothing (a list of
+ *    candidates, e.g. potential product owners) does not make its members
+ *    tenant members,
  *  - a permission / perm set assigned to them directly in T,
  *  - an owner row in T (tenant or group owner),
  *  - a resource grant (not a deny) or a resource role of an active role in T.
@@ -83,6 +86,8 @@ create index if not exists ix_ra_user_tenant on auth.resource_access (user_id, t
 create index if not exists ix_ra_tenant_user on auth.resource_access (tenant_id, user_id) where user_id is not null and not is_deny;
 create index if not exists ix_rra_user_tenant on auth.resource_role_assignment (user_id, tenant_id) where user_id is not null;
 create index if not exists ix_rra_tenant_user on auth.resource_role_assignment (tenant_id, user_id) where user_id is not null;
+create index if not exists ix_ra_group_grant on auth.resource_access (user_group_id) where user_group_id is not null and not is_deny;
+create index if not exists ix_rra_group on auth.resource_role_assignment (user_group_id) where user_group_id is not null;
 
 
 -- tenant_id, user_id -> why the user belongs to the tenant (one row per source,
@@ -99,6 +104,13 @@ from auth.user_group_member ugm
 where ug.is_active
   and (ugm.mapping_id is null
     or (coalesce(pr.is_active, false) and coalesce(uid.is_active, true)))
+  -- only groups that grant something; a picker list grants nothing
+  and (exists(select from auth.permission_assignment gpa where gpa.user_group_id = ug.user_group_id)
+    or exists(select from auth.resource_access gra
+              where gra.user_group_id = ug.user_group_id and not gra.is_deny)
+    or exists(select from auth.resource_role_assignment grra
+                       inner join const.resource_role grr on grr.code = grra.role_code and grr.is_active
+              where grra.user_group_id = ug.user_group_id))
 union all
 select pa.tenant_id
      , pa.user_id
