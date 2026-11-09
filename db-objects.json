@@ -2345,7 +2345,7 @@
     "object_name": "get_tenant_members",
     "object_type": "function",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 255,
+    "last_update_line": 268,
     "last_update_source": "migration",
     "total_updates": 2,
     "all_updates": [
@@ -2357,7 +2357,7 @@
       },
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 255,
+        "line": 268,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -2368,7 +2368,7 @@
     "object_name": "get_tenant_users",
     "object_type": "function",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 220,
+    "last_update_line": 233,
     "last_update_source": "migration",
     "total_updates": 2,
     "all_updates": [
@@ -2380,7 +2380,7 @@
       },
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 220,
+        "line": 233,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -2482,7 +2482,7 @@
     "object_name": "get_user_available_tenants",
     "object_type": "function",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 293,
+    "last_update_line": 306,
     "last_update_source": "migration",
     "total_updates": 2,
     "all_updates": [
@@ -2494,7 +2494,7 @@
       },
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 293,
+        "line": 306,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -3149,7 +3149,7 @@
     "object_name": "notify_tenant_users",
     "object_type": "view",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 117,
+    "last_update_line": 130,
     "last_update_source": "migration",
     "total_updates": 2,
     "all_updates": [
@@ -3161,7 +3161,7 @@
       },
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 117,
+        "line": 130,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -3776,7 +3776,7 @@
     "object_name": "search_users",
     "object_type": "function",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 145,
+    "last_update_line": 158,
     "last_update_source": "migration",
     "total_updates": 2,
     "all_updates": [
@@ -3788,7 +3788,7 @@
       },
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 145,
+        "line": 158,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -4007,16 +4007,16 @@
   },
   {
     "schema": "auth",
-    "object_name": "tenant_members",
+    "object_name": "tenant_memberships",
     "object_type": "view",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 77,
+    "last_update_line": 90,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 77,
+        "line": 90,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -4027,7 +4027,7 @@
     "object_name": "tenant_user",
     "object_type": "table",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 613,
+    "last_update_line": 626,
     "last_update_source": "migration",
     "total_updates": 2,
     "all_updates": [
@@ -4039,7 +4039,7 @@
       },
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 613,
+        "line": 626,
         "operation": "DROP",
         "source": "migration"
       }
@@ -4457,7 +4457,7 @@
     "object_name": "update_user_last_selected_tenant",
     "object_type": "function",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 322,
+    "last_update_line": 335,
     "last_update_source": "migration",
     "total_updates": 2,
     "all_updates": [
@@ -4469,7 +4469,7 @@
       },
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 322,
+        "line": 335,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -6376,13 +6376,13 @@
     "object_name": "raise_34008",
     "object_type": "function",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 55,
+    "last_update_line": 68,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 55,
+        "line": 68,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -9177,13 +9177,13 @@
     "object_name": "ix_permission_assignment_user",
     "object_type": "index",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 68,
+    "last_update_line": 81,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 68,
+        "line": 81,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -9194,13 +9194,13 @@
     "object_name": "ix_ra_tenant_user",
     "object_type": "index",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 70,
+    "last_update_line": 83,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 70,
+        "line": 83,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -9211,13 +9211,13 @@
     "object_name": "ix_ra_user_tenant",
     "object_type": "index",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 69,
+    "last_update_line": 82,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 69,
+        "line": 82,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -9245,13 +9245,13 @@
     "object_name": "ix_rra_tenant_user",
     "object_type": "index",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 72,
+    "last_update_line": 85,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 72,
+        "line": 85,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -9262,13 +9262,13 @@
     "object_name": "ix_rra_user_tenant",
     "object_type": "index",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 71,
+    "last_update_line": 84,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 71,
+        "line": 84,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -9279,13 +9279,13 @@
     "object_name": "ix_user_group_member_user",
     "object_type": "index",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 67,
+    "last_update_line": 80,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 67,
+        "line": 80,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -11512,7 +11512,7 @@
     "object_name": "delete_tenant",
     "object_type": "function",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 532,
+    "last_update_line": 545,
     "last_update_source": "migration",
     "total_updates": 2,
     "all_updates": [
@@ -11524,7 +11524,7 @@
       },
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 532,
+        "line": 545,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -11637,7 +11637,7 @@
     "object_name": "evaluate_invitation_condition",
     "object_type": "function",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 373,
+    "last_update_line": 386,
     "last_update_source": "migration",
     "total_updates": 2,
     "all_updates": [
@@ -11649,7 +11649,7 @@
       },
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 373,
+        "line": 386,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -11660,7 +11660,7 @@
     "object_name": "execute_database_action",
     "object_type": "function",
     "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 447,
+    "last_update_line": 460,
     "last_update_source": "migration",
     "total_updates": 2,
     "all_updates": [
@@ -11672,7 +11672,7 @@
       },
       {
         "file": "064_update_permissions_v2-17.sql",
-        "line": 447,
+        "line": 460,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }

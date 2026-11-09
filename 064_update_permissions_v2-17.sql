@@ -21,7 +21,7 @@
  *  - an owner row in T (tenant or group owner),
  *  - a resource grant (not a deny) or a resource role of an active role in T.
  *
- * The new view auth.tenant_members gives that one rule; every read uses it:
+ * The new view auth.tenant_memberships gives that one rule; every read uses it:
  * search_users, get_tenant_users, get_tenant_members (now also lists members
  * without groups), get_user_available_tenants, update_user_last_selected_tenant
  * (which checked the CALLER's membership instead of the target's),
@@ -29,7 +29,11 @@
  *
  * The invitation action add_tenant_user adds the user to the tenant's built-in
  * Tenant Members group (tenant 1 gets one too). auth.tenant_user is dropped;
- * its rows never granted anything.
+ * its rows never granted anything. The view is named tenant_memberships so it
+ * is not confused with that group (code tenant_members), an ordinary group
+ * filled by admins and add_tenant_user, never at login.
+ *
+ * Tenant error codes 34004-34007 were raised but never registered.
  *
  * get_tenant_members checks tenants.get_users / tenants.get_all_users (like
  * get_tenant_users) instead of tenants.get_tenants / tenants.get_all_tenants.
@@ -40,15 +44,24 @@ set search_path = public, const, ext, stage, helpers, internal, unsecure, auth, 
 select *
 from public.start_version_update('2.17', 'Tenant membership is computed',
                                  _component := 'postgresql_permissionmodel',
-                                 _description := 'One computed membership rule (auth.tenant_members: group, direct grant, owner, resource grant) for every tenant member read; auth.tenant_user dropped; add_tenant_user adds to Tenant Members.');
+                                 _description := 'One computed membership rule (auth.tenant_memberships: group, direct grant, owner, resource grant) for every tenant member read; auth.tenant_user dropped; add_tenant_user adds to Tenant Members.');
 
 
+-- 34004-34007 were raised but never registered
 insert into const.event_code (event_id, code, category_code, is_system, source)
-values (34008, 'err_tenant_members_group_missing', 'tenant_error', true, 'core')
+values (34004, 'err_tenant_code_used_before', 'tenant_error', true, 'core')
+     , (34005, 'err_tenant_already_deleted', 'tenant_error', true, 'core')
+     , (34006, 'err_tenant_not_deleted', 'tenant_error', true, 'core')
+     , (34007, 'err_tenant_protected', 'tenant_error', true, 'core')
+     , (34008, 'err_tenant_members_group_missing', 'tenant_error', true, 'core')
 on conflict do nothing;
 
 insert into const.event_message (event_id, language_code, message_template)
-values (34008, 'en', 'Tenant (id: {tenant_id}) has no Tenant Members group')
+values (34004, 'en', 'Tenant code "{code}" has been used before and cannot be reused')
+     , (34005, 'en', 'Tenant (uuid: {tenant_uuid}) is already deleted')
+     , (34006, 'en', 'Tenant (uuid: {tenant_uuid}) is not deleted')
+     , (34007, 'en', 'Tenant (id: {tenant_id}) is protected and cannot be deleted')
+     , (34008, 'en', 'Tenant (id: {tenant_id}) has no Tenant Members group')
 on conflict do nothing;
 
 -- 34008: the tenant has no Tenant Members group (invitation action add_tenant_user)
@@ -74,7 +87,7 @@ create index if not exists ix_rra_tenant_user on auth.resource_role_assignment (
 
 -- tenant_id, user_id -> why the user belongs to the tenant (one row per source,
 -- a user can appear several times). Same filters as the permission rebuild.
-create or replace view auth.tenant_members (tenant_id, user_id, source_code) as
+create or replace view auth.tenant_memberships (tenant_id, user_id, source_code) as
 select ug.tenant_id
      , ugm.user_id
      , 'group'::text
@@ -118,7 +131,7 @@ create or replace view auth.notify_tenant_users
             (tenant_id, user_id) as
 select distinct tm.tenant_id
               , tm.user_id::integer
-from auth.tenant_members tm;
+from auth.tenant_memberships tm;
 
 
 -- Tenant 1 gets the Tenant Members group every other tenant has (add_tenant_user)
@@ -197,7 +210,7 @@ begin
               and (__is_locked is null or ui.is_locked = __is_locked)
               and (helpers.is_empty_string(__search_text)
                    or ui.nrm_search_data like '%' || __search_text || '%')
-              and (__effective_tenant_id is null or exists(select 1 from auth.tenant_members tm where tm.user_id = ui.user_id and tm.tenant_id = __effective_tenant_id))
+              and (__effective_tenant_id is null or exists(select 1 from auth.tenant_memberships tm where tm.user_id = ui.user_id and tm.tenant_id = __effective_tenant_id))
             order by ui.display_name
             offset ((_page - 1) * _page_size) limit _page_size
         )
@@ -232,7 +245,7 @@ begin
 	return query
 		with members as (
 			select distinct tm.user_id
-			from auth.tenant_members tm
+			from auth.tenant_memberships tm
 			where __effective_tenant_id is null or tm.tenant_id = __effective_tenant_id)
 		select ui.user_id
 				 , ui.username
@@ -268,7 +281,7 @@ begin
 	return query
 		with members as (
 			select distinct tm.user_id
-			from auth.tenant_members tm
+			from auth.tenant_memberships tm
 			where __effective_tenant_id is null or tm.tenant_id = __effective_tenant_id)
 		select ui.user_id
 				 , ui.display_name
@@ -310,7 +323,7 @@ begin
              , t.code
              , t.title
              , t.is_default
-        from auth.tenant_members tm
+        from auth.tenant_memberships tm
                  inner join auth.tenant t on t.tenant_id = tm.tenant_id
         where tm.user_id = _target_user_id
           and t.deleted_at is null
@@ -338,7 +351,7 @@ begin
     from auth.tenant t
     where t.uuid = _tenant_uuid::uuid
       and t.deleted_at is null
-      and exists(select from auth.tenant_members tm
+      and exists(select from auth.tenant_memberships tm
                  where tm.tenant_id = t.tenant_id
                    and tm.user_id = _target_user_id)
     into __tenant_id;
@@ -394,7 +407,7 @@ begin
                 return true;  -- user doesn't exist yet, condition met
             end if;
             return not exists(
-                select 1 from auth.tenant_members
+                select 1 from auth.tenant_memberships
                 where tenant_id = _tenant_id and user_id = _target_user_id
             );
 

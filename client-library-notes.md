@@ -106,7 +106,7 @@ Library rules:
 **Status in keen-auth-permissions: not adopted.**
 
 - **`auth.tenant_user` is dropped.** Read membership from the new view
-  `auth.tenant_members (tenant_id, user_id, source_code)`. A user can appear there once per source:
+  `auth.tenant_memberships (tenant_id, user_id, source_code)`. A user can appear there once per source:
   `group`, `assignment`, `owner`, `resource_access`, `resource_role`.
 - **Member lists include users without groups.**
   - `search_users` (tenant filter), `get_tenant_users`, `get_tenant_members` and

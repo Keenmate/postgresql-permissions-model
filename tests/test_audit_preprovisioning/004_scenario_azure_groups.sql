@@ -18,7 +18,7 @@ begin
     perform pg_temp.p18_is('Carol (Azure FGHAdmins): FGH admin', pg_temp.p18_tenants('carol'), 'p18_fgh / admin: p18_fgh');
     perform pg_temp.p18_is('Nora (no Azure groups): no tenants', pg_temp.p18_tenants('nora'), '- / admin: -');
     perform pg_temp.p18_is('none of them is in tenant 1',
-        (select count(*)::text from auth.tenant_members tm inner join auth.user_info ui on ui.user_id = tm.user_id
+        (select count(*)::text from auth.tenant_memberships tm inner join auth.user_info ui on ui.user_id = tm.user_id
          where tm.tenant_id = 1 and ui.username like '%@p18.com'), '0');
 
     -- Alice leaves Azure ABC
