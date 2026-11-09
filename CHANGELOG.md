@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-09 — v2.18: pre-provisioned users
+
+**`065_update_permissions_v2-18.sql`** (`postgresql_permissionmodel` **2.18**). Follow-up to v2.4 and D-03.
+
+### Fixed
+
+- **`auth.ensure_user_info` had no permission check.** Any caller could create users. It now needs `users.register_user` in tenant 1, which is a service-account permission (`svc_registrator` and `svc_group_syncer` hold it). The logic moved to `unsecure.ensure_user_info`, which the external group member sync now calls.
+- **Pre-provisioned users could not log in.** Since v2.4, the first provider login of a user created by `ensure_user_info` returned 33024, so invitation services could not create users before their first login.
+- **`auth.ensure_groups_and_permissions` failed on its second call in one transaction.** Its temp table already existed.
+
+### Added
+
+- **Variant A, identity by object id.** `ensure_user_info` takes an optional `_provider_oid` (together with `_provider_code`) and creates the provider identity right away, without a uid. The first login matches it by the object id and fills in the uid. The username is not trusted. An object id already linked to another user raises 33007.
+- **Variant B, claim by username.** The first login claims an existing user when the user has no identities at all and was pre-provisioned for exactly this provider (`last_used_provider_code`). Every other username clash still returns 33024. The client must pass a provider-verified username (Azure: UPN / `preferred_username`, never the `email` claim).
+- **`uq_user_identity` is partial.** It is now `(provider_code, uid) where uid is not null`. Before, it allowed only one identity without a uid per provider.
+
+### Tests
+
+- New suite `tests/test_audit_preprovisioning/`: an invoice console on one Azure-like provider with tenants ABC, CDE and FGH, both pre-provisioning variants, and tenants following the provider groups.
+
 ## 2026-11-09 — v2.17: tenant membership is computed
 
 **`064_update_permissions_v2-17.sql`** (`postgresql_permissionmodel` **2.17**). Audit decision D-03.
@@ -2653,6 +2673,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.18 | 2026-11-09 | Pre-provisioned users: `ensure_user_info` needs `users.register_user` in tenant 1 and can pre-create the identity by object id; first login claims a user pre-provisioned for that provider; `ensure_groups_and_permissions` callable twice per transaction (`065_update_permissions_v2-18.sql`) |
 | 2.17 | 2026-11-09 | Tenant membership is computed (group, direct grant, owner, resource grant) by one view `auth.tenant_members` used by every member read; `auth.tenant_user` dropped; `add_tenant_user` joins Tenant Members (`064_update_permissions_v2-17.sql`) |
 | 2.16 | 2026-11-08 | Translations are global: writes need the permission in tenant 1 and are stored in tenant 1; every tenant reads the same rows (`063_update_permissions_v2-16.sql`) |
 | 2.15 | 2026-11-08 | Security: permission tree, providers, resource types/roles, token types and languages check the permission in tenant 1; system parameters and event codes need `system.*` permissions; translations validated against `_tenant_id` (`062_update_permissions_v2-15.sql`) |

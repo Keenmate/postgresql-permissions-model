@@ -1,0 +1,6 @@
+{
+  "name": "Audit: pre-provisioned users (v2.18)",
+  "description": "Invoice console on one Azure-like provider: tenants ABC (members = Azure ABC), CDE (individual admins only), FGH (members = Azure FGH + ABC, admins = individuals + Azure FGHAdmins). ensure_user_info needs users.register_user in tenant 1. Variant A: identity pre-created by object id, first login fills the uid. Variant B: first login claims a user pre-provisioned for that provider who has no identities. Other username clashes still 33024. Membership and the tenant combobox follow the provider groups.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

@@ -231,7 +231,7 @@ The user system uses three main tables for flexible multi-provider support and e
 - `auth.assign_user_default_groups()` - Automatic group assignment
 
 **Identity Provider Management (`user_identity` table)**:
-- `auth.ensure_user_from_provider()` - User provisioning from external providers
+- `auth.ensure_user_from_provider()` - User provisioning from external providers; claims a user pre-provisioned by `auth.ensure_user_info()` (service accounts, `users.register_user` in tenant 1) by object id, or by username when it was pre-provisioned for that provider and has no identities (v2.18)
 - `auth.create_user_identity_link()` - Explicitly link an additional identity to an existing user (self-link free, others need `users.create_user_identity_link`). `register_user` / `ensure_user_from_provider` never link by username (33007 / 33024)
 - `auth.enable_user_identity()` / `auth.disable_user_identity()` - Control provider access
 - Multiple identities per user: Windows GUID, AzureAD UID, Google ID, etc.
@@ -467,6 +467,7 @@ All tests are organized as suite directories with `test.json` manifests:
 | `test_search_functions/` | All search functions: pagination, filtering, empty results |
 | `test_identity_user_data/` | v2.3: provider `_user_data` stored on the identity on first login, refreshed on later logins, kept on `null`, returned by `get_user_identity` |
 | `test_audit_authentication/` | v2.6: login/MFA/API-key outcomes persist (no raise), temporary escalating lockout with decay, admin lock, provider login of locked users, system sys_params |
+| `test_audit_preprovisioning/` | v2.18: Azure-like scenario (ABC / CDE / FGH); `ensure_user_info` needs `users.register_user` in tenant 1; identity pre-created by object id, first login fills the uid; claim by username only for a user pre-provisioned for that provider without identities; tenants follow the provider groups |
 | `test_audit_tenant_membership/` | v2.17: membership is computed (group, direct grant, owner, resource grant/role; denies and disabled groups don't count); search_users / get_tenant_users / get_tenant_members / available tenants / notify_tenant_users agree; last selected tenant checks the target; `add_tenant_user` joins Tenant Members |
 | `test_audit_global_ops/` | v2.15: permission tree, providers, resource types/roles, token types, languages, system parameters, event codes and (v2.16, global) translations need the permission in tenant 1; tenant-B admins with every permission in B are rejected; every tenant reads the global translations |
 | `test_audit_resource_access/` | v2.13: user/group deny at any ancestor level beats every grant, partial keys cover descendants, has_resource_access / filter / flags / matrix / accessible list agree, group denies; v2.14: roles on folders cover descendants, denies remove only the denied flag, inactive roles grant nothing |

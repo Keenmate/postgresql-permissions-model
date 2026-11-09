@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.17', 'postgresql_permissionmodel')`
-at startup (currently 2.17) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.18', 'postgresql_permissionmodel')`
+at startup (currently 2.18) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,31 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.18 — pre-provisioned users (`065`)
+
+**Status in keen-auth-permissions: not adopted.**
+
+- **`auth.ensure_user_info` has a new last parameter, `_provider_oid text default null`.** The old
+  8-parameter signature is dropped. Calls by name or with 8 positional arguments still work.
+- **It needs `users.register_user` in tenant 1.** Only service accounts should call it, such as the
+  invitation service or the group sync. End users get 32001.
+- **Pre-provisioning, two ways:**
+  - **By object id (preferred).** Pass `_provider_code` and `_provider_oid` (Azure: the object id from
+    the directory). The identity is created right away. The first `ensure_user_from_provider` with that
+    oid logs the user in as the pre-provisioned user and stores the uid.
+  - **By username.** Pass `_provider_code` without an oid. The first `ensure_user_from_provider` of
+    that provider with the same username claims the user, as long as the user has no identities yet.
+    Other providers, users pre-provisioned without a provider, and users who have logged in before
+    still get `err_username_already_exists` (33024).
+- **Claim rule for the library:** `_username` passed to `ensure_user_from_provider` must be a value
+  the provider verifies (Azure: UPN or `preferred_username` in a single-tenant app). Never use the
+  `email` claim: in multi-tenant Azure apps it is editable and unverified, so anyone could claim a
+  pre-provisioned account ("nOAuth").
+- **33007** when `_provider_oid` is already linked to another user.
+- **`ensure_groups_and_permissions` can be called several times in one transaction.**
 
 ---
 

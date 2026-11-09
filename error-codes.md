@@ -68,7 +68,7 @@ All errors are seeded in `const.event_code` with matching templates in `const.ev
 | 33004 | `err_user_locked` | `error.raise_33004` | User is locked |
 | 33005 | `err_user_cannot_login` | `error.raise_33005` | User not permitted to log in |
 | 33006 | `err_user_no_email_provider` | `error.raise_33006` | No email provider for user |
-| 33007 | `err_identity_already_used` | `error.raise_33007` | Identity already linked to another user |
+| 33007 | `err_identity_already_used` | `error.raise_33007` | Identity already linked to another user (also: `ensure_user_info` with an object id of another user, since v2.18) |
 | 33008 | `err_identity_not_active` | `error.raise_33008` | Identity is disabled |
 | 33009 | `err_identity_not_found` | `error.raise_33009` | Identity does not exist |
 | 33010 | `err_provider_not_active` | `error.raise_33010` | Identity provider is disabled |
@@ -85,7 +85,7 @@ All errors are seeded in `const.event_code` with matching templates in `const.ev
 | 33021 | `err_group_not_resolvable` | `error.raise_33021` | Group identifier could not be resolved |
 | 33022 | `err_group_mapping_not_found` | `error.raise_33022` | Group mapping does not exist in the tenant (since v2.1) |
 | 33023 | `err_group_mapping_already_exists` | `error.raise_33023` | Group already has this mapping (since v2.1) |
-| 33024 | `err_username_already_exists` | `error.raise_33024` | Username already exists; link the identity with `auth.create_user_identity_link` (since v2.4) |
+| 33024 | `err_username_already_exists` | `error.raise_33024` | Username already exists; link the identity with `auth.create_user_identity_link` (since v2.4). Not returned for a user pre-provisioned for that provider without identities (claimed, since v2.18) |
 
 ## Tenant (34001 — 34999)
 
