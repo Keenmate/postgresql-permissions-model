@@ -68,7 +68,7 @@ functions use group membership. Permission calculation requires neither.
 - **Answer:** **computed** (neither a nor b as written). The user rejected a maintained table: "on every log in, on
   every groups reconfiguration ... we would have to update this table"; "you cannot be a member of tenant when you
   have no permissions in it, are not part of any group and so on". A resource grant counts; `add_tenant_user`
-  joins the Tenant Members group. Done in v2.17 (`064`): view `auth.tenant_members`, `tenant_user` dropped.
+  joins the Tenant Members group. Done in v2.17 (`064`): view `auth.tenant_memberships`, `tenant_user` dropped.
 
 ### D-04 Who may change global user state?
 Users are global: lock, disable, enable, password, MFA reset, identities and blacklist apply to the
@@ -220,7 +220,14 @@ inactive groups.
   is not undone by the next rebuild.
 - **Rec:** accept.
 - Refs: 01/OQ-06, 03/4, 04/OQ-06
-- **Answer:**
+- **Answer:** default groups are **removed**. Two mechanisms replace them, both using the same rule
+  evaluator (a jsonb rule; "always" has to be written explicitly):
+  - **tenant actions:** one-shot steps on registration, entry (authentication; every login or
+    `run_once_per_user`) and leave;
+  - **rule mappings** on groups: membership follows the rule at every recalculation.
+
+  Design in `audit/design-d13-tenant-actions.md`. Still open: what "remove from tenant" removes, and
+  whether disable or lock count as leave.
 
 ### D-14 Resource access semantics
 - **Precedence:** a deny on the user (or any group) at any ancestor level, whether type-level or
@@ -288,6 +295,31 @@ tenant's user events.
   providers, and the empty `update_user_data` stub is dropped. (01/OQ-02)
 - **Rec:** accept all.
 - **Answer:**
+
+### D-19 No privilege escalation
+Raised by the user on 2026-11-15. Today, `auth.assign_permission` only checks
+`permissions.assign_permission`. Anyone holding it can hand out `tenant_admin` or `full_admin`,
+including to themselves.
+- **Rule:** you cannot give out a permission or perm set that you don't hold yourself. "Holding" is
+  checked against the caller's effective permissions in that tenant, groups included; an ancestor
+  covers its descendants.
+- **The paths it covers:**
+  - assigning a permission or perm set;
+  - adding permissions to a perm set;
+  - adding a group member (the group's permissions);
+  - creating a group mapping or rule mapping;
+  - invitations (checked against the inviter at creation, see D-11);
+  - tenant actions (checked against the author when saved);
+  - API key permissions.
+- **Exceptions:**
+  - user 1;
+  - tenant owners, who hold everything in their tenant.
+- **Answer:**
+  - **Group owners may add members to their group** even without holding its permissions, like a
+    SharePoint site collection admin adding another one. The user knows it's dangerous but common. An
+    approval process, in the style of tenant actions, may come later.
+  - **Removals follow the same rule:** you cannot unassign a set or permission you don't hold.
+  - Not implemented yet.
 
 ---
 
