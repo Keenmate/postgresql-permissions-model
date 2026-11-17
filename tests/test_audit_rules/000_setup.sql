@@ -3,11 +3,11 @@ set search_path = public, const, ext, stage, helpers, internal, unsecure, auth, 
 -- ============================================================================
 -- SETUP
 --   providers ru_aad (group mapping) and ru_pwd (no group mapping)
---   tenant FGH: ru_fgh_admin holds tenant_admin and tenant_owner there
+--   tenant FGH: ru_fgh_admin holds tenant_admin there and owns the tenant
 --     group "FGH Admins"  (tenant_admin perm set)  - rule mappings in 003
 --     group "FGH Members" (tenant_member perm set) - rule mappings in 003
 --     group "FGH Synced"  (is_synced)
---   tenant CDE: ru_cde_admin holds tenant_admin and tenant_owner there
+--   tenant CDE: ru_cde_admin holds tenant_admin there and owns the tenant
 --   tenant 1:   ru_full (full_admin), ru_sys (system_admin)
 --   svc_authenticator (3) logs users in
 -- ============================================================================
@@ -44,9 +44,10 @@ begin
 
     perform unsecure.assign_permission_as_system(null::integer, (select val from _ru where key = 'fgh_admin')::bigint, 'tenant_admin', null, __fgh);
     perform unsecure.assign_permission_as_system(null::integer, (select val from _ru where key = 'cde_admin')::bigint, 'tenant_admin', null, __cde);
-    -- tenant_admin has no mapping permissions (D-08 open); the owners' perm set has
-    perform unsecure.assign_permission_as_system(null::integer, (select val from _ru where key = 'fgh_admin')::bigint, 'tenant_owner', null, __fgh);
-    perform unsecure.assign_permission_as_system(null::integer, (select val from _ru where key = 'cde_admin')::bigint, 'tenant_owner', null, __cde);
+    -- they own their tenants: mapping into Tenant Admins (owner-only tenant_admin, v2.26) needs an owner
+    insert into auth.owner (created_by, tenant_id, user_group_id, user_id)
+    values ('ru', __fgh, null, (select val from _ru where key = 'fgh_admin')::bigint),
+           ('ru', __cde, null, (select val from _ru where key = 'cde_admin')::bigint);
     perform unsecure.assign_permission_as_system(null::integer, (select val from _ru where key = 'full')::bigint, 'full_admin', null, 1);
     perform unsecure.assign_permission_as_system(null::integer, (select val from _ru where key = 'sys')::bigint, 'system_admin', null, 1);
 

@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-17 — v2.26: tenant owners above tenant admins
+
+**`073_update_permissions_v2-26.sql`** (`postgresql_permissionmodel` **2.26**).
+
+Decided with the user after the D-13 build: tenant owners stand above everyone in their tenant.
+
+### Changed
+
+- **Owner-only perm sets** (`auth.perm_set.is_owner_only`, set on `tenant_admin` in every tenant). Outside tenant 1, only an active tenant owner (or user 1) may give such a set out or take it away, whether directly, through group members, mappings, invitations, actions or API keys, or edit it. The no-escalation check reports it as `tenant_admin (tenant owners only)` (32010). `copy_perm_set` keeps the flag; tenant 1 (templates, platform) is not affected.
+- **`tenant_admin`** loses `tenants.assign_owner`, so admins can't appoint owners, and gets the tenant's `groups.*` permissions (create, update, lock, delete, members, mappings, reads). D-19 still applies to each group.
+
+### Fixed
+
+- `auth.delete_user_group` failed for a group with mappings (foreign key); the members and mappings now go first.
+
+### Tests
+
+- New suite `tests/test_audit_admin_hierarchy/`.
+
 ## 2026-11-17 — v2.25: actions
 
 **`072_update_permissions_v2-25.sql`** (`postgresql_permissionmodel` **2.25**).
@@ -2853,6 +2872,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.26 | 2026-11-17 | Tenant owners above tenant admins: owner-only perm sets (`tenant_admin`), `tenant_admin` gets `groups.*` and loses `tenants.assign_owner`; group deletion with mappings fixed (`073_update_permissions_v2-26.sql`) |
 | 2.25 | 2026-11-17 | Actions: tenant and platform actions on registration, entry and leave with a rule and steps from the invitation catalogue; database steps run at once, backend/external steps wait for the app; run log; D-19 on save (`072_update_permissions_v2-25.sql`) |
 | 2.24 | 2026-11-17 | Tenant templates: create_tenant seeds groups, tenant-1 perm sets and mappings (placeholders, global rules) from a named template or the default (`071_update_permissions_v2-24.sql`) |
 | 2.23 | 2026-11-17 | Platform groups: tenant-1 groups with a tenant scope that grant their perm sets in those tenants, invisible to the tenants, journaled as Platform support (`070_update_permissions_v2-23.sql`) |

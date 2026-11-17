@@ -1,10 +1,14 @@
 # PostgreSQL Permissions Model
 
+> **Status: experimental.** The current v2 line (update scripts `048`–`073`, versions 2.1–2.26) is still
+> being audited and redesigned. Function signatures, permissions and behaviour may change without notice,
+> so don't rely on it in production yet. `CHANGELOG.md` and `client-library-notes.md` list what changed.
+
 A comprehensive PostgreSQL database model for multi-tenant user/group/permissions management with hierarchical permissions, permission sets, and flexible identity provider integration.
 
 ## Overview
 
-This is a standalone PostgreSQL framework that provides complete tenant/user/group/permissions management for any PostgreSQL project. It's production-ready and used in many real-world projects, both big and small.
+This is a standalone PostgreSQL framework that provides complete tenant/user/group/permissions management for any PostgreSQL project. Earlier versions are used in many real-world projects, both big and small.
 
 ## Key Features
 

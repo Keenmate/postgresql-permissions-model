@@ -233,6 +233,12 @@ inactive groups.
   rules, in v2.21 (`068`); step 3, D-19, in v2.22 (`069`); step 4, platform groups, in
   v2.23 (`070`); step 5, tenant templates, in v2.24 (`071`); step 6, actions, in v2.25 (`072`).
 
+  **After the build (2026-11-17), the user's answers to the open choices:** rule semantics, rule
+  mappings without a provider, platform, template and action defaults stay (the last three to be
+  seen in testing); `rules.*` and now `groups.*` belong to `tenant_admin` for its own tenant; a rule
+  `always` is fine ("tenants are gated by an AAD group or a fixed list anyway"); tenant owners stand
+  above everyone: only they make or unmake tenant admins, admins can't appoint owners (v2.26, `073`).
+
 ### D-14 Resource access semantics
 - **Precedence:** a deny on the user (or any group) at any ancestor level, whether type-level or
   path-level, beats every grant. Today the first type level with any match wins, so a child-type

@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.25', 'postgresql_permissionmodel')`
-at startup (currently 2.25) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.26', 'postgresql_permissionmodel')`
+at startup (currently 2.26) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,20 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.26 — tenant owners above tenant admins (`073`)
+
+**Status in keen-auth-permissions: not adopted.**
+
+- **Behaviour:** outside tenant 1, assigning or unassigning `tenant_admin` (to a user or a group), adding or
+  removing members of a group that carries it, mapping to such a group, and editing the set itself need an
+  active tenant owner (or user 1); others get 32010 with `tenant_admin (tenant owners only)` in the list.
+- **Perm set column:** `auth.perm_set.is_owner_only` (not yet in any return columns).
+- **Permissions:** `tenant_admin` gains `groups.*` and loses `tenants.assign_owner` (owner appointment by a
+  tenant admin is now 32001).
+- **Fix:** `auth.delete_user_group` works for groups with mappings.
 
 ---
 

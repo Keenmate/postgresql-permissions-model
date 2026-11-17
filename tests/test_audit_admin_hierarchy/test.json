@@ -1,0 +1,6 @@
+{
+  "name": "Audit: tenant owners above tenant admins",
+  "description": "v2.26: only tenant owners (and user 1) give out or take away the owner-only tenant_admin perm set outside tenant 1 - directly, through group members, mappings or other groups - or edit it; tenant admins can't appoint owners; tenant admins manage the tenant's groups (D-19 still applies) and tenant rules, not global ones; tenant 1 (templates) is not affected.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

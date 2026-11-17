@@ -639,10 +639,10 @@
     "schema": "auth",
     "object_name": "create_perm_set_permissions",
     "object_type": "function",
-    "last_update_file": "069_update_permissions_v2-22.sql",
-    "last_update_line": 382,
+    "last_update_file": "073_update_permissions_v2-26.sql",
+    "last_update_line": 167,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 3,
     "all_updates": [
       {
         "file": "022_functions_auth_permission.sql",
@@ -653,6 +653,12 @@
       {
         "file": "069_update_permissions_v2-22.sql",
         "line": 382,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "073_update_permissions_v2-26.sql",
+        "line": 167,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -1294,10 +1300,10 @@
     "schema": "auth",
     "object_name": "delete_perm_set_permissions",
     "object_type": "function",
-    "last_update_file": "069_update_permissions_v2-22.sql",
-    "last_update_line": 404,
+    "last_update_file": "073_update_permissions_v2-26.sql",
+    "last_update_line": 190,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 3,
     "all_updates": [
       {
         "file": "022_functions_auth_permission.sql",
@@ -1308,6 +1314,12 @@
       {
         "file": "069_update_permissions_v2-22.sql",
         "line": 404,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "073_update_permissions_v2-26.sql",
+        "line": 190,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -1477,10 +1489,10 @@
     "schema": "auth",
     "object_name": "delete_user_group",
     "object_type": "function",
-    "last_update_file": "070_update_permissions_v2-23.sql",
-    "last_update_line": 1224,
+    "last_update_file": "073_update_permissions_v2-26.sql",
+    "last_update_line": 441,
     "last_update_source": "migration",
-    "total_updates": 3,
+    "total_updates": 4,
     "all_updates": [
       {
         "file": "021_functions_auth_group.sql",
@@ -1497,6 +1509,12 @@
       {
         "file": "070_update_permissions_v2-23.sql",
         "line": 1224,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "073_update_permissions_v2-26.sql",
+        "line": 441,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -1962,10 +1980,10 @@
     "schema": "auth",
     "object_name": "ensure_perm_sets",
     "object_type": "function",
-    "last_update_file": "069_update_permissions_v2-22.sql",
-    "last_update_line": 426,
+    "last_update_file": "073_update_permissions_v2-26.sql",
+    "last_update_line": 261,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 3,
     "all_updates": [
       {
         "file": "022_functions_auth_permission.sql",
@@ -1976,6 +1994,12 @@
       {
         "file": "069_update_permissions_v2-22.sql",
         "line": 426,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "073_update_permissions_v2-26.sql",
+        "line": 261,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -3960,15 +3984,21 @@
     "schema": "auth",
     "object_name": "perm_set",
     "object_type": "table",
-    "last_update_file": "013_tables_auth.sql",
-    "last_update_line": 259,
+    "last_update_file": "073_update_permissions_v2-26.sql",
+    "last_update_line": 32,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "013_tables_auth.sql",
         "line": 259,
         "operation": "CREATE",
+        "source": "migration"
+      },
+      {
+        "file": "073_update_permissions_v2-26.sql",
+        "line": 32,
+        "operation": "ALTER",
         "source": "migration"
       }
     ]
@@ -5294,10 +5324,10 @@
     "schema": "auth",
     "object_name": "update_perm_set",
     "object_type": "function",
-    "last_update_file": "069_update_permissions_v2-22.sql",
-    "last_update_line": 338,
+    "last_update_file": "073_update_permissions_v2-26.sql",
+    "last_update_line": 213,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 3,
     "all_updates": [
       {
         "file": "022_functions_auth_permission.sql",
@@ -5308,6 +5338,12 @@
       {
         "file": "069_update_permissions_v2-22.sql",
         "line": 338,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "073_update_permissions_v2-26.sql",
+        "line": 213,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -13090,14 +13126,20 @@
     "schema": "unsecure",
     "object_name": "copy_perm_set",
     "object_type": "function",
-    "last_update_file": "019_functions_unsecure.sql",
-    "last_update_line": 2423,
+    "last_update_file": "073_update_permissions_v2-26.sql",
+    "last_update_line": 92,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "019_functions_unsecure.sql",
         "line": 2423,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "073_update_permissions_v2-26.sql",
+        "line": 92,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -13954,16 +13996,39 @@
   },
   {
     "schema": "unsecure",
-    "object_name": "get_perm_set_permission_codes",
+    "object_name": "get_owner_only_perm_set_codes",
     "object_type": "function",
-    "last_update_file": "069_update_permissions_v2-22.sql",
-    "last_update_line": 87,
+    "last_update_file": "073_update_permissions_v2-26.sql",
+    "last_update_line": 41,
     "last_update_source": "migration",
     "total_updates": 1,
     "all_updates": [
       {
+        "file": "073_update_permissions_v2-26.sql",
+        "line": 41,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "unsecure",
+    "object_name": "get_perm_set_permission_codes",
+    "object_type": "function",
+    "last_update_file": "073_update_permissions_v2-26.sql",
+    "last_update_line": 80,
+    "last_update_source": "migration",
+    "total_updates": 2,
+    "all_updates": [
+      {
         "file": "069_update_permissions_v2-22.sql",
         "line": 87,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "073_update_permissions_v2-26.sql",
+        "line": 80,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }

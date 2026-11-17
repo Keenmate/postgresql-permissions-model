@@ -273,6 +273,7 @@ Core permission checking for any PostgreSQL application:
 
 **Assignment to Users/Groups**:
 - `auth.assign_permission()` / `auth.unassign_permission()` - Assign permission sets or individual permissions
+- **Owners above admins (v2.26):** perm sets flagged `is_owner_only` (`tenant_admin`) are given out, taken away and edited only by tenant owners (and user 1) outside tenant 1; `tenant_admin` has `groups.*` but not `tenants.assign_owner`
 - **No privilege escalation (v2.22, D-19):** whoever gives out or takes away a permission, a perm set, a group membership, a mapping, an API key permission, an invitation action or ownership must hold everything it carries in that tenant (32010). User 1 and tenant owners are exempt; group owners may add members
 - Can assign directly to users or to groups (users inherit from group membership)
 - All assignments stored in `permission_assignment` table
@@ -474,6 +475,7 @@ All tests are organized as suite directories with `test.json` manifests:
 | `test_search_functions/` | All search functions: pagination, filtering, empty results |
 | `test_identity_user_data/` | v2.3: provider `_user_data` stored on the identity on first login, refreshed on later logins, kept on `null`, returned by `get_user_identity` |
 | `test_audit_authentication/` | v2.6: login/MFA/API-key outcomes persist (no raise), temporary escalating lockout with decay, admin lock, provider login of locked users, system sys_params |
+| `test_audit_admin_hierarchy/` | v2.26: only tenant owners give out, take away or edit the owner-only `tenant_admin` set (directly, through groups or mappings); admins can't appoint owners; admins manage the tenant's groups (D-19 still applies) and tenant rules only; tenant 1 unaffected |
 | `test_audit_actions/` | v2.25: actions on_registration / on_entry / on_leave: permissions, validation and D-19 on save, platform actions (tenant 1, backend/external steps only); runs execute database steps, backend/external steps wait for the app (pending, complete, fail), run_once_per_user, placeholders, failures don't break the login, fresh provider groups on entry, run logs per tenant, on_leave on deletion |
 | `test_audit_tenant_templates/` | v2.24: the default template reproduces the old tenant shape and can be edited, not deleted or disabled; named templates with groups, perm sets and mappings ({tenant.*} / {data.*} placeholders, global rules); a missing value fails create_tenant; tenant-1 template permissions; D-19 on template perm sets; a used global rule can't be deleted |
 | `test_audit_platform_groups/` | v2.23: platform groups in tenant 1 with a scope (all but tenant 1, or a list) grant their perm sets in the tenants in scope; tenants see nothing (no membership, no group; journal shows Platform support); tenant opt-out; tenant-1 admins need `platform.*`; available tenants; changes reach the cache right away |
