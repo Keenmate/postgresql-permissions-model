@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.20', 'postgresql_permissionmodel')`
-at startup (currently 2.20) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.21', 'postgresql_permissionmodel')`
+at startup (currently 2.21) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,33 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.21 — rules, rule mappings and shared rules (`068`)
+
+**Status in keen-auth-permissions: not adopted.**
+
+- **New functions:**
+  - `auth.create_rule(_created_by, _user_id, _correlation_id, _title, _rule jsonb, _description, _code, _is_global, _tenant_id)` → `__rule_id`. `_code` defaults to the code of the title.
+  - `auth.update_rule(_updated_by, _user_id, _correlation_id, _rule_id, _title, _rule, _description, _tenant_id)` → `__rule_id`. The code doesn't change.
+  - `auth.delete_rule(_deleted_by, _user_id, _correlation_id, _rule_id, _tenant_id)` → void.
+  - `auth.get_rules(_user_id, _correlation_id, _tenant_id)` returns the tenant's rules and the global ones: `__rule_id, __tenant_id, __code, __title, __description, __rule, __is_global, __mapping_count` (the tenant's own mappings) plus the audit columns.
+  - `auth.create_user_group_rule_mapping(_created_by, _user_id, _correlation_id, _user_group_id, _rule, _rule_id, _tenant_id)` → `__user_group_mapping_id, __user_group_id`. Pass exactly one of `_rule` / `_rule_id`. It needs `groups.create_mapping`. Delete it with `auth.delete_user_group_mapping`.
+- **Changed return columns:** `auth.get_user_group_mappings` and `auth.search_user_group_mappings` gain
+  `__rule_id integer, __rule jsonb` before `__total_items`. For rule mappings `__provider_code` is null,
+  and `__rule` is the effective rule (inline or shared).
+- **Permissions:** `rules.create_rule`, `rules.update_rule`, `rules.delete_rule`, `rules.read_rules` in
+  the tenant. `rules.manage_global_rules` in tenant 1 (create / edit / delete any rule with
+  `_is_global`).
+- **Errors:**
+  - 40001 invalid rule: the message says where, e.g. `rule.conditions[2]: unknown op "like"`. Show it to the admin.
+  - 40002 rule not found (or not in the tenant).
+  - 40003 rule in use.
+  - 40004 code taken.
+  - 33026 rule mapping on a synced group.
+- **Membership type `rule`** appears in group member lists (`member_type_code`).
+- **The rule format** for a rule editor UI: see `068_update_permissions_v2-21.sql` and the `const.rule_*` tables. Read the vocabulary from those tables rather than hard-coding it.
 
 ---
 

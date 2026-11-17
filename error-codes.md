@@ -9,7 +9,7 @@ For the full reference (event codes + error codes + legacy mapping + examples), 
 | Range | Type | Description |
 |-------|------|-------------|
 | 10000 — 29999 | Informational events | Logged to `public.journal` and `auth.user_event` |
-| 30000 — 39999 | Errors | Raised as PostgreSQL exceptions. Since v2.6 the login, MFA and API-key functions return them as `__event_id` / `__outcome_code` instead (see `audit/design-d01-auth-outcomes.md`) |
+| 30000 — 40999 | Errors | Raised as PostgreSQL exceptions. Since v2.6 the login, MFA and API-key functions return them as `__event_id` / `__outcome_code` instead (see `audit/design-d01-auth-outcomes.md`) |
 | 50000+ | Reserved | Application-specific codes |
 
 All errors are seeded in `const.event_code` with matching templates in `const.event_message`. Most are raised via dedicated `error.raise_XXXXX` functions in `016_functions_error.sql`; a few are raised inline at the call site.
@@ -87,6 +87,7 @@ All errors are seeded in `const.event_code` with matching templates in `const.ev
 | 33023 | `err_group_mapping_already_exists` | `error.raise_33023` | Group already has this mapping (since v2.1) |
 | 33024 | `err_username_already_exists` | `error.raise_33024` | Username already exists; link the identity with `auth.create_user_identity_link` (since v2.4). Not returned for a user pre-provisioned for that provider without identities (claimed, since v2.18) |
 | 33025 | `err_group_not_synced` | `error.raise_33025` | Sync requested for a group that is not `is_synced` (since v2.19) |
+| 33026 | `err_group_synced_no_rule_mapping` | `error.raise_33026` | Synced groups take no rule mappings (since v2.21) |
 
 ## Tenant (34001 — 34999)
 
@@ -152,6 +153,17 @@ All errors are seeded in `const.event_code` with matching templates in `const.ev
 | 39004 | `err_invitation_action_not_found` | `error.raise_39004` | Invitation action does not exist |
 | 39005 | `err_invitation_action_not_pending` | `error.raise_39005` | Action not in pending/processing state |
 | 39006 | `err_invitation_template_not_found` | `error.raise_39006` | Template does not exist or is inactive |
+
+## Rules (40001 — 40999)
+
+Since v2.21. Events `rule_created` / `rule_updated` / `rule_deleted` are 23001–23003.
+
+| Code | Name | Raised by | Meaning |
+|---|---|---|---|
+| 40001 | `err_rule_invalid` | `error.raise_40001` | Rule doesn't follow the format or uses unknown vocabulary; the message says where |
+| 40002 | `err_rule_not_found` | `error.raise_40002` | Rule does not exist in the tenant (or isn't global) |
+| 40003 | `err_rule_in_use` | `error.raise_40003` | Rule is used by group mappings and can't be deleted |
+| 40004 | `err_rule_already_exists` | `error.raise_40004` | Rule code is taken in the tenant |
 
 ---
 

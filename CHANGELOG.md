@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-17 — v2.21: rules, rule mappings and shared rules
+
+**`068_update_permissions_v2-21.sql`** (`postgresql_permissionmodel` **2.21**).
+
+Step 2 of the D-13 design (`audit/design-d13-tenant-actions.md`). Group membership can now follow a rule: "everyone with an `@fgh.com` email", "everyone in both Azure groups FGH and Finance Leads", "everyone whose `country` claim is CZ".
+
+### Added
+
+- **Rules.** A rule is jsonb: `{"mode": "always" | "never" | "conditional", "combinator": "and" | "or", "conditions": [...]}` with nested groups.
+  - Ops: `is`, `is_not`, `is_one_of`, `is_not_one_of`, `ends_with`, `regex`, and `includes` (a list field has every value). All comparisons ignore case.
+  - Fields: `email`, `email_domain`, `username`, `provider_code`, `provider_groups`, `provider_roles` and `claims.<path>` (from `user_identity.user_data`). They are read from the user and the identity of the provider they signed in with.
+  - Values are strings or `{"value": ..., "label": ...}`, so an Azure object id can carry its name.
+  - The vocabulary lives in `const.rule_mode`, `const.rule_combinator`, `const.rule_operator` and `const.rule_field`. A rule is validated when it's saved (40001), never at login. "Always" has to be written; a missing rule never matches.
+  - One evaluator: `unsecure.evaluate_rule(rule, unsecure.get_rule_subject(user, provider))`.
+- **Rule mappings.** `auth.create_user_group_rule_mapping` adds a mapping with an inline rule or a shared rule (`user_group_mapping.rule` / `rule_id`; `provider_code` is null for them). Login and the permission rebuild add the users the rule matches (member type `rule`) and remove the ones it no longer matches. This also works for providers without group mapping, so an email-domain rule covers password users. Synced groups take no rule mappings (33026). `get_user_group_mappings` and `search_user_group_mappings` return `__rule_id` and `__rule`.
+- **Shared rules** (`auth.rule`): `auth.create_rule`, `auth.update_rule`, `auth.delete_rule`, `auth.get_rules`.
+  - Tenant rules need `rules.create_rule` / `update_rule` / `delete_rule` / `read_rules` in the tenant. `tenant_admin` and `tenant_owner` in every tenant, plus `system_admin` and `full_admin` in tenant 1, have them.
+  - Global rules belong to tenant 1, can be used in every tenant, and need `rules.manage_global_rules` in tenant 1. Only `full_admin` has it.
+  - A rule that is in use can't be deleted (40003). Every change is journaled with the old and the new rule (23001–23003).
+  - An edit reaches the members at their next login or permission rebuild, within the cache timeout.
+
+### Fixed
+
+- **`recalculate_user_groups` cleared the permission cache of only one tenant** when the user's mapped groups changed in several tenants (`select ... into` stopped at the first row).
+
+### Tests
+
+- New suite `tests/test_audit_rules/`.
+
 ## 2026-11-17 — v2.20: default groups are removed
 
 **`067_update_permissions_v2-20.sql`** (`postgresql_permissionmodel` **2.20**).
@@ -2721,6 +2750,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.21 | 2026-11-17 | Rules (jsonb, validated on save, one evaluator), group rule mappings evaluated at login and rebuild, shared tenant and global rules (`068_update_permissions_v2-21.sql`) |
 | 2.20 | 2026-11-17 | Default groups removed: login no longer adds users to the default groups of every tenant; `user_group.is_default`, `assign_user_default_groups`, `users.add_to_default_groups` and the `_is_default` / `__is_default` parameters and columns are gone (`067_update_permissions_v2-20.sql`) |
 | 2.19 | 2026-11-09 | External group sync works: synced groups take members only from the sync, each run adds and removes, `groups.sync_members` in tenant 1; groups that grant nothing don't make tenant members (`066_update_permissions_v2-19.sql`) |
 | 2.18 | 2026-11-09 | Pre-provisioned users: `ensure_user_info` needs `users.register_user` in tenant 1 and can pre-create the identity by object id; first login claims a user pre-provisioned for that provider; `ensure_groups_and_permissions` callable twice per transaction (`065_update_permissions_v2-18.sql`) |

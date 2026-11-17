@@ -51,7 +51,8 @@ This system manages the complete lifecycle of authorization entities:
 
 **Groups & Mappings:**
 - **Groups** (`auth.user_group`) - Three types: internal, external, and hybrid membership models
-- **Group Mappings** (`auth.user_group_mapping`) - Maps external provider groups/roles to internal groups
+- **Group Mappings** (`auth.user_group_mapping`) - Maps external provider groups/roles to internal groups, or carries a rule (v2.21): an inline jsonb rule or a shared one
+- **Rules** (`auth.rule`, v2.21) - jsonb `{mode, combinator, conditions [{field, op, values}]}` over email, email_domain, username, provider_code, provider_groups, provider_roles, `claims.<path>`; validated on save against `const.rule_*`, evaluated by `unsecure.evaluate_rule`. Tenant rules (`rules.*` in the tenant) and global rules (tenant 1, `rules.manage_global_rules`)
 - **Group Members** (`auth.user_group_member`) - Direct group membership for internal/hybrid groups
 
 **Permissions & Sets:**
@@ -284,6 +285,7 @@ The system supports three group types for different authentication scenarios:
 - `auth.set_user_group_as_external()` - Configure group to use only external mappings
 - Works with any identity provider: Windows Authentication, AzureAD, Google, Facebook, KeyCloak, LDAP, etc.
 - Maps both `provider_groups` AND `provider_roles` - flexible for different provider implementations
+- `auth.create_user_group_rule_mapping()` - Membership follows a rule (v2.21), evaluated at every login and permission rebuild with any provider; members join with member type `rule`, leave when they stop matching
 
 **Hybrid Groups** - Combination of both membership models:
 - `auth.set_user_group_as_hybrid()` - Allow both direct members and external mappings
@@ -466,6 +468,7 @@ All tests are organized as suite directories with `test.json` manifests:
 | `test_search_functions/` | All search functions: pagination, filtering, empty results |
 | `test_identity_user_data/` | v2.3: provider `_user_data` stored on the identity on first login, refreshed on later logins, kept on `null`, returned by `get_user_identity` |
 | `test_audit_authentication/` | v2.6: login/MFA/API-key outcomes persist (no raise), temporary escalating lockout with decay, admin lock, provider login of locked users, system sys_params |
+| `test_audit_rules/` | v2.21: rules are validated on save (40001); the evaluator (every op, nesting, claims, labels, case-insensitive); rule mappings add and remove members at login and rebuild, also for providers without group mapping; shared rule edits follow; synced groups refuse rule mappings (33026); tenant vs global rule permissions, in-use delete (40003), journal with old/new rule |
 | `test_audit_default_groups/` | v2.20: default groups are gone; a tenant owner can't pull every user who signs in into their tenant; login and the permission rebuild add no one except through mappings; no `_is_default` / `__is_default` left |
 | `test_audit_group_sync/` | v2.19: sync needs `groups.sync_members` in tenant 1; each run adds and removes (membership only); full sync runs; login leaves synced groups alone; picker groups (no grants) don't make tenant members; synced users claim their account at first login |
 | `test_audit_preprovisioning/` | v2.18: Azure-like scenario (ABC / CDE / FGH); `ensure_user_info` needs `users.register_user` in tenant 1; identity pre-created by object id, first login fills the uid; claim by username only for a user pre-provisioned for that provider without identities; tenants follow the provider groups |

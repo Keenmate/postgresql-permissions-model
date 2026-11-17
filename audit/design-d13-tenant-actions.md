@@ -1,6 +1,7 @@
 # D-13 design: actions, rule mappings and tenant templates replace default groups
 
-Agreed with the user on 2026-11-15/16. Implemented so far: default groups removed (v2.20, `067`).
+Agreed with the user on 2026-11-15/16. Implemented so far: default groups removed (v2.20, `067`); rules, rule mappings and shared rules
+(v2.21, `068`; the D-19 check on editing a shared rule comes with step 3).
 
 ## Why
 
@@ -33,8 +34,11 @@ A rule is jsonb in our own format:
 - **Modes:** `always`, `never`, `conditional`. A rule is mandatory. "Always" has to be written
   explicitly; a missing or empty rule is rejected when saving. A rule nobody wrote never fires.
 - **Combinators:** `and`, `or`, with nested groups.
-- **Ops:** `is`, `is_not`, `is_one_of`, `is_not_one_of`, `ends_with`, `regex` (case-insensitive) and
-  `includes` (an array contains the value). More ops are added only when a real case needs one.
+- **Ops:** `is`, `is_not`, `is_one_of`, `is_not_one_of`, `ends_with`, `regex` and `includes`. More ops
+  are added only when a real case needs one. As built (v2.21): every field is read as a list (one
+  value = a list of one, missing = empty) and compared case-insensitively. `is` / `is_one_of`: any
+  element equals a value; `is_not` / `is_not_one_of`: none does; `ends_with` / `regex`: any element;
+  `includes`: the list has every value (list fields and claims only).
 - **Fields** are read from the user and their **last-used identity**:
   - `email`, `email_domain`, `username`;
   - `provider_code`;

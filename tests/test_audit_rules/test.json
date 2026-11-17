@@ -1,0 +1,6 @@
+{
+  "name": "Audit D-13: rules and rule mappings",
+  "description": "v2.21: a rule is jsonb {mode always|never|conditional, combinator and|or, nested conditions {field, op, values}}, validated on save against the const vocabulary (40001). One evaluator: is / is_not / is_one_of / is_not_one_of / ends_with / regex (case-insensitive) / includes (array has every value) over email, email_domain, username, provider_code, provider_groups, provider_roles, claims.<path>. Group mappings can carry an inline rule or a shared rule; login and the permission rebuild add and remove rule members, also for providers without group mapping; synced groups take no rule mappings (33026). Shared rules: tenant rules need rules.* in the tenant, global rules rules.manage_global_rules in tenant 1 (full_admin only); a rule in use can't be deleted (40003); edits are journaled with the old and the new rule.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}
