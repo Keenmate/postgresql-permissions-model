@@ -1,0 +1,6 @@
+{
+  "name": "Audit D-13: tenant templates",
+  "description": "v2.24: create_tenant seeds the tenant from a template. The nameless default reproduces the old shape (Tenant Admins / Tenant Members, tenant_admin / tenant_member / tenant_owner) and can be edited but not deleted or disabled. Named templates define groups with tenant-1 perm sets and mappings (provider objects with {data.*} / {tenant.*} placeholders, or a global rule); a missing value fails create_tenant. Templates need tenants.manage/read_tenant_templates in tenant 1; D-19 applies to their perm sets; a global rule used by a template can't be deleted; tenant_created is notified.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

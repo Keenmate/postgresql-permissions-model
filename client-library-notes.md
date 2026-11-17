@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.23', 'postgresql_permissionmodel')`
-at startup (currently 2.23) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.24', 'postgresql_permissionmodel')`
+at startup (currently 2.24) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,34 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.24 — tenant templates (`071`)
+
+**Status in keen-auth-permissions: not adopted.**
+
+- **Changed signature:** `auth.create_tenant` gains `_template_code text default null` and
+  `_extra_data jsonb default null` as its last parameters (the old function is dropped). Positional calls
+  keep working. No code = the default template. Errors: 34009 unknown or inactive template, 34011 a
+  placeholder without a value.
+- **New functions** (all need `tenants.manage_tenant_templates` in tenant 1, the list
+  `tenants.read_tenant_templates`):
+  - `auth.create_tenant_template(_created_by, _user_id, _correlation_id, _title, _code default null, _description default null)` → `__tenant_template_id`
+  - `auth.update_tenant_template(_updated_by, _user_id, _correlation_id, _tenant_template_id, _title, _description default null, _is_active default true)` → void
+  - `auth.delete_tenant_template(_deleted_by, _user_id, _correlation_id, _tenant_template_id)` → void
+  - `auth.create_tenant_template_group(_created_by, _user_id, _correlation_id, _tenant_template_id, _title, _perm_set_codes text[] default null, _code default null, _is_external default false, _is_assignable default true)` → `__tenant_template_group_id`
+  - `auth.update_tenant_template_group(_updated_by, _user_id, _correlation_id, _tenant_template_group_id, _title, _perm_set_codes, _code, _is_external, _is_assignable)` → void (replaces every field)
+  - `auth.delete_tenant_template_group(_deleted_by, _user_id, _correlation_id, _tenant_template_group_id)` → void
+  - `auth.create_tenant_template_group_mapping(_created_by, _user_id, _correlation_id, _tenant_template_group_id, _provider_code default null, _mapped_object_id default null, _mapped_object_name default null, _mapped_role default null, _rule_id default null)` → `__tenant_template_group_mapping_id`. Either a provider with an object or role, or a global rule (34015).
+  - `auth.delete_tenant_template_group_mapping(_deleted_by, _user_id, _correlation_id, _tenant_template_group_mapping_id)` → void
+  - `auth.get_tenant_templates(_user_id, _correlation_id)` → `__tenant_template_id, __code, __title, __description, __is_active, __is_default, __groups jsonb`.
+    `__groups` is an array of `{tenant_template_group_id, code, title, is_external, is_assignable, is_system, perm_set_codes, mappings: [{tenant_template_group_mapping_id, provider_code, mapped_object_id, mapped_object_name, mapped_role, rule_id, rule_code}]}`.
+- **Placeholders** (group title and code, mapping values): `{tenant.id}`, `{tenant.code}`, `{data.<path>}`
+  read from `_extra_data`; anything else is refused on save (34012).
+- **Notification:** `tenant_created` on the `permission_changes` channel (`detail`: `uuid`, `code`).
+- **Errors and events:** 34009-34015, events 11013-11015. Putting a perm set into a template needs its
+  permissions in tenant 1 (32010). `auth.delete_rule` raises 40003 for a global rule a template uses.
 
 ---
 

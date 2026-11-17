@@ -304,6 +304,7 @@ The system supports three group types for different authentication scenarios:
 
 ### Tenant Management
 - `auth.create_tenant()` / `auth.update_tenant()` - Multi-tenant setup
+- **Tenant templates** (v2.24, `auth.tenant_template` / `_group` / `_group_mapping`) - `create_tenant(_template_code, _extra_data)` seeds groups, tenant-1 perm sets and mappings (provider objects with `{tenant.id}` / `{tenant.code}` / `{data.<path>}` placeholders, or global rules) once; the nameless default template holds Tenant Admins / Tenant Members. `tenant_owner` is always copied; `tenant_created` is notified. `tenants.manage_tenant_templates` / `read_tenant_templates` in tenant 1
 - `auth.assign_tenant_owner()` - Tenant ownership assignment
 - `auth.get_tenant_users()` / `auth.get_tenant_groups()` - Tenant queries
 
@@ -470,6 +471,7 @@ All tests are organized as suite directories with `test.json` manifests:
 | `test_search_functions/` | All search functions: pagination, filtering, empty results |
 | `test_identity_user_data/` | v2.3: provider `_user_data` stored on the identity on first login, refreshed on later logins, kept on `null`, returned by `get_user_identity` |
 | `test_audit_authentication/` | v2.6: login/MFA/API-key outcomes persist (no raise), temporary escalating lockout with decay, admin lock, provider login of locked users, system sys_params |
+| `test_audit_tenant_templates/` | v2.24: the default template reproduces the old tenant shape and can be edited, not deleted or disabled; named templates with groups, perm sets and mappings ({tenant.*} / {data.*} placeholders, global rules); a missing value fails create_tenant; tenant-1 template permissions; D-19 on template perm sets; a used global rule can't be deleted |
 | `test_audit_platform_groups/` | v2.23: platform groups in tenant 1 with a scope (all but tenant 1, or a list) grant their perm sets in the tenants in scope; tenants see nothing (no membership, no group; journal shows Platform support); tenant opt-out; tenant-1 admins need `platform.*`; available tenants; changes reach the cache right away |
 | `test_audit_escalation/` | v2.22 (D-19): no privilege escalation (32010) on assign/unassign, perm set edits, group members, group and rule mappings, shared rule edits, API key permissions, invitation actions and owners; ancestors cover descendants; user 1 and tenant owners exempt, group owners add members |
 | `test_audit_rules/` | v2.21: rules are validated on save (40001); the evaluator (every op, nesting, claims, labels, case-insensitive); rule mappings add and remove members at login and rebuild, also for providers without group mapping; shared rule edits follow; synced groups refuse rule mappings (33026); tenant vs global rule permissions, in-use delete (40003), journal with old/new rule |

@@ -1,7 +1,7 @@
 # D-13 design: actions, rule mappings and tenant templates replace default groups
 
 Agreed with the user on 2026-11-15/16. Implemented so far: default groups removed (v2.20, `067`); rules, rule mappings and shared rules
-(v2.21, `068`); no privilege escalation, D-19 (v2.22, `069`); platform groups (v2.23, `070`).
+(v2.21, `068`); no privilege escalation, D-19 (v2.22, `069`); platform groups (v2.23, `070`); tenant templates (v2.24, `071`).
 
 ## Why
 
@@ -137,6 +137,12 @@ auth.tenant_template_group_mapping   template_group_id, provider_code, mapped_ob
 - **Placeholders:** `{data.*}` (from `_extra_data`) and `{tenant.id}` / `{tenant.code}`. They are
   resolved once, at creation. **A missing value fails `create_tenant`.**
 - **Perm sets:** `tenant_owner` is always copied (D-05).
+- **As built (v2.24), choices to confirm:** template mappings take a global rule, not an inline
+  one; placeholders work in group titles and codes and in mapping values, not inside rules; the
+  template permissions (`tenants.manage_tenant_templates` / `read_tenant_templates`) are in
+  `system_admin` and `full_admin`; D-19 checks a template's perm sets against the editor in
+  tenant 1; using a template needs only `tenants.create_tenant`; `tenant_created` goes out on the
+  existing `permission_changes` channel.
 
 ## Shared rules
 

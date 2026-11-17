@@ -103,6 +103,13 @@ All errors are seeded in `const.event_code` with matching templates in `const.ev
 | 34006 | `err_tenant_not_deleted` | `error.raise_34006` | Tenant is not soft-deleted; restore / purge need a soft-deleted tenant (registered since v2.17) |
 | 34007 | `err_tenant_protected` | `error.raise_34007` | System tenant or `is_removable = false`; cannot be deleted (registered since v2.17) |
 | 34008 | `err_tenant_members_group_missing` | `error.raise_34008` | Tenant has no Tenant Members group (invitation action `add_tenant_user`, since v2.17) |
+| 34009 | `err_tenant_template_not_found` | `error.raise_34009` | Tenant template does not exist or is inactive (since v2.24) |
+| 34010 | `err_tenant_template_is_default` | `error.raise_34010` | The default tenant template can't be deleted or disabled (since v2.24) |
+| 34011 | `err_tenant_template_value_missing` | `error.raise_34011` | `create_tenant` has no value for a template placeholder (since v2.24) |
+| 34012 | `err_tenant_template_placeholder_invalid` | `error.raise_34012` | Unknown template placeholder; use `{tenant.id}`, `{tenant.code}` or `{data.<path>}` (since v2.24) |
+| 34013 | `err_tenant_template_already_exists` | `error.raise_34013` | Tenant template code is taken (since v2.24) |
+| 34014 | `err_tenant_template_item_not_found` | `error.raise_34014` | Tenant template group or mapping does not exist (since v2.24) |
+| 34015 | `err_tenant_template_mapping_invalid` | `error.raise_34015` | A template mapping takes a provider object/role or a global rule, not both (since v2.24) |
 
 ## Resource access / roles (35001 — 35999)
 

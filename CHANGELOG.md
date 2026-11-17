@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-17 — v2.24: tenant templates
+
+**`071_update_permissions_v2-24.sql`** (`postgresql_permissionmodel` **2.24**).
+
+Step 5 of the D-13 design. `create_tenant` seeds the new tenant from a template.
+
+### Added
+
+- **Tenant templates** (`auth.tenant_template`, `auth.tenant_template_group`, `auth.tenant_template_group_mapping`). A template is a seed, not a baseline: it runs once, inside `create_tenant`, and the tenant owns everything afterwards.
+  - **Groups:** title, optional code, external flag, assignable flag, and tenant-1 perm sets that are copied into the tenant and assigned to the group.
+  - **Mappings:** a provider object or role, or a global rule.
+  - **Placeholders** in group titles and codes and in mapping values: `{tenant.id}`, `{tenant.code}`, `{data.<path>}` from `_extra_data`. They are checked on save (34012) and filled in once; a missing, empty or non-scalar value fails `create_tenant` (34011).
+- **The default template** has no code and holds what `create_tenant` always created: Tenant Admins with `tenant_admin`, Tenant Members with `tenant_member`. It can be edited, but not deleted or disabled (34010).
+- **`auth.create_tenant`** takes `_template_code` and `_extra_data` (last parameters). No code means the default template; an unknown or inactive one raises 34009. `tenant_owner` is always copied (D-05). Journal 11001 carries the template code and the extra data.
+- **`tenant_created`** is notified on the `permission_changes` channel (trigger on `auth.tenant`), for whatever the app does beyond the seed.
+- **Functions:** `auth.create_tenant_template`, `update_tenant_template`, `delete_tenant_template`, `create_tenant_template_group`, `update_tenant_template_group`, `delete_tenant_template_group`, `create_tenant_template_group_mapping`, `delete_tenant_template_group_mapping`, `get_tenant_templates`.
+- **Permissions in tenant 1:** `tenants.manage_tenant_templates` and `tenants.read_tenant_templates`, in `system_admin` and `full_admin`. D-19: whoever puts a perm set into a template must hold its permissions in tenant 1 (32010).
+- **Errors and events:** 34009-34015; events 11013-11015.
+
+### Changed
+
+- `auth.delete_rule` refuses a global rule that a template mapping uses (40003).
+
+### Tests
+
+- New suite `tests/test_audit_tenant_templates/`.
+
 ## 2026-11-17 — v2.23: platform groups
 
 **`070_update_permissions_v2-23.sql`** (`postgresql_permissionmodel` **2.23**).
@@ -2801,6 +2828,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.24 | 2026-11-17 | Tenant templates: create_tenant seeds groups, tenant-1 perm sets and mappings (placeholders, global rules) from a named template or the default (`071_update_permissions_v2-24.sql`) |
 | 2.23 | 2026-11-17 | Platform groups: tenant-1 groups with a tenant scope that grant their perm sets in those tenants, invisible to the tenants, journaled as Platform support (`070_update_permissions_v2-23.sql`) |
 | 2.22 | 2026-11-17 | No privilege escalation (D-19): grants, perm set edits, members, mappings, rule edits, API keys, invitations and owners need the caller to hold what they give out (`069_update_permissions_v2-22.sql`) |
 | 2.21 | 2026-11-17 | Rules (jsonb, validated on save, one evaluator), group rule mappings evaluated at login and rebuild, shared tenant and global rules (`068_update_permissions_v2-21.sql`) |
