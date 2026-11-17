@@ -1,7 +1,7 @@
 # D-13 design: actions, rule mappings and tenant templates replace default groups
 
 Agreed with the user on 2026-11-15/16. Implemented so far: default groups removed (v2.20, `067`); rules, rule mappings and shared rules
-(v2.21, `068`); no privilege escalation, D-19 (v2.22, `069`).
+(v2.21, `068`); no privilege escalation, D-19 (v2.22, `069`); platform groups (v2.23, `070`).
 
 ## Why
 
@@ -199,6 +199,11 @@ tenant 1
   - the last-used identity rule applies.
 - **Replaces** the earlier ideas of a platform-admin rule mapping on every Tenant Admins group, or
   locked platform groups inside each tenant.
+- **As built (v2.23), choices to confirm:** "all" skips tenant 1 (list it to cover it); both
+  `platform.*` permissions are in `full_admin` only; the opt-out needs
+  `platform.manage_platform_objects`; a platform group passes on perm sets and permissions, not
+  resource grants; managing a platform group's members needs the platform permission even for its
+  group owners.
 
 ## Invitations
 

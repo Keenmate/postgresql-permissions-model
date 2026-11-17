@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-17 — v2.23: platform groups
+
+**`070_update_permissions_v2-23.sql`** (`postgresql_permissionmodel` **2.23**).
+
+Step 4 of the D-13 design. Support staff can oversee tenants without becoming their members.
+
+### Added
+
+- **Platform groups** live entirely in tenant 1: the group, its members, mappings, rules and perm sets.
+  - **Scope:** every tenant except tenant 1 (`user_group.is_for_all_tenants`), or a list (`auth.platform_group_scope`). Tenant 1 is covered only when listed.
+  - **Opt-out:** `auth.tenant.allows_platform_access`, set from tenant 1, excludes a tenant even from "all".
+  - **Permission rebuild:** a member holds the group's perm sets and permissions in every tenant of the scope (view `auth.platform_access`), and nothing in tenant 1 unless it's listed.
+- **The tenants see nothing.** Platform groups aren't part of `auth.tenant_memberships`, so their members don't show up in user lists, pickers or notifications. The group isn't visible or manageable from the tenant.
+- **Members see the tenants** in `get_user_available_tenants` (new column `__is_platform_access`) and can select them as their last tenant.
+- **Journal:** what a platform member does in a tenant they aren't a member of is stored as "Platform support", with no user id. The person is kept in `journal.platform_user_id` / `platform_created_by`, and `search_journal` shows them only from tenant 1 with `platform.read_platform_objects`.
+- **Permissions in tenant 1:** `platform.manage_platform_objects` (groups, members, mappings, perm sets, scopes, opt-outs) and `platform.read_platform_objects`, both in `full_admin`. Tenant-1 admins without them don't see platform groups in group lists and can't read or change them by id.
+- **Functions:** `auth.create_platform_group`, `auth.update_platform_group_scope`, `auth.get_platform_groups`, `auth.update_tenant_platform_access`. Everything else (members, mappings, rule mappings, perm sets) uses the ordinary group functions with `_tenant_id` 1.
+- **Errors and events:** 33027 (not a platform group), 13040 `platform_group_scope_updated`, 11012 `tenant_platform_access_updated`.
+
+### Fixed
+
+- Adding a member to a group, changing a group's perm set and deleting a group now also clear the members' caches in the other tenants a platform group reaches.
+
+### Tests
+
+- New suite `tests/test_audit_platform_groups/`.
+
 ## 2026-11-17 — v2.22: no privilege escalation
 
 **`069_update_permissions_v2-22.sql`** (`postgresql_permissionmodel` **2.22**).
@@ -2774,6 +2801,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.23 | 2026-11-17 | Platform groups: tenant-1 groups with a tenant scope that grant their perm sets in those tenants, invisible to the tenants, journaled as Platform support (`070_update_permissions_v2-23.sql`) |
 | 2.22 | 2026-11-17 | No privilege escalation (D-19): grants, perm set edits, members, mappings, rule edits, API keys, invitations and owners need the caller to hold what they give out (`069_update_permissions_v2-22.sql`) |
 | 2.21 | 2026-11-17 | Rules (jsonb, validated on save, one evaluator), group rule mappings evaluated at login and rebuild, shared tenant and global rules (`068_update_permissions_v2-21.sql`) |
 | 2.20 | 2026-11-17 | Default groups removed: login no longer adds users to the default groups of every tenant; `user_group.is_default`, `assign_user_default_groups`, `users.add_to_default_groups` and the `_is_default` / `__is_default` parameters and columns are gone (`067_update_permissions_v2-20.sql`) |

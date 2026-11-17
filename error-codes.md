@@ -89,6 +89,7 @@ All errors are seeded in `const.event_code` with matching templates in `const.ev
 | 33024 | `err_username_already_exists` | `error.raise_33024` | Username already exists; link the identity with `auth.create_user_identity_link` (since v2.4). Not returned for a user pre-provisioned for that provider without identities (claimed, since v2.18) |
 | 33025 | `err_group_not_synced` | `error.raise_33025` | Sync requested for a group that is not `is_synced` (since v2.19) |
 | 33026 | `err_group_synced_no_rule_mapping` | `error.raise_33026` | Synced groups take no rule mappings (since v2.21) |
+| 33027 | `err_user_group_not_platform` | `error.raise_33027` | Platform-only operation on an ordinary group (since v2.23) |
 
 ## Tenant (34001 — 34999)
 

@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.22', 'postgresql_permissionmodel')`
-at startup (currently 2.22) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.23', 'postgresql_permissionmodel')`
+at startup (currently 2.23) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,31 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.23 — platform groups (`070`)
+
+**Status in keen-auth-permissions: not adopted.**
+
+- **New functions:**
+  - `auth.create_platform_group(_created_by, _user_id, _correlation_id, _title, _is_for_all_tenants default false, _scope_tenant_ids integer[] default null)` → `__user_group_id`. The group is created in tenant 1.
+  - `auth.update_platform_group_scope(_updated_by, _user_id, _correlation_id, _user_group_id, _is_for_all_tenants, _scope_tenant_ids)` → void. Replaces the scope.
+  - `auth.get_platform_groups(_user_id, _correlation_id)` → `__user_group_id, __code, __title, __is_active, __is_for_all_tenants, __scope_tenant_ids integer[], __member_count`.
+  - `auth.update_tenant_platform_access(_updated_by, _user_id, _correlation_id, _target_tenant_id, _allows_platform_access)` → void.
+  - All four need `platform.manage_platform_objects` (or `read_platform_objects` for the list) in tenant 1.
+- **Members, mappings, rule mappings and perm sets** of a platform group use the ordinary group functions
+  with `_tenant_id` 1. For a platform group they also need `platform.manage_platform_objects` (reads:
+  `platform.read_platform_objects`) in tenant 1, otherwise 32001.
+- **Changed return columns:** `auth.get_user_available_tenants` gains `__is_platform_access boolean`
+  (last column). Show those tenants as "platform access"; the user may select them.
+- **Journal:** entries a platform member causes in a tenant they aren't a member of have `__created_by`
+  "Platform support" and `__user_id` null. `public.search_journal` called with `_tenant_id` 1 by a
+  holder of `platform.read_platform_objects` returns the person instead.
+- **Lists:** group searches and tenant group lists in tenant 1 leave platform groups out for callers
+  without `platform.read_platform_objects`.
+- **Errors and events:** 33027 not a platform group; events 13040 `platform_group_scope_updated`,
+  11012 `tenant_platform_access_updated`.
 
 ---
 

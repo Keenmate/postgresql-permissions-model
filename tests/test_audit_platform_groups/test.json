@@ -1,0 +1,6 @@
+{
+  "name": "Audit D-13: platform groups",
+  "description": "v2.23: platform groups live in tenant 1 (group, members, mappings, perm set) with a scope (all tenants but tenant 1, or a list). Members hold the group's perm set in the tenants in scope and nothing in tenant 1 unless listed; tenants can opt out. Tenants see nothing (no membership, no group, journal shows Platform support); tenant-1 admins need platform.read/manage_platform_objects. Members see the tenants in their tenant list. Scope, opt-out, perm set, status and member changes reach the cache right away.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

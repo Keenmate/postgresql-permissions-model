@@ -230,7 +230,8 @@ inactive groups.
   whether disable or lock count as leave.
 
   **Done:** step 1, default groups removed, in v2.20 (`067`); step 2, rules, rule mappings and shared
-  rules, in v2.21 (`068`); step 3, D-19, in v2.22 (`069`).
+  rules, in v2.21 (`068`); step 3, D-19, in v2.22 (`069`); step 4, platform groups, in
+  v2.23 (`070`).
 
 ### D-14 Resource access semantics
 - **Precedence:** a deny on the user (or any group) at any ancestor level, whether type-level or
