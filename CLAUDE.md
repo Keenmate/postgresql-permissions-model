@@ -228,7 +228,6 @@ The user system uses three main tables for flexible multi-provider support and e
 - `auth.lock_user()` / `auth.unlock_user()` - Account security controls
 - `auth.update_user_password()` - Password management
 - `auth.get_user_by_email_for_authentication()` + `auth.create_user_login_attempt()` - Two-step email login: read-only lookup, then the app reports its password check; returns `__event_id`/`__outcome_code` and never raises for failures. `auth.create_mfa_challenge_attempt()` and `auth.create_api_key_validation_attempt()` follow the same outcome pattern. Lockout is temporary and escalating (`auth.user_login_state`, `login_lockout.*` sys_params)
-- `auth.assign_user_default_groups()` - Automatic group assignment
 
 **Identity Provider Management (`user_identity` table)**:
 - `auth.ensure_user_from_provider()` - User provisioning from external providers; claims a user pre-provisioned by `auth.ensure_user_info()` (service accounts, `users.register_user` in tenant 1) by object id, or by username when it was pre-provisioned for that provider and has no identities (v2.18)
@@ -467,6 +466,7 @@ All tests are organized as suite directories with `test.json` manifests:
 | `test_search_functions/` | All search functions: pagination, filtering, empty results |
 | `test_identity_user_data/` | v2.3: provider `_user_data` stored on the identity on first login, refreshed on later logins, kept on `null`, returned by `get_user_identity` |
 | `test_audit_authentication/` | v2.6: login/MFA/API-key outcomes persist (no raise), temporary escalating lockout with decay, admin lock, provider login of locked users, system sys_params |
+| `test_audit_default_groups/` | v2.20: default groups are gone; a tenant owner can't pull every user who signs in into their tenant; login and the permission rebuild add no one except through mappings; no `_is_default` / `__is_default` left |
 | `test_audit_group_sync/` | v2.19: sync needs `groups.sync_members` in tenant 1; each run adds and removes (membership only); full sync runs; login leaves synced groups alone; picker groups (no grants) don't make tenant members; synced users claim their account at first login |
 | `test_audit_preprovisioning/` | v2.18: Azure-like scenario (ABC / CDE / FGH); `ensure_user_info` needs `users.register_user` in tenant 1; identity pre-created by object id, first login fills the uid; claim by username only for a user pre-provisioned for that provider without identities; tenants follow the provider groups |
 | `test_audit_tenant_membership/` | v2.17: membership is computed (view `auth.tenant_memberships`) (group, direct grant, owner, resource grant/role; denies and disabled groups don't count); search_users / get_tenant_users / get_tenant_members / available tenants / notify_tenant_users agree; last selected tenant checks the target; `add_tenant_user` joins Tenant Members |

@@ -48,7 +48,7 @@ BEGIN
 
     SELECT g.__user_group_id
     FROM auth.update_user_group('grp_crud_test', __user_id, 'gc-corr-2',
-        __group_id, 'GC Test Group Updated', true, true, false, false) g
+        __group_id, 'GC Test Group Updated', true, true, false) g
     INTO __result_id;
 
     SELECT title INTO __db_title FROM auth.user_group WHERE user_group_id = __group_id;

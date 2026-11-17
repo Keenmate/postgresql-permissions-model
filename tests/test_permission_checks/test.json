@@ -1,6 +1,6 @@
 {
   "name": "Permission Checks",
-  "description": "Core permission checking (has_permission, has_permissions), default group assignment, user deletion with blacklist, and full permission resolution",
+  "description": "Core permission checking (has_permission, has_permissions), user deletion with blacklist, and full permission resolution",
   "always_cleanup": true,
   "isolation": "transaction"
 }

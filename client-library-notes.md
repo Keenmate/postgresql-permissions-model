@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.19', 'postgresql_permissionmodel')`
-at startup (currently 2.19) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.20', 'postgresql_permissionmodel')`
+at startup (currently 2.20) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -38,7 +38,7 @@ hard-code the ids.
 
 | Service user | Used for | Perm set |
 |---|---|---|
-| `svc_registrator` | `register_user`, default groups, tokens for registration | `svc_registrator_permissions` |
+| `svc_registrator` | `register_user`, tokens for registration | `svc_registrator_permissions` |
 | `svc_authenticator` | Email login (steps 1 and 2), provider login, MFA challenge + attempt, token validation | `svc_authenticator_permissions` |
 | `svc_token_manager` | Token create / validate / mark used | `svc_token_permissions` |
 | `svc_api_gateway` | API-key validation | `svc_api_gateway_permissions` |
@@ -73,6 +73,25 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.20 — default groups are removed (`067`)
+
+**Status in keen-auth-permissions: not adopted.**
+
+- **Removed functions:** `auth.assign_user_default_groups`. Drop the wrapper. The permission
+  `users.add_to_default_groups` is gone too; `svc_registrator` no longer has it.
+- **Changed signatures** (the `_is_default` parameter is gone; positional callers shift by one):
+  - `auth.create_user_group(_created_by, _user_id, _correlation_id, _title, _is_assignable, _is_active, _is_external, _tenant_id, _source)`
+  - `auth.update_user_group(_updated_by, _user_id, _correlation_id, _user_group_id, _title, _is_assignable, _is_active, _is_external, _tenant_id)`
+- **Changed return columns** (the `__is_default` column is gone):
+  - `auth.get_user_group_by_id`
+  - `auth.search_user_groups`
+  - `auth.ensure_user_groups` (an `is_default` key in the payload is ignored)
+- **Behaviour:** login (`ensure_groups_and_permissions`, the permission rebuild) adds users to groups
+  only through mappings now. An app that relied on "everyone joins group X" has no replacement
+  until actions (D-13) land; add the members explicitly meanwhile.
 
 ---
 

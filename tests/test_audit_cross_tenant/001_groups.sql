@@ -23,7 +23,7 @@ begin
     end loop;
 
     perform pg_temp.a02_expect('update_user_group',
-        'select * from auth.update_user_group(''t'', {admin_b_id}, ''c'', {ga_id}, ''hijacked'', true, true, false, false, {b_id})', '33011');
+        'select * from auth.update_user_group(''t'', {admin_b_id}, ''c'', {ga_id}, ''hijacked'', true, true, false, {b_id})', '33011');
     perform pg_temp.a02_expect('enable_user_group',  'select * from auth.enable_user_group(''t'', {admin_b_id}, ''c'', {ga_id}, {b_id})', '33011');
     perform pg_temp.a02_expect('disable_user_group', 'select * from auth.disable_user_group(''t'', {admin_b_id}, ''c'', {ga_id}, {b_id})', '33011');
     perform pg_temp.a02_expect('lock_user_group',    'select * from auth.lock_user_group(''t'', {admin_b_id}, ''c'', {ga_id}, {b_id})', '33011');

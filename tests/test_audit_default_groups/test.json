@@ -1,0 +1,6 @@
+{
+  "name": "Audit D-13: default groups are gone",
+  "description": "v2.20: user groups have no is_default flag any more. A tenant owner can't mark a group of their tenant as default and pull every user who signs in anywhere into it; login and the permission rebuild add no one to any group except through mappings. assign_user_default_groups, users.add_to_default_groups and every _is_default parameter / __is_default column of the group functions are gone. tenant.is_default (the default tenant) stays.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

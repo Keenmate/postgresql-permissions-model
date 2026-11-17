@@ -79,7 +79,6 @@ DECLARE
     __is_external    boolean;
     __is_active      boolean;
     __is_assignable  boolean;
-    __is_default     boolean;
     __is_system      boolean;
 BEGIN
     RAISE NOTICE 'TEST 17: ensure_user_groups - groups with various flags';
@@ -91,15 +90,15 @@ BEGIN
         ]'::jsonb
     );
 
-    SELECT ug.is_external, ug.is_active, ug.is_assignable, ug.is_default, ug.is_system
+    SELECT ug.is_external, ug.is_active, ug.is_assignable, ug.is_system
     FROM auth.user_group ug
     WHERE ug.code = 'test_external_group' AND ug.tenant_id = 1
-    INTO __is_external, __is_active, __is_assignable, __is_default, __is_system;
+    INTO __is_external, __is_active, __is_assignable, __is_system;
 
-    IF __is_external = true AND __is_active = true AND __is_assignable = false AND __is_default = false AND __is_system = false THEN
-        RAISE NOTICE '  PASS: Flags correct (external=%, active=%, assignable=%, default=%, system=%)', __is_external, __is_active, __is_assignable, __is_default, __is_system;
+    IF __is_external = true AND __is_active = true AND __is_assignable = false AND __is_system = false THEN
+        RAISE NOTICE '  PASS: Flags correct (external=%, active=%, assignable=%, system=%)', __is_external, __is_active, __is_assignable, __is_system;
     ELSE
-        RAISE EXCEPTION '  FAIL: Flags wrong (external=%, active=%, assignable=%, default=%, system=%)', __is_external, __is_active, __is_assignable, __is_default, __is_system;
+        RAISE EXCEPTION '  FAIL: Flags wrong (external=%, active=%, assignable=%, system=%)', __is_external, __is_active, __is_assignable, __is_system;
     END IF;
 END $$;
 

@@ -1,6 +1,6 @@
 # D-13 design: actions, rule mappings and tenant templates replace default groups
 
-Agreed with the user on 2026-11-15/16. Not implemented yet.
+Agreed with the user on 2026-11-15/16. Implemented so far: default groups removed (v2.20, `067`).
 
 ## Why
 

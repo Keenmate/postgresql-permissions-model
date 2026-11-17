@@ -101,7 +101,7 @@ BEGIN
     -- Create an extra group in this tenant
     SELECT ug.__user_group_id
     FROM auth.create_user_group('tenant_test', 1, 'tenant-test-ug-grp', 'Test Extra Group',
-                                true, true, false, false, __tenant_id) ug
+                                true, true, false, __tenant_id) ug
     INTO __extra_group_id;
 
     IF __extra_group_id IS NULL THEN

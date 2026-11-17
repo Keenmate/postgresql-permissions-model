@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-17 — v2.20: default groups are removed
+
+**`067_update_permissions_v2-20.sql`** (`postgresql_permissionmodel` **2.20**).
+
+Step 1 of the D-13 design (`audit/design-d13-tenant-actions.md`). Actions (on registration / entry / leave, with rules) and rule mappings on groups replace default groups in later versions.
+
+### Fixed
+
+- **Login pulled every user into the default groups of every tenant.** `unsecure.recalculate_user_groups` runs at every login and on every permission cache miss, and it added the user to every `is_default` group of every tenant, inactive ones too. A tenant owner could mark a group of their tenant as default and get every user who signs in anywhere as a member of their tenant: in its user lists, pickers and notifications, with the group's permissions.
+
+### Removed
+
+- **`auth.user_group.is_default`** with its check constraint, and the column of the view `auth.active_user_groups`.
+- **`auth.assign_user_default_groups` / `unsecure.assign_user_default_groups`** and the permission **`users.add_to_default_groups`** (removed from every perm set).
+- **The `_is_default` parameter** of `auth.create_user_group`, `auth.update_user_group`, `unsecure.create_user_group` and `unsecure.create_user_group_as_system`.
+- **The `__is_default` column** of `auth.get_user_group_by_id`, `unsecure.get_user_group_by_id`, `auth.search_user_groups` and `auth.ensure_user_groups`. An `is_default` key in the `ensure_user_groups` payload is ignored.
+- Memberships that default groups created stay as ordinary `manual` memberships. `tenant.is_default`, the default tenant, is not affected.
+
+### Tests
+
+- New suite `tests/test_audit_default_groups/`. The default-group tests of `test_permission_checks` are gone; the tests that passed `_is_default` positionally are updated.
+
 ## 2026-11-09 — v2.19: external group sync works
 
 **`066_update_permissions_v2-19.sql`** (`postgresql_permissionmodel` **2.19**).
@@ -2699,6 +2721,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.20 | 2026-11-17 | Default groups removed: login no longer adds users to the default groups of every tenant; `user_group.is_default`, `assign_user_default_groups`, `users.add_to_default_groups` and the `_is_default` / `__is_default` parameters and columns are gone (`067_update_permissions_v2-20.sql`) |
 | 2.19 | 2026-11-09 | External group sync works: synced groups take members only from the sync, each run adds and removes, `groups.sync_members` in tenant 1; groups that grant nothing don't make tenant members (`066_update_permissions_v2-19.sql`) |
 | 2.18 | 2026-11-09 | Pre-provisioned users: `ensure_user_info` needs `users.register_user` in tenant 1 and can pre-create the identity by object id; first login claims a user pre-provisioned for that provider; `ensure_groups_and_permissions` callable twice per transaction (`065_update_permissions_v2-18.sql`) |
 | 2.17 | 2026-11-09 | Tenant membership is computed (group, direct grant, owner, resource grant) by one view `auth.tenant_memberships` used by every member read; `auth.tenant_user` dropped; `add_tenant_user` joins Tenant Members (`064_update_permissions_v2-17.sql`) |

@@ -229,6 +229,8 @@ inactive groups.
   Design in `audit/design-d13-tenant-actions.md`. Still open: what "remove from tenant" removes, and
   whether disable or lock count as leave.
 
+  **Done:** step 1, default groups removed, in v2.20 (`067`).
+
 ### D-14 Resource access semantics
 - **Precedence:** a deny on the user (or any group) at any ancestor level, whether type-level or
   path-level, beats every grant. Today the first type level with any match wins, so a child-type

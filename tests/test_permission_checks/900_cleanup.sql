@@ -15,7 +15,7 @@ BEGIN
     DELETE FROM auth.perm_set_perm WHERE created_by = 'pchk_test';
     DELETE FROM auth.perm_set WHERE code = 'pchk_test_perm_set';
     DELETE FROM auth.permission WHERE code IN ('pchk_test_perm_a', 'pchk_test_perm_b');
-    DELETE FROM auth.user_group WHERE code IN ('pchk_test_group', 'pchk_default_group');
+    DELETE FROM auth.user_group WHERE code IN ('pchk_test_group');
     DELETE FROM public.journal WHERE created_by = 'pchk_test';
     DELETE FROM auth.user_blacklist WHERE username IN ('pchk_del_bl_user', 'pchk_del_user');
     DELETE FROM auth.user_info WHERE username LIKE 'pchk_%';
