@@ -1,0 +1,6 @@
+{
+  "name": "Audit D-19: no privilege escalation",
+  "description": "v2.22: you can't give out or take away what you don't hold in the tenant (32010): permission and perm set assignments, perm set edits, group members, group and rule mappings, shared rule edits, API key permissions, invitation actions and owners. Ancestors cover descendants. User 1 and tenant owners are exempt; group owners may add and remove members of their group.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

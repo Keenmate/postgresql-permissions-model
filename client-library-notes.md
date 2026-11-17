@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.21', 'postgresql_permissionmodel')`
-at startup (currently 2.21) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.22', 'postgresql_permissionmodel')`
+at startup (currently 2.22) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,26 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.22 — no privilege escalation (`069`)
+
+**Status in keen-auth-permissions: not adopted.** No signatures change.
+
+- **New error 32010** (`err_permission_not_held`): the caller would give out or take away permissions
+  they don't hold in the tenant. The message lists the missing permission codes. Raised by
+  `assign_permission`, `unassign_permission`, `create_perm_set`, `create_perm_set_permissions`,
+  `delete_perm_set_permissions`, `update_perm_set` (switching `is_assignable`), `ensure_perm_sets`,
+  `create_user_group_member`, `delete_user_group_member`, `create_user_group_mapping`,
+  `create_user_group_rule_mapping`, `delete_user_group_mapping`, `ensure_user_group_mapping(s)`,
+  `update_rule`, `create_api_key`, `assign_api_key_permissions`, `unassign_api_key_permissions`,
+  `create_invitation`, `create_invitation_from_template`, `create_owner` and `delete_owner`.
+- **Admin UIs** should offer only what the admin holds: compare a perm set's or group's permissions
+  with the admin's own (`auth.get_users_groups_and_permissions` / the permission cache). Tenant
+  owners hold everything in their tenant; group owners may add members to their group anyway.
+- **Behaviour change:** a tenant admin can no longer appoint tenant owners (they don't hold the whole
+  `tenant_owner` perm set); a tenant owner can.
 
 ---
 

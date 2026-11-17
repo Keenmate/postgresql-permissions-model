@@ -269,6 +269,7 @@ Core permission checking for any PostgreSQL application:
 
 **Assignment to Users/Groups**:
 - `auth.assign_permission()` / `auth.unassign_permission()` - Assign permission sets or individual permissions
+- **No privilege escalation (v2.22, D-19):** whoever gives out or takes away a permission, a perm set, a group membership, a mapping, an API key permission, an invitation action or ownership must hold everything it carries in that tenant (32010). User 1 and tenant owners are exempt; group owners may add members
 - Can assign directly to users or to groups (users inherit from group membership)
 - All assignments stored in `permission_assignment` table
 
@@ -468,6 +469,7 @@ All tests are organized as suite directories with `test.json` manifests:
 | `test_search_functions/` | All search functions: pagination, filtering, empty results |
 | `test_identity_user_data/` | v2.3: provider `_user_data` stored on the identity on first login, refreshed on later logins, kept on `null`, returned by `get_user_identity` |
 | `test_audit_authentication/` | v2.6: login/MFA/API-key outcomes persist (no raise), temporary escalating lockout with decay, admin lock, provider login of locked users, system sys_params |
+| `test_audit_escalation/` | v2.22 (D-19): no privilege escalation (32010) on assign/unassign, perm set edits, group members, group and rule mappings, shared rule edits, API key permissions, invitation actions and owners; ancestors cover descendants; user 1 and tenant owners exempt, group owners add members |
 | `test_audit_rules/` | v2.21: rules are validated on save (40001); the evaluator (every op, nesting, claims, labels, case-insensitive); rule mappings add and remove members at login and rebuild, also for providers without group mapping; shared rule edits follow; synced groups refuse rule mappings (33026); tenant vs global rule permissions, in-use delete (40003), journal with old/new rule |
 | `test_audit_default_groups/` | v2.20: default groups are gone; a tenant owner can't pull every user who signs in into their tenant; login and the permission rebuild add no one except through mappings; no `_is_default` / `__is_default` left |
 | `test_audit_group_sync/` | v2.19: sync needs `groups.sync_members` in tenant 1; each run adds and removes (membership only); full sync runs; login leaves synced groups alone; picker groups (no grants) don't make tenant members; synced users claim their account at first login |

@@ -230,7 +230,7 @@ inactive groups.
   whether disable or lock count as leave.
 
   **Done:** step 1, default groups removed, in v2.20 (`067`); step 2, rules, rule mappings and shared
-  rules, in v2.21 (`068`).
+  rules, in v2.21 (`068`); step 3, D-19, in v2.22 (`069`).
 
 ### D-14 Resource access semantics
 - **Precedence:** a deny on the user (or any group) at any ancestor level, whether type-level or
@@ -322,7 +322,10 @@ including to themselves.
     SharePoint site collection admin adding another one. The user knows it's dangerous but common. An
     approval process, in the style of tenant actions, may come later.
   - **Removals follow the same rule:** you cannot unassign a set or permission you don't hold.
-  - Not implemented yet.
+  - **Done** in v2.22 (`069`), error 32010. A perm set counts as every assignable permission in it; a
+    group as everything it grants. Owners: appointing a tenant owner needs the whole `tenant_owner`
+    set, a group owner the group's permissions. Tenant actions get the check when they are built
+    (step 6).
 
 ---
 

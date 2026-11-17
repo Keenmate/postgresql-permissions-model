@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-17 — v2.22: no privilege escalation
+
+**`069_update_permissions_v2-22.sql`** (`postgresql_permissionmodel` **2.22**).
+
+Step 3 of the D-13 design, decision D-19. Until now `permissions.assign_permission` alone was enough to hand out anything, `tenant_admin` or `full_admin` included, to anyone, the caller included. `tenant_admin` also held `tenants.assign_owner`, so a tenant admin could make anyone (themselves too) a tenant owner.
+
+### Changed
+
+- **You can't give out or take away what you don't hold.** Every assignable permission a grant carries (a perm set's permissions, a permission and its descendants, everything a group grants) must be in the caller's own effective permissions in that tenant, groups included. An ancestor covers its descendants. Otherwise **32010** is raised and journaled.
+- **Checked on:**
+  - `assign_permission` / `unassign_permission`, to users and groups;
+  - `create_perm_set`, `create_perm_set_permissions`, `delete_perm_set_permissions`, `update_perm_set` when it switches `is_assignable`, `ensure_perm_sets`;
+  - `create_user_group_member` / `delete_user_group_member` (the group's permissions; the group's owners may add and remove members anyway);
+  - `create_user_group_mapping`, `create_user_group_rule_mapping`, `delete_user_group_mapping`, `ensure_user_group_mappings` (final-state deletes);
+  - `update_rule` on a tenant rule: the permissions of every group that uses it (global rules are covered by `rules.manage_global_rules` in tenant 1);
+  - `create_api_key`, `assign_api_key_permissions`, `unassign_api_key_permissions`;
+  - `create_invitation` / `create_invitation_from_template`: the actions `assign_perm_set`, `assign_permission`, `add_group_member` and `add_tenant_user` are checked against the inviter when the invitation is created;
+  - `create_owner` / `delete_owner`: a tenant owner needs the tenant's `tenant_owner` perm set, a group owner the group's permissions.
+- **Exempt:** user 1 and active tenant owners of the tenant.
+
+### Tests
+
+- New suite `tests/test_audit_escalation/`.
+
 ## 2026-11-17 — v2.21: rules, rule mappings and shared rules
 
 **`068_update_permissions_v2-21.sql`** (`postgresql_permissionmodel` **2.21**).
@@ -2750,6 +2774,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.22 | 2026-11-17 | No privilege escalation (D-19): grants, perm set edits, members, mappings, rule edits, API keys, invitations and owners need the caller to hold what they give out (`069_update_permissions_v2-22.sql`) |
 | 2.21 | 2026-11-17 | Rules (jsonb, validated on save, one evaluator), group rule mappings evaluated at login and rebuild, shared tenant and global rules (`068_update_permissions_v2-21.sql`) |
 | 2.20 | 2026-11-17 | Default groups removed: login no longer adds users to the default groups of every tenant; `user_group.is_default`, `assign_user_default_groups`, `users.add_to_default_groups` and the `_is_default` / `__is_default` parameters and columns are gone (`067_update_permissions_v2-20.sql`) |
 | 2.19 | 2026-11-09 | External group sync works: synced groups take members only from the sync, each run adds and removes, `groups.sync_members` in tenant 1; groups that grant nothing don't make tenant members (`066_update_permissions_v2-19.sql`) |

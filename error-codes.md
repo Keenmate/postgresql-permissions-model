@@ -57,6 +57,7 @@ All errors are seeded in `const.event_code` with matching templates in `const.ev
 | 32007 | `err_parent_permission_not_found` | `error.raise_32007` | Parent permission missing |
 | 32008 | `err_some_perms_not_assignable` | `error.raise_32008` | Some permissions in the batch are not assignable |
 | 32009 | `err_permission_assignment_not_found` | `error.raise_32009` | Permission assignment does not exist in the tenant (since v2.1) |
+| 32010 | `err_permission_not_held` | `error.raise_32010` | Caller would give out or take away permissions they don't hold in the tenant (D-19, since v2.22) |
 
 ## User / Identity / Group (33001 — 33999)
 

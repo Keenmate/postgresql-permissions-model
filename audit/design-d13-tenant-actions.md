@@ -1,7 +1,7 @@
 # D-13 design: actions, rule mappings and tenant templates replace default groups
 
 Agreed with the user on 2026-11-15/16. Implemented so far: default groups removed (v2.20, `067`); rules, rule mappings and shared rules
-(v2.21, `068`; the D-19 check on editing a shared rule comes with step 3).
+(v2.21, `068`); no privilege escalation, D-19 (v2.22, `069`).
 
 ## Why
 
