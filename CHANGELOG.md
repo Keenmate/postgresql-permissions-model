@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-17 — v2.25: actions
+
+**`072_update_permissions_v2-25.sql`** (`postgresql_permissionmodel` **2.25**).
+
+Step 6 of the D-13 design, the last one. One-shot steps that run when a user registers, signs in or leaves.
+
+### Added
+
+- **Actions** (`auth.action`, `auth.action_step`): a tenant action, or a platform action (`tenant_id` null), with an event, a rule (validated like every rule), `run_once_per_user`, a sequence and steps.
+  - **Steps** come from the invitation catalogue (`const.invitation_action_type`, executors, conditions), plus the reverse steps `remove_tenant_user`, `remove_group_member`, `unassign_perm_set` and `unassign_permission`.
+  - **Payload placeholders:** `{tenant.id}`, `{tenant.code}`, `{user.id}`, `{user.email}`, `{user.username}`, `{data.<path>}` (the event data). They are checked on save (41003) and filled in at run time; a missing value fails the step (41005).
+- **Events:**
+  - **on_registration:** `register_user`, a new user in `ensure_user_from_provider`, a new user in `ensure_user_info` (also from the sync). The event data is the registration's user data. Provider groups and roles come only with the first login, so rules on them belong to on_entry.
+  - **on_entry:** at the end of `ensure_groups_and_permissions`, with fresh provider groups and roles and the claims as event data, and after a successful `create_user_login_attempt`. With `run_once_per_user` the action runs only the first time, so it also reaches users who registered earlier.
+  - **on_leave:** `delete_user_info`, for every tenant the user was a member of. Leaving a single tenant waits for the `remove_tenant_user` decision.
+- **Runs** (`auth.action_run`, `auth.action_run_step`): database steps run right away on behalf of the author. A failure is journaled (24004) and never breaks the login; a failed required step skips the rest. Backend and external steps wait for the app with a filled-in payload (`action_steps_pending` on `permission_changes`). The log keeps the username and outlives a deleted user.
+- **The app's side** (`actions.process_action_steps` in tenant 1, held by `svc_authenticator_permissions`, `system_admin` and `full_admin`): `auth.get_pending_action_steps`, `auth.complete_action_step`, `auth.fail_action_step`.
+- **Managing:** `auth.create_action`, `update_action`, `delete_action`, `create_action_step`, `update_action_step`, `delete_action_step`, `get_actions`, `get_action_runs`. Tenant actions need `actions.create_action` / `update_action` / `delete_action` / `read_actions` in the tenant (`tenant_admin`, `tenant_owner`, `system_admin`, `full_admin`). Platform actions need `actions.manage_platform_actions` in tenant 1 (`full_admin`) and take backend and external steps only.
+- **D-19:** the author must hold what the steps hand out or take away in the tenant, checked on every save, rule edits included. Group steps respect platform groups.
+- **Errors and events:** 41001-41005 (new range `action_error`), events 24001-24004 (`action_event`).
+
+### Tests
+
+- New suite `tests/test_audit_actions/`.
+
 ## 2026-11-17 — v2.24: tenant templates
 
 **`071_update_permissions_v2-24.sql`** (`postgresql_permissionmodel` **2.24**).
@@ -2828,6 +2853,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.25 | 2026-11-17 | Actions: tenant and platform actions on registration, entry and leave with a rule and steps from the invitation catalogue; database steps run at once, backend/external steps wait for the app; run log; D-19 on save (`072_update_permissions_v2-25.sql`) |
 | 2.24 | 2026-11-17 | Tenant templates: create_tenant seeds groups, tenant-1 perm sets and mappings (placeholders, global rules) from a named template or the default (`071_update_permissions_v2-24.sql`) |
 | 2.23 | 2026-11-17 | Platform groups: tenant-1 groups with a tenant scope that grant their perm sets in those tenants, invisible to the tenants, journaled as Platform support (`070_update_permissions_v2-23.sql`) |
 | 2.22 | 2026-11-17 | No privilege escalation (D-19): grants, perm set edits, members, mappings, rule edits, API keys, invitations and owners need the caller to hold what they give out (`069_update_permissions_v2-22.sql`) |

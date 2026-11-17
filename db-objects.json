@@ -36,6 +36,74 @@
   },
   {
     "schema": "auth",
+    "object_name": "action",
+    "object_type": "table",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 111,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 111,
+        "operation": "CREATE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
+    "object_name": "action_run",
+    "object_type": "table",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 165,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 165,
+        "operation": "CREATE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
+    "object_name": "action_run_step",
+    "object_type": "table",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 192,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 192,
+        "operation": "CREATE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
+    "object_name": "action_step",
+    "object_type": "table",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 141,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 141,
+        "operation": "CREATE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
     "object_name": "active_user_groups",
     "object_type": "view",
     "last_update_file": "067_update_permissions_v2-20.sql",
@@ -220,6 +288,23 @@
   },
   {
     "schema": "auth",
+    "object_name": "complete_action_step",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 1114,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 1114,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
     "object_name": "confirm_mfa_enrollment",
     "object_type": "function",
     "last_update_file": "056_update_permissions_v2-9.sql",
@@ -236,6 +321,40 @@
       {
         "file": "056_update_permissions_v2-9.sql",
         "line": 618,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
+    "object_name": "create_action",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 533,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 533,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
+    "object_name": "create_action_step",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 652,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 652,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -963,14 +1082,20 @@
     "schema": "auth",
     "object_name": "create_user_login_attempt",
     "object_type": "function",
-    "last_update_file": "053_update_permissions_v2-6.sql",
-    "last_update_line": 475,
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 1713,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "053_update_permissions_v2-6.sql",
         "line": 475,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 1713,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -988,6 +1113,40 @@
       {
         "file": "023_functions_auth_tenant.sql",
         "line": 301,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
+    "object_name": "delete_action",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 629,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 629,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
+    "object_name": "delete_action_step",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 747,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 747,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -1417,10 +1576,10 @@
     "schema": "auth",
     "object_name": "delete_user_info",
     "object_type": "function",
-    "last_update_file": "056_update_permissions_v2-9.sql",
-    "last_update_line": 187,
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 1799,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 3,
     "all_updates": [
       {
         "file": "020_functions_auth_user.sql",
@@ -1431,6 +1590,12 @@
       {
         "file": "056_update_permissions_v2-9.sql",
         "line": 187,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 1799,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -1751,10 +1916,10 @@
     "schema": "auth",
     "object_name": "ensure_groups_and_permissions",
     "object_type": "function",
-    "last_update_file": "065_update_permissions_v2-18.sql",
-    "last_update_line": 244,
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 1663,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 3,
     "all_updates": [
       {
         "file": "022_functions_auth_permission.sql",
@@ -1765,6 +1930,12 @@
       {
         "file": "065_update_permissions_v2-18.sql",
         "line": 244,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 1663,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -1952,10 +2123,10 @@
     "schema": "auth",
     "object_name": "ensure_user_from_provider",
     "object_type": "function",
-    "last_update_file": "065_update_permissions_v2-18.sql",
-    "last_update_line": 285,
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 1381,
     "last_update_source": "migration",
-    "total_updates": 5,
+    "total_updates": 6,
     "all_updates": [
       {
         "file": "020_functions_auth_user.sql",
@@ -1984,6 +2155,12 @@
       {
         "file": "065_update_permissions_v2-18.sql",
         "line": 285,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 1381,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -2101,6 +2278,23 @@
   },
   {
     "schema": "auth",
+    "object_name": "fail_action_step",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 1126,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 1126,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
     "object_name": "filter_accessible_resources",
     "object_type": "function",
     "last_update_file": "060_update_permissions_v2-13.sql",
@@ -2208,6 +2402,40 @@
       {
         "file": "035_functions_resource_access.sql",
         "line": 1954,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
+    "object_name": "get_action_runs",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 1140,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 1140,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
+    "object_name": "get_actions",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 779,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 779,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -2465,6 +2693,23 @@
       {
         "file": "026_functions_auth_apikey.sql",
         "line": 678,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
+    "object_name": "get_pending_action_steps",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 1021,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 1021,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -3932,10 +4177,10 @@
     "schema": "auth",
     "object_name": "register_user",
     "object_type": "function",
-    "last_update_file": "051_update_permissions_v2-4.sql",
-    "last_update_line": 143,
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 1315,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 3,
     "all_updates": [
       {
         "file": "020_functions_auth_user.sql",
@@ -3946,6 +4191,12 @@
       {
         "file": "051_update_permissions_v2-4.sql",
         "line": 143,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 1315,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -4897,6 +5148,40 @@
       {
         "file": "070_update_permissions_v2-23.sql",
         "line": 1368,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
+    "object_name": "update_action",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 582,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 582,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "auth",
+    "object_name": "update_action_step",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 698,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 698,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -5884,6 +6169,23 @@
         "file": "056_update_permissions_v2-9.sql",
         "line": 342,
         "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "const",
+    "object_name": "action_event",
+    "object_type": "table",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 57,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 57,
+        "operation": "CREATE",
         "source": "migration"
       }
     ]
@@ -8033,6 +8335,91 @@
   },
   {
     "schema": "error",
+    "object_name": "raise_41001",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 257,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 257,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "error",
+    "object_name": "raise_41002",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 268,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 268,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "error",
+    "object_name": "raise_41003",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 279,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 279,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "error",
+    "object_name": "raise_41004",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 290,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 290,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "error",
+    "object_name": "raise_41005",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 301,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 301,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "error",
     "object_name": "raise_52101",
     "object_type": "function",
     "last_update_file": "016_functions_error.sql",
@@ -9529,10 +9916,10 @@
     "schema": "public",
     "object_name": "__temp_users_groups",
     "object_type": "table",
-    "last_update_file": "065_update_permissions_v2-18.sql",
-    "last_update_line": 264,
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 1683,
     "last_update_source": "migration",
-    "total_updates": 3,
+    "total_updates": 5,
     "all_updates": [
       {
         "file": "022_functions_auth_permission.sql",
@@ -9549,6 +9936,18 @@
       {
         "file": "065_update_permissions_v2-18.sql",
         "line": 264,
+        "operation": "CREATE",
+        "source": "migration"
+      },
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 1681,
+        "operation": "DROP",
+        "source": "migration"
+      },
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 1683,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -10397,6 +10796,91 @@
       {
         "file": "001_create_basic_structure.sql",
         "line": 14,
+        "operation": "CREATE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "public",
+    "object_name": "ix_action_run_action_user",
+    "object_type": "index",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 188,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 188,
+        "operation": "CREATE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "public",
+    "object_name": "ix_action_run_step_run",
+    "object_type": "index",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 217,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 217,
+        "operation": "CREATE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "public",
+    "object_name": "ix_action_run_tenant",
+    "object_type": "index",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 190,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 190,
+        "operation": "CREATE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "public",
+    "object_name": "ix_action_run_user",
+    "object_type": "index",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 189,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 189,
+        "operation": "CREATE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "public",
+    "object_name": "ix_action_step_action",
+    "object_type": "index",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 163,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 163,
         "operation": "CREATE",
         "source": "migration"
       }
@@ -13130,14 +13614,20 @@
     "schema": "unsecure",
     "object_name": "ensure_user_info",
     "object_type": "function",
-    "last_update_file": "065_update_permissions_v2-18.sql",
-    "last_update_line": 49,
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 1595,
     "last_update_source": "migration",
-    "total_updates": 1,
+    "total_updates": 2,
     "all_updates": [
       {
         "file": "065_update_permissions_v2-18.sql",
         "line": 49,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 1595,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -13221,10 +13711,10 @@
     "schema": "unsecure",
     "object_name": "execute_database_action",
     "object_type": "function",
-    "last_update_file": "064_update_permissions_v2-17.sql",
-    "last_update_line": 472,
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 1197,
     "last_update_source": "migration",
-    "total_updates": 2,
+    "total_updates": 3,
     "all_updates": [
       {
         "file": "042_functions_invitation.sql",
@@ -13235,6 +13725,12 @@
       {
         "file": "064_update_permissions_v2-17.sql",
         "line": 472,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      },
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 1197,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -13269,6 +13765,23 @@
       {
         "file": "042_functions_invitation.sql",
         "line": 282,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "unsecure",
+    "object_name": "finish_action_run_step",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 1054,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 1054,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -14040,6 +14553,23 @@
   },
   {
     "schema": "unsecure",
+    "object_name": "resolve_action_placeholders",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 377,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 377,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "unsecure",
     "object_name": "resolve_template_placeholders",
     "object_type": "function",
     "last_update_file": "071_update_permissions_v2-24.sql",
@@ -14084,6 +14614,40 @@
       {
         "file": "042_functions_invitation.sql",
         "line": 186,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "unsecure",
+    "object_name": "run_action",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 832,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 832,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "unsecure",
+    "object_name": "run_actions",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 952,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 952,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }
@@ -14368,6 +14932,57 @@
       {
         "file": "035_functions_resource_access.sql",
         "line": 83,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "unsecure",
+    "object_name": "validate_action_access",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 497,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 497,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "unsecure",
+    "object_name": "validate_action_placeholders",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 358,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 358,
+        "operation": "CREATE_OR_REPLACE",
+        "source": "migration"
+      }
+    ]
+  },
+  {
+    "schema": "unsecure",
+    "object_name": "validate_action_step",
+    "object_type": "function",
+    "last_update_file": "072_update_permissions_v2-25.sql",
+    "last_update_line": 416,
+    "last_update_source": "migration",
+    "total_updates": 1,
+    "all_updates": [
+      {
+        "file": "072_update_permissions_v2-25.sql",
+        "line": 416,
         "operation": "CREATE_OR_REPLACE",
         "source": "migration"
       }

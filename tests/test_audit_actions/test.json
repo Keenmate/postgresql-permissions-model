@@ -1,0 +1,6 @@
+{
+  "name": "Audit D-13: actions",
+  "description": "v2.25: tenant and platform actions on_registration / on_entry / on_leave with a rule and steps from the invitation catalogue. Validation and D-19 on save (author holds what the steps hand out or take away); platform actions need tenant 1 and take backend/external steps only. Runs: database steps execute, backend/external steps wait for the app (get_pending_action_steps, complete/fail), run_once_per_user, placeholders from the user, tenant and event data, a failing required step skips the rest without breaking the login; on_entry uses fresh provider groups; run logs per tenant; on_leave on user deletion outlives the user.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

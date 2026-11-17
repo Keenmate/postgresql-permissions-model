@@ -49,6 +49,9 @@ This system manages the complete lifecycle of authorization entities:
 - **User Data** (`auth.user_data`) - Profile fields + three jsonb columns: `settings`, `preferences`, `custom_data` with partial merge support
 - **User Permission Cache** (`auth.user_permission_cache`) - Cached permission calculations for performance
 
+**Actions (v2.25):**
+- **Actions** (`auth.action` / `action_step`, runs in `auth.action_run` / `action_run_step`) - one-shot steps when a user registers (`register_user`, new users of `ensure_user_from_provider` / `ensure_user_info`), signs in (`ensure_groups_and_permissions`, a successful `create_user_login_attempt`) or is deleted (on_leave). A rule decides who; steps come from the invitation catalogue plus reverse steps; payload placeholders `{tenant.*}`, `{user.*}`, `{data.*}`. Database steps run at once on behalf of the author (failures never break the login); backend/external steps wait for the app (`auth.get_pending_action_steps`, `complete_action_step`, `fail_action_step`, `actions.process_action_steps` in tenant 1). Tenant actions: `actions.*` in the tenant; platform actions (`tenant_id` null): `actions.manage_platform_actions` in tenant 1, backend/external steps only. D-19 on save
+
 **Groups & Mappings:**
 - **Groups** (`auth.user_group`) - Three types: internal, external, and hybrid membership models
 - **Group Mappings** (`auth.user_group_mapping`) - Maps external provider groups/roles to internal groups, or carries a rule (v2.21): an inline jsonb rule or a shared one
@@ -471,6 +474,7 @@ All tests are organized as suite directories with `test.json` manifests:
 | `test_search_functions/` | All search functions: pagination, filtering, empty results |
 | `test_identity_user_data/` | v2.3: provider `_user_data` stored on the identity on first login, refreshed on later logins, kept on `null`, returned by `get_user_identity` |
 | `test_audit_authentication/` | v2.6: login/MFA/API-key outcomes persist (no raise), temporary escalating lockout with decay, admin lock, provider login of locked users, system sys_params |
+| `test_audit_actions/` | v2.25: actions on_registration / on_entry / on_leave: permissions, validation and D-19 on save, platform actions (tenant 1, backend/external steps only); runs execute database steps, backend/external steps wait for the app (pending, complete, fail), run_once_per_user, placeholders, failures don't break the login, fresh provider groups on entry, run logs per tenant, on_leave on deletion |
 | `test_audit_tenant_templates/` | v2.24: the default template reproduces the old tenant shape and can be edited, not deleted or disabled; named templates with groups, perm sets and mappings ({tenant.*} / {data.*} placeholders, global rules); a missing value fails create_tenant; tenant-1 template permissions; D-19 on template perm sets; a used global rule can't be deleted |
 | `test_audit_platform_groups/` | v2.23: platform groups in tenant 1 with a scope (all but tenant 1, or a list) grant their perm sets in the tenants in scope; tenants see nothing (no membership, no group; journal shows Platform support); tenant opt-out; tenant-1 admins need `platform.*`; available tenants; changes reach the cache right away |
 | `test_audit_escalation/` | v2.22 (D-19): no privilege escalation (32010) on assign/unassign, perm set edits, group members, group and rule mappings, shared rule edits, API key permissions, invitation actions and owners; ancestors cover descendants; user 1 and tenant owners exempt, group owners add members |

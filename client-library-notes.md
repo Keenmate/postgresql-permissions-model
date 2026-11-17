@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.24', 'postgresql_permissionmodel')`
-at startup (currently 2.24) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.25', 'postgresql_permissionmodel')`
+at startup (currently 2.25) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,43 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.25 — actions (`072`)
+
+**Status in keen-auth-permissions: not adopted.**
+
+- **Login and registration run actions.** No signature changes, but `auth.register_user`,
+  `auth.ensure_user_from_provider`, `auth.ensure_user_info`, `auth.ensure_groups_and_permissions`,
+  `auth.create_user_login_attempt` and `auth.delete_user_info` may now add memberships and assignments
+  and create pending backend steps. On_entry runs in `ensure_groups_and_permissions`, so a provider login
+  must still call it after `ensure_user_from_provider`.
+- **The worker for backend and external steps** (needs `actions.process_action_steps` in tenant 1;
+  `svc_authenticator` has it). Listen for `action_steps_pending` on `permission_changes`, or poll:
+  - `auth.get_pending_action_steps(_user_id, _correlation_id, _target_user_id default null)` →
+    `__action_run_step_id, __action_run_id, __action_code, __tenant_id, __target_user_id, __step_type_code, __executor_code, __sequence, __payload`
+    (`__tenant_id` null for platform actions; the payload is filled in and merged with the step type's schema)
+  - `auth.complete_action_step(_updated_by, _user_id, _correlation_id, _action_run_step_id, _result_data jsonb default null)` → void
+  - `auth.fail_action_step(_updated_by, _user_id, _correlation_id, _action_run_step_id, _error_message default null)` → void
+  - 41001 unknown step, 41004 the step isn't waiting.
+- **Managing** (tenant: `actions.create_action` / `update_action` / `delete_action` / `read_actions`;
+  platform actions: `actions.manage_platform_actions` in tenant 1):
+  - `auth.create_action(_created_by, _user_id, _correlation_id, _title, _event_code, _rule jsonb, _code default null, _description default null, _run_once_per_user default false, _sequence default 0, _is_platform default false, _tenant_id default 1)` → `__action_id`
+  - `auth.update_action(_updated_by, _user_id, _correlation_id, _action_id, _title, _rule, _description default null, _run_once_per_user default false, _sequence default 0, _is_active default true, _tenant_id default 1)` → void (the event can't change)
+  - `auth.delete_action(_deleted_by, _user_id, _correlation_id, _action_id, _tenant_id default 1)` → void
+  - `auth.create_action_step(_created_by, _user_id, _correlation_id, _action_id, _step_type_code, _payload_template jsonb default '{}', _condition_code default 'always', _sequence default 0, _is_required default true, _tenant_id default 1)` → `__action_step_id`
+  - `auth.update_action_step(_updated_by, _user_id, _correlation_id, _action_step_id, _payload_template, _condition_code default 'always', _sequence default 0, _is_required default true, _tenant_id default 1)` → void
+  - `auth.delete_action_step(_deleted_by, _user_id, _correlation_id, _action_step_id, _tenant_id default 1)` → void
+  - `auth.get_actions(_user_id, _correlation_id, _tenant_id default 1)` → `__action_id, __tenant_id, __code, __title, __description, __event_code, __rule, __run_once_per_user, __sequence, __is_active, __is_platform, __steps jsonb`
+  - `auth.get_action_runs(_user_id, _correlation_id, _target_user_id default null, _action_id default null, _tenant_id default 1, _page_size default 100)` → `__action_run_id, __action_id, __action_code, __tenant_id, __user_id, __username, __event_code, __status_code, __extra_data, __created_at, __completed_at, __steps jsonb`
+  - Events: `on_registration`, `on_entry`, `on_leave`. Platform actions take backend and external steps only.
+- **New step types** in `const.invitation_action_type`: `remove_tenant_user`, `remove_group_member`,
+  `unassign_perm_set`, `unassign_permission`.
+- **Errors and events:** 41001 not found, 41002 code taken, 41003 invalid (unknown event, step type,
+  condition or placeholder, a missing payload field, a database step in a platform action), 41004 step
+  not waiting, 41005 a placeholder without a value (in the run log); 32010 when the author doesn't hold
+  what a step hands out. Events 24001-24004.
 
 ---
 

@@ -231,7 +231,7 @@ inactive groups.
 
   **Done:** step 1, default groups removed, in v2.20 (`067`); step 2, rules, rule mappings and shared
   rules, in v2.21 (`068`); step 3, D-19, in v2.22 (`069`); step 4, platform groups, in
-  v2.23 (`070`); step 5, tenant templates, in v2.24 (`071`).
+  v2.23 (`070`); step 5, tenant templates, in v2.24 (`071`); step 6, actions, in v2.25 (`072`).
 
 ### D-14 Resource access semantics
 - **Precedence:** a deny on the user (or any group) at any ancestor level, whether type-level or

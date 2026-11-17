@@ -1,7 +1,7 @@
 # D-13 design: actions, rule mappings and tenant templates replace default groups
 
 Agreed with the user on 2026-11-15/16. Implemented so far: default groups removed (v2.20, `067`); rules, rule mappings and shared rules
-(v2.21, `068`); no privilege escalation, D-19 (v2.22, `069`); platform groups (v2.23, `070`); tenant templates (v2.24, `071`).
+(v2.21, `068`); no privilege escalation, D-19 (v2.22, `069`); platform groups (v2.23, `070`); tenant templates (v2.24, `071`); actions (v2.25, `072`).
 
 ## Why
 
@@ -89,6 +89,20 @@ auth.action_run, auth.action_run_step                   the run log, status and 
   - "Everyone joins `basic_users` in tenant 1" becomes an on_registration action with the rule
     `always`.
   - `user_group.is_default` and the default-group branch of `recalculate_user_groups` are removed.
+- **As built (v2.25), choices to confirm:**
+  - on_entry runs at the end of `ensure_groups_and_permissions` (fresh provider groups and roles),
+    not in `ensure_user_from_provider`; on_registration sees only what the registration knows;
+  - a platform action runs once per event, not once per tenant, and takes backend and external
+    steps only (its database steps would need a tenant);
+  - on_leave fires only when a user is deleted, for every tenant they were a member of; leaving one
+    tenant waits for the `remove_tenant_user` decision;
+  - database steps run on behalf of the author (the last one to save the action);
+  - placeholders `{tenant.*}`, `{user.*}`, `{data.*}`; a missing value fails the step, not the event;
+  - the reverse steps remove only direct grants (manual memberships, direct assignments);
+  - `actions.*` went to `tenant_admin`, `tenant_owner`, `system_admin`, `full_admin` (like `rules.*`),
+    `manage_platform_actions` to `full_admin`, `process_action_steps` to `svc_authenticator`;
+  - like rule mappings, a tenant action with the rule `always` reaches every user who registers or
+    signs in, the exposure default groups had; only `actions.create_action` and D-19 limit it.
 
 ## Rule mappings
 

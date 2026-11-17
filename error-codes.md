@@ -9,7 +9,7 @@ For the full reference (event codes + error codes + legacy mapping + examples), 
 | Range | Type | Description |
 |-------|------|-------------|
 | 10000 — 29999 | Informational events | Logged to `public.journal` and `auth.user_event` |
-| 30000 — 40999 | Errors | Raised as PostgreSQL exceptions. Since v2.6 the login, MFA and API-key functions return them as `__event_id` / `__outcome_code` instead (see `audit/design-d01-auth-outcomes.md`) |
+| 30000 — 41999 | Errors | Raised as PostgreSQL exceptions. Since v2.6 the login, MFA and API-key functions return them as `__event_id` / `__outcome_code` instead (see `audit/design-d01-auth-outcomes.md`) |
 | 50000+ | Reserved | Application-specific codes |
 
 All errors are seeded in `const.event_code` with matching templates in `const.event_message`. Most are raised via dedicated `error.raise_XXXXX` functions in `016_functions_error.sql`; a few are raised inline at the call site.
@@ -173,6 +173,18 @@ Since v2.21. Events `rule_created` / `rule_updated` / `rule_deleted` are 23001�
 | 40002 | `err_rule_not_found` | `error.raise_40002` | Rule does not exist in the tenant (or isn't global) |
 | 40003 | `err_rule_in_use` | `error.raise_40003` | Rule is used by group mappings and can't be deleted |
 | 40004 | `err_rule_already_exists` | `error.raise_40004` | Rule code is taken in the tenant |
+
+## Actions (41001 — 41999)
+
+Since v2.25. Events `action_created` / `action_updated` / `action_deleted` / `action_step_failed` are 24001–24004.
+
+| Code | Name | Raised by | Meaning |
+|---|---|---|---|
+| 41001 | `err_action_not_found` | `error.raise_41001` | Action, step or run step does not exist (in the caller's tenant) |
+| 41002 | `err_action_already_exists` | `error.raise_41002` | Action code is taken in the tenant |
+| 41003 | `err_action_invalid` | `error.raise_41003` | Action or step can't be saved (unknown event, step type, condition or placeholder; missing payload field; database step in a platform action); the message says why |
+| 41004 | `err_action_run_step_not_pending` | `error.raise_41004` | The app reports a step that isn't waiting for a result |
+| 41005 | `err_action_value_missing` | `error.raise_41005` | A payload placeholder has no value at run time (recorded on the failed step) |
 
 ---
 
