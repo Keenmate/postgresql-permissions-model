@@ -1,6 +1,6 @@
-# D-13 design: tenant actions and rule mappings replace default groups
+# D-13 design: actions, rule mappings and tenant templates replace default groups
 
-Agreed with the user on 2026-11-15. Not implemented yet.
+Agreed with the user on 2026-11-15/16. Not implemented yet.
 
 ## Why
 
@@ -13,7 +13,7 @@ Default groups are removed. Two mechanisms replace them, both using the same rul
 
 | | when | effect |
 |---|---|---|
-| **tenant action** | on registration / on entry / on leave | one-shot steps: join, assign, notify, provision |
+| **action** | on registration / on entry / on leave | one-shot steps: join, assign, notify, provision |
 | **rule mapping** on a group | every recalculation | membership follows the rule, both ways |
 
 ## Rules
@@ -47,15 +47,18 @@ A rule is jsonb in our own format:
 - **Limit:** provider groups and claims exist only after a login. Pre-provisioned or synced users who
   have never signed in match nothing that depends on them.
 
-## Tenant actions
+## Actions
+
+Named `auth.action` (not `tenant_action`). `tenant_id` is nullable: null = a platform action that
+applies in every tenant (kept nullable for now).
 
 ```
-auth.tenant_action        tenant_id, code, title, is_active, sequence,
+auth.action               tenant_id (null = platform), code, title, is_active, sequence,
                           event_code (on_registration | on_entry | on_leave),
                           rule jsonb, run_once_per_user boolean
-auth.tenant_action_step   tenant_action_id, sequence, step_type_code, executor_code,
+auth.action_step          action_id, sequence, step_type_code, executor_code,
                           condition_code, is_required, payload_template
-auth.tenant_action_run, auth.tenant_action_run_step     the run log, status and results per step
+auth.action_run, auth.action_run_step                   the run log, status and results per step
 ```
 
 - **The rule is stored on the action.** Each action owns its rule; shared, named rules can come later
@@ -98,6 +101,100 @@ auth.tenant_action_run, auth.tenant_action_run_step     the run log, status and 
   - an ordinary mapping to Azure FGHAdmins;
   - a rule mapping: `provider_groups includes 'FGH'` **and** `includes 'Finance Leads'`.
 - **Synced groups** (`is_synced`) don't take rule mappings. The sync knows members, not claims.
+
+## Event data
+
+Every function that fires an event (`create_tenant`, `delete_tenant`, registration, the leave
+functions; `ensure_user_from_provider` already has `_user_data`) accepts `_extra_data jsonb`. It is
+stored in the run log and the steps can read it as `{data.*}`, for example the Azure admin group:
+`{data.admin_group.id}`, `{data.admin_group.name}`.
+
+## Tenant templates
+
+A **seed**, not a baseline: it runs once, inside `create_tenant`, and the tenant owns everything
+afterwards. It creates only the tenant row, groups, perm sets (copied from tenant 1) with their
+assignments, and mappings. Anything more is the app's job: `create_tenant` fires a `tenant_created`
+pub/sub event when it is done (`pg_notify` from a trigger, the pattern of
+`battleplan-notifications.md`; the journal 11001 lets an app catch up on missed events).
+
+```
+auth.tenant_template                 template_id, code (null = the default, at most one), title,
+                                     description, is_active
+auth.tenant_template_group           template_id, code, title, group type, perm_set_codes text[]
+auth.tenant_template_group_mapping   template_group_id, provider_code, mapped_object_id /
+                                     mapped_object_name / mapped_role (placeholders allowed),
+                                     or a reference to a global rule
+```
+
+- **Named templates:** e.g. "standard authorization" and "granular authorization".
+- **The default template** has no code. It is seeded with today's shape (Tenant Admins with
+  `tenant_admin`, Tenant Members with `tenant_member`), can be edited, and cannot be deleted.
+  `create_tenant` without `_template_code` uses it.
+- **Placeholders:** `{data.*}` (from `_extra_data`) and `{tenant.id}` / `{tenant.code}`. They are
+  resolved once, at creation. **A missing value fails `create_tenant`.**
+- **Perm sets:** `tenant_owner` is always copied (D-05).
+
+## Shared rules
+
+- **Tenant rules** are usable only inside their tenant. Editing one needs `rules.update_rule` there,
+  plus D-19: the editor must hold the permissions of everything that references it.
+- **Global rules** are owned by tenant 1, usable by every tenant, and editable only with a tenant-1
+  permission. That permission is the authority, since D-19 can't be checked across thousands of
+  tenants.
+- Every edit is journaled with the old and the new rule.
+- **Agreed:** the two kinds, tenant and global.
+- **Global rules need `rules.manage_global_rules` in tenant 1.** It's a dedicated permission, so it can
+  go to a platform team. By default it is in `full_admin` only, not in `system_admin`.
+- **Tenant rules:** `rules.create_rule` / `rules.update_rule` / `rules.delete_rule` /
+  `rules.read_rules` in the tenant.
+
+## Platform groups (agreed 2026-11-17)
+
+Support staff who oversee tenants. The user's rule: **members of platform groups are never members
+of the tenants they support**, at least not visibly. A tenant admin of ABC does **not** see the
+members, does **not** see the group, and **cannot** manage it.
+
+```
+tenant 1
+├─ group "Global Support"  (is_platform)  scope: all tenants
+│    mapping → Azure "Support-All"        perm set: platform_admin
+├─ group "EU Support"      (is_platform)  scope: ABC, CDE
+│    members: Anna, Petr (direct)         perm set: platform_admin
+└─ group "FGH Key Account" (is_platform)  scope: FGH
+     rule mapping → "in Azure KA-FGH"     perm set: platform_support (narrower)
+```
+
+- **The scenarios:**
+  - **one support team for every tenant:** one group with scope **all**;
+  - **several teams, each with its own tenants:** several groups, each with a list of tenants.
+- **Everything lives in tenant 1:** the group, its members, its mappings and rules, and its perm set.
+  - The scope is `auth.platform_group_scope (user_group_id, tenant_id)` or a flag for all tenants.
+  - **Opting out:** `auth.tenant.allows_platform_access`, set by tenant 1, excludes a tenant even
+    from "all".
+- **Permission rebuild:** a user in tenant X gets the perm set of every platform group they belong to
+  whose scope contains X.
+  - The permissions are global and the set is defined once, so nothing is copied into tenants.
+  - Platform groups grant nothing in tenant 1 itself unless tenant 1 is in their scope.
+- **The tenant contains nothing:**
+  - no group, mapping or copy;
+  - platform members are not in `auth.tenant_memberships`, so not in user lists, pickers or
+    notifications.
+- **They see the tenant in their own tenant list.** The available-tenants list adds the tenants in
+  their scope, marked as platform access.
+- **Permissions, both in tenant 1:**
+  - `platform.manage_platform_objects`: groups, members, mappings, scopes;
+  - `platform.read_platform_objects`: seeing them.
+
+  Tenant-1 admins without these don't see platform groups either.
+- **Journal:** actions in a tenant through platform access are journaled as such.
+  - **The tenant sees only "Platform support",** not the person.
+  - The name is visible from tenant 1, with `platform.read_platform_objects`.
+- **Unchanged from earlier:**
+  - the rule is evaluated once per rebuild, to be measured in the perf phase;
+  - rule values may carry a label next to the Azure id;
+  - the last-used identity rule applies.
+- **Replaces** the earlier ideas of a platform-admin rule mapping on every Tenant Admins group, or
+  locked platform groups inside each tenant.
 
 ## Invitations
 
