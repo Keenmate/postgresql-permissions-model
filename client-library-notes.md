@@ -11,8 +11,8 @@ for application developers.
 - Every update script that changes a function signature, return shape, error behaviour or required
   permission adds a section here (see CLAUDE.md).
 
-**Minimum database version:** a library checks `public.check_version('2.26', 'postgresql_permissionmodel')`
-at startup (currently 2.26) and refuses to run against an older database. The versions below are not backward compatible.
+**Minimum database version:** a library checks `public.check_version('2.27', 'postgresql_permissionmodel')`
+at startup (currently 2.27) and refuses to run against an older database. The versions below are not backward compatible.
 
 ---
 
@@ -73,6 +73,25 @@ Library rules:
    user *and* a wrong password on purpose (no account enumeration).
 4. Exceptions still mean faults: the service user lacks a permission (32001), bad arguments, the
    provider is not active, a blacklisted identity. Surface them as errors, not as login failures.
+
+---
+
+## v2.27 — tenant membership events (`074`)
+
+**Status in keen-auth-permissions: not adopted.**
+
+- **New function:** `auth.process_tenant_memberships(_run_by, _user_id, _correlation_id, _target_user_id := null)`
+  returns `(__tenant_id, __target_user_id, __change_code)` with `joined` / `missing` / `returned` / `left`.
+  Needs `actions.process_action_steps` in tenant 1 (svc_authenticator has it). The app should call it on
+  a schedule (for example every few minutes): it is what makes grace periods run out and catches changes
+  no function saw.
+- **New action event:** `on_join` (alongside on_registration / on_entry / on_leave). on_leave now also
+  fires when a user stops being a member of one tenant, not only on deletion. Both get
+  `{data.tenant_id}` / `{data.tenant_code}`.
+- **System parameters:** `tenant_membership.leave_strike_limit` (>= 1, default 1),
+  `tenant_membership.leave_grace_minutes` (>= 0, default 0); invalid values raise 31016.
+- **Journal:** 11016 `tenant_member_joined`, 11017 `tenant_member_left`.
+- **Behaviour:** logins, group sync and admin membership changes may now run actions (they never raise).
 
 ---
 

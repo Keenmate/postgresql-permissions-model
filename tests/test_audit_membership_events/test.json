@@ -1,0 +1,6 @@
+{
+  "name": "Audit: tenant membership events",
+  "description": "v2.27: leaving a tenant = losing membership. A snapshot of memberships fires on_join for a new one and on_leave once a lost one has enough strikes and its grace period has passed (tenant_membership sys_params). Detected at login, by admin changes (members, direct grants, owners, group enable/disable) and by the sweep (process_tenant_memberships); picker groups, disabled users don't count; deleted users leave once.",
+  "always_cleanup": true,
+  "isolation": "transaction"
+}

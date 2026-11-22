@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 The format is loosely based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Entries are date-tagged rather than semver-tagged: the project is pre-release and tracks DB-component versions (e.g. `postgresql_permissionmodel` v2) in `public.__version` instead of bumping a semver tag per change. See the **Component Versions** section at the bottom.
 
+## 2026-11-22 — v2.27: tenant membership events (on_join / on_leave)
+
+**`074_update_permissions_v2-27.sql`** (`postgresql_permissionmodel` **2.27**).
+
+Leaving a tenant now means losing membership, whatever the route (use cases 1-7 in `audit/use-cases.md`).
+
+### Added
+
+- **Membership snapshot** `auth.tenant_membership_state` (filled from `auth.tenant_memberships` without firing anything) and `unsecure.reconcile_tenant_memberships`: a new membership fires the new action event **on_join**; a lost one gets a strike and fires **on_leave** once the strikes reach `tenant_membership.leave_strike_limit` (default 1) and `tenant_membership.leave_grace_minutes` (default 0) have passed; one that comes back is reset. The same idea as `ad_object.not_found_strike_count` in the document hub: one login without groups needn't make everyone leave. Journal 11016 `tenant_member_joined` / 11017 `tenant_member_left`. System and API users are not tracked.
+- **Observations:** every provider login (`ensure_groups_and_permissions`), the group sync, group members, direct and group assignments, owners, group enable/disable/delete, and the sweep **`auth.process_tenant_memberships`** (`actions.process_action_steps` in tenant 1), which the app calls on a schedule to catch the rest (resource grants, mapping changes, rule edits) and run out grace periods. The permission-cache rebuild is not an observation.
+- on_join / on_leave runs get `{data.tenant_id}` / `{data.tenant_code}`; platform actions run once per tenant joined or left.
+
+### Not changed
+
+- Disabled or locked users don't leave; a deleted user still leaves every tenant once.
+
+### Tests
+
+- New suite `tests/test_audit_membership_events/`.
+
 ## 2026-11-17 — v2.26: tenant owners above tenant admins
 
 **`073_update_permissions_v2-26.sql`** (`postgresql_permissionmodel` **2.26**).
@@ -2872,6 +2892,7 @@ Rows marked 2.0.0 are work inside `postgresql_permissionmodel` **v2**, recorded 
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 2.27 | 2026-11-22 | Tenant membership events: on_join / on_leave from a membership snapshot with a strike limit and a grace period; sweep `auth.process_tenant_memberships` (`074_update_permissions_v2-27.sql`) |
 | 2.26 | 2026-11-17 | Tenant owners above tenant admins: owner-only perm sets (`tenant_admin`), `tenant_admin` gets `groups.*` and loses `tenants.assign_owner`; group deletion with mappings fixed (`073_update_permissions_v2-26.sql`) |
 | 2.25 | 2026-11-17 | Actions: tenant and platform actions on registration, entry and leave with a rule and steps from the invitation catalogue; database steps run at once, backend/external steps wait for the app; run log; D-19 on save (`072_update_permissions_v2-25.sql`) |
 | 2.24 | 2026-11-17 | Tenant templates: create_tenant seeds groups, tenant-1 perm sets and mappings (placeholders, global rules) from a named template or the default (`071_update_permissions_v2-24.sql`) |

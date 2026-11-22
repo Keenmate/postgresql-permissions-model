@@ -8,6 +8,7 @@ missing tests. Performance testing comes after this audit and uses the `perf` ta
 | Path | What |
 |---|---|
 | `spec/NN-<domain>.md` | **How it should work.** Invariants per domain. Written by the owner. Agents check the code against these. |
+| `use-cases.md` | The deployment scenarios, a checklist every decision and change is walked through. |
 | `decisions.md` | Cross-domain design decisions distilled from the specs' open questions. Answers are applied back to the specs. |
 | `findings/NN-<domain>.md` | Findings from the analysis pass, one file per domain. |
 | `coverage.py` / `coverage.md` | Which functions are called by any test. Regenerate with `python audit/coverage.py`. |
