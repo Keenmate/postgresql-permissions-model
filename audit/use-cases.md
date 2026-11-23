@@ -7,10 +7,12 @@ Each scenario lists an example, the features it uses, how a user **gets in** and
 tenant, what the model does **today** (v2.26), its **gaps**, and the tests that cover it.
 Statements marked **[check]** are not verified against the code yet.
 
-**Since v2.27** leaving a tenant = losing membership: on_join / on_leave fire from a membership
-snapshot at login, sync, admin changes and the sweep `auth.process_tenant_memberships`, with a
-strike limit and a grace period (`tenant_membership.*` sys_params). The "Today" lines below are
-updated for it.
+**Leaving is explicit (decided 2026-11-23).** on_leave fires only when something removes the user:
+deletion today, later an explicit "remove from tenant" / "leave tenant" call. Where the IdP or a
+sync decides (1, 3, 7), there is **no leave event, by design**: detecting it needs a membership
+snapshot and periodic full rechecks (tried as v2.27 and reverted: too heavy at 600k users, and
+guesswork). Such apps react from their own data (the sync job knows whom it removed; the app can
+query `auth.tenant_memberships`).
 
 ## At a glance
 
@@ -48,10 +50,8 @@ tenant templates with `{tenant.code}` / `{data.<path>}` placeholders in the mapp
 - **Gets in:** logs in; `ensure_groups_and_permissions` stores the mapped memberships.
 - **Leaves:** removed from the AAD group; the mapped membership drops at their next login (or the
   next sync, if the group is synced).
-- **Today:** works. on_join / on_leave fire at the login that adds or drops the mapped membership
-  (v2.27); strikes and a grace period absorb a login without groups.
-- **Gaps:** someone who never logs in again stays a member until a sync or a login; the sweep
-  can't see provider groups.
+- **Today:** works. No leave event, by design (see the top); on_leave fires only on deletion.
+- **Gaps:** someone who never logs in again stays a member until a sync or a login.
 - **Tests:** `test_audit_preprovisioning`, `test_audit_tenant_templates`, `test_provider_crud`.
 
 ## 2. Shared IdP pool, members from our groups and direct assignments
@@ -64,11 +64,11 @@ and owner roles (v2.26: only owners hand out `tenant_admin`).
 
 - **Gets in:** an admin adds them (the user may not have logged in yet: pre-provisioning, v2.18).
 - **Leaves:** an admin removes each group membership and assignment one by one.
-- **Today:** works, but there's no single "remove from tenant"; on_leave fires when the last
-  membership goes (v2.27).
+- **Today:** works, but there's no single "remove from tenant"; on_leave fires only on deletion.
   `tenant_admin` has `groups.*` but no `permissions.*`, so admins can't assign perm sets directly
   (D-08 open).
-- **Gaps:** a one-call "remove from tenant" (optional now); `tenant_admin` contents (D-08).
+- **Gaps:** an explicit `remove_tenant_user` that removes everything direct and fires on_leave;
+  `tenant_admin` contents (D-08).
 - **Tests:** `test_audit_admin_hierarchy`, `test_audit_escalation`, `test_audit_tenant_membership`.
 
 ## 3. Shared IdP pool, rules and actions
@@ -82,10 +82,9 @@ steps processed by the app.
 - **Gets in:** a rule matches at login or rebuild (member type `rule`); actions seed extra access.
 - **Leaves:** the rule stops matching; the rule membership drops at login or rebuild.
 - **Today:** works for the rule membership. What actions gave out (direct memberships, perm sets)
-  stays after the rule stops matching, so the user may still be a member; on_leave fires only when
-  nothing is left (v2.27).
-- **Gaps:** actions are one-way; an action's own grants keep the user a member (give out through
-  groups the rule fills, or undo with on_leave of another trigger).
+  **stays** after the rule stops matching; no leave event (by design).
+- **Gaps:** actions are one-way: give lasting access through groups the rule fills, and use
+  actions for one-shot effects.
   Defaults to be seen in testing (answers 6-8).
 - **Tests:** `test_audit_rules`, `test_audit_actions`.
 
@@ -144,8 +143,8 @@ tenant 1, v2.19), claiming the account at first login.
 
 - **Gets in:** pre-provisioned and synced in; claims the account at first login.
 - **Leaves:** the sync job removes the membership; an HR leaver is disabled or deleted by the app.
-- **Today:** works; login leaves synced groups alone. A sync removal is an observation: on_leave
-  fires per the strike limit (v2.27). Disable is not leaving.
+- **Today:** works; login leaves synced groups alone. A sync removal is no leave event (by design;
+  the sync result lists the removed members). Disable is not leaving.
 - **Gaps:** an HR-driven "disable" event, if ever needed.
 - **Tests:** `test_audit_group_sync`, `test_audit_preprovisioning`.
 
@@ -248,9 +247,9 @@ guests.
 
 | Question | Scenarios | Tracked as |
 |---|---|---|
-| ~~What "leaving a tenant" means; when `on_leave` runs for one tenant~~ (v2.27) | 1, 2, 3, 5, 7 | item 1 |
+| ~~What "leaving a tenant" means~~ (explicit removal only; none for IdP/sync) | 1, 2, 3, 5, 7 | item 1 |
 | ~~Do disable / lock count as leaving~~ (no) | 7 | item 1b |
-| Self-service "leave this tenant" | 5 | item 1 |
+| Explicit `remove_tenant_user` / self-service `leave_tenant` firing on_leave | 2, 4, 5 | item 1 |
 | Tenant context for registration | 4 | - |
 | `tenant_admin` contents (`permissions.*`?) | 2 | D-08 |
 | Invitation security | 5, 9 | D-11 |

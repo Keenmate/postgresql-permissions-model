@@ -95,8 +95,8 @@ auth.action_run, auth.action_run_step                   the run log, status and 
   - a platform action runs once per event, not once per tenant, and takes backend and external
     steps only (its database steps would need a tenant);
   - on_leave fires only when a user is deleted, for every tenant they were a member of; leaving one
-    tenant waits for the `remove_tenant_user` decision; **v2.27:** leaving = losing membership, with
-    on_join, strikes and a grace period (see `decisions.md` D-13);
+    tenant waits for the `remove_tenant_user` decision; **decided:** on_leave stays explicit (deletion,
+    later an explicit removal), no detection (see `decisions.md` D-13);
   - database steps run on behalf of the author (the last one to save the action);
   - placeholders `{tenant.*}`, `{user.*}`, `{data.*}`; a missing value fails the step, not the event;
   - the reverse steps remove only direct grants (manual memberships, direct assignments);

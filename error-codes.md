@@ -42,7 +42,7 @@ All errors are seeded in `const.event_code` with matching templates in `const.ev
 | 31013 | `err_event_id_out_of_range` | `error.raise_31013` | Event ID outside category range |
 | 31014 | `err_event_category_not_found` | `error.raise_31014` | Event category does not exist |
 | 31015 | `err_sys_param_is_system` | `error.raise_31015` | System parameter cannot be deleted or un-flagged (since v2.6) |
-| 31016 | `err_sys_param_invalid_value` | `error.raise_31016` | Invalid value for a validated system parameter, `login_lockout.*` (since v2.6), `tenant_membership.*` (since v2.27) |
+| 31016 | `err_sys_param_invalid_value` | `error.raise_31016` | Invalid value for a validated system parameter, e.g. `login_lockout.*` (since v2.6) |
 
 ## Permissions (32001 — 32999)
 

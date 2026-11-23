@@ -239,11 +239,12 @@ inactive groups.
   `always` is fine ("tenants are gated by an AAD group or a fixed list anyway"); tenant owners stand
   above everyone: only they make or unmake tenant admins, admins can't appoint owners (v2.26, `073`).
 
-  **Leaving a tenant (2026-11-22, use cases in `audit/use-cases.md`):** leaving = losing membership
-  (the computed `auth.tenant_memberships`), detected wherever memberships change, plus on_join; a
-  strike limit and a grace period (0 = at once) guard against providers that drop groups for a
-  moment, like `ad_object.not_found_strike_count` in the document hub. Disable and lock are not
-  leaving. To be tested in practice ("perhaps it fires too often"). Done in v2.27 (`074`).
+  **Leaving a tenant (2026-11-23, use cases in `audit/use-cases.md`):** on_leave is **explicit only**:
+  it fires when something removes the user (deletion today; later an explicit `remove_tenant_user` /
+  self-service `leave_tenant`). Detecting a lost membership (a snapshot of every membership, strikes,
+  grace periods, a periodic full recheck) was built as v2.27 and reverted: too heavy at 600k users,
+  and in IdP- or sync-driven tenants leaving is an absence, not an event. No on_join either: on_entry
+  with `run_once_per_user` and invitation actions cover it. Disable and lock are not leaving.
 
 ### D-14 Resource access semantics
 - **Precedence:** a deny on the user (or any group) at any ancestor level, whether type-level or
